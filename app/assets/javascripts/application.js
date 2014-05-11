@@ -48,6 +48,7 @@ requirejs(
     'jquery',
     'config',
     'vue',
+    'lib/gmaps',
     'modules/header',
     'modules/navigation',
     'modules/directions',
@@ -60,6 +61,7 @@ requirejs(
     $,
     config,
     Vue,
+    gmaps,
     Header,
     Navigation,
     Directions,
@@ -88,6 +90,9 @@ requirejs(
         },
 
         ready: function() {
+          $.ready(function() {
+            console.log('fired');
+          })
           this.$on('app:setView', this.setView);
         },
 
@@ -104,5 +109,9 @@ requirejs(
       });
 
     });
+
+    function bootstrap() {
+
+    }
   }
 );

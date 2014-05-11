@@ -9116,9 +9116,12 @@ define('jquery-adapter',['jquery'], function($) {
 
 define('config',{
   
-  defaultMapOptions: {
+  defaultCoordinates: {
     latitude: -23.543972,
-    longitude: -46.65843,
+    longitude: -46.65843
+  },
+
+  defaultMapOptions: {
     mapTypeControl: false,
     panControl: false,
     streetViewControl: false,
@@ -13703,6 +13706,56 @@ if (typeof exports == 'object') {
 } else {
   window['Vue'] = require('vue');
 }})();
+/** @license
+ * RequireJS plugin for async dependency load like JSONP and Google Maps
+ * Author: Miller Medeiros
+ * Version: 0.1.1 (2011/11/17)
+ * Released under the MIT license
+ */
+define('async',[],function(){
+
+    var DEFAULT_PARAM_NAME = 'callback',
+        _uid = 0;
+
+    function injectScript(src){
+        var s, t;
+        s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = src;
+        t = document.getElementsByTagName('script')[0]; t.parentNode.insertBefore(s,t);
+    }
+
+    function formatUrl(name, id){
+        var paramRegex = /!(.+)/,
+            url = name.replace(paramRegex, ''),
+            param = (paramRegex.test(name))? name.replace(/.+!/, '') : DEFAULT_PARAM_NAME;
+        url += (url.indexOf('?') < 0)? '?' : '&';
+        return url + param +'='+ id;
+    }
+
+    function uid() {
+        _uid += 1;
+        return '__async_req_'+ _uid +'__';
+    }
+
+    return{
+        load : function(name, req, onLoad, config){
+            if(config.isBuild){
+                onLoad(null); //avoid errors on the optimizer
+            }else{
+                var id = uid();
+                //create a global variable that stores onLoad so callback
+                //function can define new module after async load
+                window[id] = onLoad;
+                injectScript(formatUrl(name, id));
+            }
+        }
+    };
+});
+
+
+define('lib/gmaps',['async!http://maps.google.com/maps/api/js?v=3&sensor=false&key=AIzaSyC6UsgkJjXFQ2Rh3ppI4E5YILKCCKs_wdY&language=pt-BR&alternatives=true'], function() {
+    return window.google.maps;
+});
+
 define('text',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
 
 define('text!partials/header.html',[],function () { return '<strong class="header__title">{{title}}</strong>\n<div class="header__controls">\n  <button class="header__control" v-repeat="controls" v-on="click: onClick(this.channel)">{{title}}</button>\n</div>\n';});
@@ -13847,56 +13900,6 @@ define(
 
   }
 );
-
-/** @license
- * RequireJS plugin for async dependency load like JSONP and Google Maps
- * Author: Miller Medeiros
- * Version: 0.1.1 (2011/11/17)
- * Released under the MIT license
- */
-define('async',[],function(){
-
-    var DEFAULT_PARAM_NAME = 'callback',
-        _uid = 0;
-
-    function injectScript(src){
-        var s, t;
-        s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = src;
-        t = document.getElementsByTagName('script')[0]; t.parentNode.insertBefore(s,t);
-    }
-
-    function formatUrl(name, id){
-        var paramRegex = /!(.+)/,
-            url = name.replace(paramRegex, ''),
-            param = (paramRegex.test(name))? name.replace(/.+!/, '') : DEFAULT_PARAM_NAME;
-        url += (url.indexOf('?') < 0)? '?' : '&';
-        return url + param +'='+ id;
-    }
-
-    function uid() {
-        _uid += 1;
-        return '__async_req_'+ _uid +'__';
-    }
-
-    return{
-        load : function(name, req, onLoad, config){
-            if(config.isBuild){
-                onLoad(null); //avoid errors on the optimizer
-            }else{
-                var id = uid();
-                //create a global variable that stores onLoad so callback
-                //function can define new module after async load
-                window[id] = onLoad;
-                injectScript(formatUrl(name, id));
-            }
-        }
-    };
-});
-
-
-define('lib/gmaps',['async!http://maps.google.com/maps/api/js?v=3&sensor=false&key=AIzaSyC6UsgkJjXFQ2Rh3ppI4E5YILKCCKs_wdY&language=pt-BR&alternatives=true'], function() {
-    return window.google.maps;
-});
 
 define('mout/lang/toString',[],function () {
 
@@ -17281,8 +17284,99 @@ define(
 
 });
 
+define(
+'services/getStations',[
+  'text!stations.json'
+], function(
+  stations
+) {
 
-define('text!partials/sections/overview.html',[],function () { return '<div id="overview-map"></div>\n';});
+  function getStations() {
+    return JSON.parse(stations);
+  }
+
+  return getStations;
+
+});
+
+define(
+'services/getStationByName',[
+  'jquery',
+  'mout/string/replaceAccents',
+  'services/getStations'
+], function(
+  $,
+  replaceAccents,
+  getStations
+) {
+
+  var stations = getStations();
+
+  function getStationByName(name) {
+    var station,
+        search;
+
+    $.each(stations, function(key, value) {
+      station = value;
+      search = replaceAccents(station.title);
+      return !search.match(new RegExp(replaceAccents(name), 'i'));
+    });
+
+    return station;
+  }
+
+  return getStationByName;
+
+});
+
+define(
+'helpers/toLatLng',[
+  'lib/gmaps'
+], function(
+  gmaps
+) {
+
+  function toLatLng(coordinates) {
+    return new gmaps.LatLng(coordinates.latitude, coordinates.longitude);
+  }
+
+  return toLatLng;
+
+});
+
+define(
+'helpers/createMap',[
+  'jquery',
+  'mout/object/mixIn',
+  'lib/gmaps',
+  'config',
+  'helpers/toLatLng'
+], function(
+  $,
+  mixIn,
+  gmaps,
+  config,
+  toLatLng
+) {
+
+  function createMap(container, options) {
+    options = mixIn(config.defaultMapOptions, options);
+
+    if(!options || !options.center) {
+      options.center = toLatLng(config.defaultCoordinates);
+    }
+
+    console.log('createMap() :: Creating a new map at "%s"', container, options);
+
+    return new gmaps.Map($(container).get(0), options);
+  }
+
+  return createMap;
+
+});
+
+
+define('text!partials/sections/overview.html',[],function () { return '<div id="overview-map">here</div>\n';});
 
 define(
 'sections/overview',[
@@ -17290,12 +17384,16 @@ define(
   'vue',
   'lib/gmaps',
   'services/getUserLocation',
+  'services/getStationByName',
+  'helpers/createMap',
   'text!partials/sections/overview.html'
 ], function(
   $,
   Vue,
   gmaps,
   getUserLocation,
+  getStationByName,
+  createMap,
   template
 ) {
 
@@ -17303,26 +17401,24 @@ define(
     template: template,
 
     data: {
+      foo: 'bar'
     },
 
     ready: function() {
-      console.log('attached');
-      var self = this;
-      $(function() {
-        self.map = new gmaps.Map($('#overview-map').get(0));
-        console.log('getting user location');
-        // self.settings = config.mapSettings;
-        // self.$on('map.setUserLocation', self.setUserLocation);
-        // self.$emit('map.setUserLocation');
-        //
-        getUserLocation()
-          .then(function(coordinates) {
-            console.log('it works!', coordinates);
-          })
-      });
+      // make sure dom is loaded and then fire the initialization method
+      $($.proxy(this.initialize, this));
     },
 
     methods: {
+      initialize: function() {
+        this.map = createMap('#overview-map');
+
+        // console.log(getStationById('estacao-barra-funda'));
+        console.log(getStationByName('anhangabau'));
+      },
+
+      placeLine: function(line) {
+      }
     }
   });
 
@@ -17391,6 +17487,7 @@ requirejs(
     'jquery',
     'config',
     'vue',
+    'lib/gmaps',
     'modules/header',
     'modules/navigation',
     'modules/directions',
@@ -17403,6 +17500,7 @@ requirejs(
     $,
     config,
     Vue,
+    gmaps,
     Header,
     Navigation,
     Directions,
@@ -17431,6 +17529,9 @@ requirejs(
         },
 
         ready: function() {
+          $.ready(function() {
+            console.log('fired');
+          })
           this.$on('app:setView', this.setView);
         },
 
@@ -17447,6 +17548,10 @@ requirejs(
       });
 
     });
+
+    function bootstrap() {
+
+    }
   }
 );
 

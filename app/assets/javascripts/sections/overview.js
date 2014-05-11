@@ -4,12 +4,16 @@ define(
   'vue',
   'lib/gmaps',
   'services/getUserLocation',
+  'services/getStationByName',
+  'helpers/createMap',
   'text!partials/sections/overview.html'
 ], function(
   $,
   Vue,
   gmaps,
   getUserLocation,
+  getStationByName,
+  createMap,
   template
 ) {
 
@@ -17,26 +21,24 @@ define(
     template: template,
 
     data: {
+      foo: 'bar'
     },
 
     ready: function() {
-      console.log('attached');
-      var self = this;
-      $(function() {
-        self.map = new gmaps.Map($('#overview-map').get(0));
-        console.log('getting user location');
-        // self.settings = config.mapSettings;
-        // self.$on('map.setUserLocation', self.setUserLocation);
-        // self.$emit('map.setUserLocation');
-        //
-        getUserLocation()
-          .then(function(coordinates) {
-            console.log('it works!', coordinates);
-          })
-      });
+      // make sure dom is loaded and then fire the initialization method
+      $($.proxy(this.initialize, this));
     },
 
     methods: {
+      initialize: function() {
+        this.map = createMap('#overview-map');
+
+        // console.log(getStationById('estacao-barra-funda'));
+        console.log(getStationByName('anhangabau'));
+      },
+
+      placeLine: function(line) {
+      }
     }
   });
 

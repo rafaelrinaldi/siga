@@ -3,9 +3,12 @@ define({
   debug: true,
   //>>includeEnd("offline");
 
-  defaultMapOptions: {
+  defaultCoordinates: {
     latitude: -23.543972,
-    longitude: -46.65843,
+    longitude: -46.65843
+  },
+
+  defaultMapOptions: {
     mapTypeControl: false,
     panControl: false,
     streetViewControl: false,

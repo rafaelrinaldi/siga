@@ -21,9 +21,7 @@
   <main id="app">
     <header class="header" v-component="header"></header>
     <nav class="navigation" v-component="navigation"></nav>
-    <section class="section" v-effect="fade">
-      <div class="{{currentView}}" v-view="currentView"></div>
-    </section>
+    <section class="section {{currentView}}" v-effect="fade" v-view="currentView"></section>
   </main>
 
   <script>
