@@ -1,0 +1,8 @@
+<h1>Directions</h1>
+
+<form>
+  <button v-on="click: setOriginPoint($event);">From</button>
+  <button v-on="click: setDestinationPoint($event);">To</button>
+  <input type="text" placeholder="Address" style="width: 380px; height: 60px;" v-model="route" value="tamanduatei" />
+  <button v-on="click: submit($event);">Get Route</button>
+</form>

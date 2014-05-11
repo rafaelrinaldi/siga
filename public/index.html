@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+  <meta http-equiv="cleartype" content="on">
+
+  <title>Siga</title>
+  <link rel="stylesheet" href="application.css" />
+  <script src="../vendor/assets/bower/requirejs/require.js"></script>
+</head>
+<body>
+  <main id="app">
+    <header class="header" v-component="header"></header>
+    <nav class="navigation" v-component="navigation"></nav>
+    <section class="section" v-effect="fade">
+      <div class="{{currentView}}" v-view="currentView"></div>
+    </section>
+  </main>
+
+  <script>
+    require({
+      baseUrl: '../app/assets/javascripts'
+    }, ['application']);
+  </script>
+</body>
+</html>

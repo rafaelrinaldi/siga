@@ -1,0 +1,29 @@
+.station-hub {
+  color: #fff;
+}
+
+.station-hub.v-enter {
+  animation: slideup .35s;
+}
+
+.station-hub.v-leave {
+  animation: slidedown .35s;
+}
+
+@keyframes slideup {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slidedown {
+  0% {
+  transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}

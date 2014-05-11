@@ -1,0 +1,214 @@
+@import url("../../../vendor/assets/bower/normalize-css/normalize.css");
+@import url("../../../vendor/assets/bower/topcoat/css/topcoat-mobile-light.css");
+html, body {
+  width: 100%;
+  height: 100%; }
+
+body {
+  background: #fff; }
+
+.button {
+  border-radius: 2px;
+  -webkit-transition: all 1s linear;
+  transition: all 1s linear; }
+
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%; }
+
+.fixed {
+  height: 50px;
+  background: transparent;
+  outline: none; }
+  .fixed button {
+    height: inherit; }
+  .fixed button:nth-child(2) {
+    float: right; }
+
+#app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; }
+
+.navigation {
+  position: absolute;
+  padding: 20px;
+  display: inline-block; }
+
+.navigation-menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0; }
+
+.navigation-menu__item {
+  font-size: 30px;
+  margin-top: 20px; }
+  .navigation-menu__item:first-child {
+    margin-top: 0; }
+
+a, .link {
+  color: gray;
+  text-decoration: none; }
+
+.station-hub {
+  color: #fff; }
+
+.station-hub.v-enter {
+  -webkit-animation: slideup 0.35s;
+  animation: slideup 0.35s; }
+
+.station-hub.v-leave {
+  -webkit-animation: slidedown 0.35s;
+  animation: slidedown 0.35s; }
+
+@-webkit-keyframes slideup {
+  0% {
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%); }
+
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0); } }
+
+@keyframes slideup {
+  0% {
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%); }
+
+  100% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0); } }
+
+@-webkit-keyframes slidedown {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0); }
+
+  100% {
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%); } }
+
+@keyframes slidedown {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0); }
+
+  100% {
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%); } }
+
+.marker {
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  line-height: 30px;
+  vertical-align: middle;
+  text-align: center;
+  background: seagreen;
+  -webkit-box-shadow: 0px 0px 0px 3px rgba(46, 139, 87, 0.65);
+  box-shadow: 0px 0px 0px 3px rgba(46, 139, 87, 0.65); }
+
+.marker__label {
+  color: #fff;
+  display: inline-block; }
+
+.section {
+  background: #eee;
+  position: absolute;
+  opacity: 1;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll; }
+
+.section.v-enter {
+  opacity: 0;
+  -webkit-transform: translateX(160px);
+  -ms-transform: translateX(160px);
+  transform: translateX(160px); }
+
+
+.section.retreat {
+  -webkit-transform: translateX(220px);
+  -ms-transform: translateX(220px);
+  transform: translateX(220px); }
+
+.header {
+  position: absolute;
+  z-index: 9;
+  width: 100%; }
+
+.header__title {
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  color: red; }
+
+.header__controls {
+  position: relative;
+  width: 100%; }
+
+.header__control {
+  position: absolute; }
+
+.header__control:first-child {
+  left: 0; }
+
+.header__control:last-child {
+  right: 0; }
+
+.map {
+  width: 100%;
+  height: 100%; }
+
+
+.section .directions-detail {
+  width: inherit;
+  height: inherit; }
+  .section .directions-detail #map {
+    display: block;
+    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 90%;
+    float: left; }
+  .section .directions-detail .steps {
+    float: left; }
+    .section .directions-detail .steps ul {
+      padding: 0;
+      margin: 0;
+      list-style-type: none; }
+    .section .directions-detail .steps ul li {
+      padding: 0;
+      margin: 0;
+      margin-top: 10px; }
+    .section .directions-detail .steps .step {
+      border-radius: 3px;
+      font-weight: bold;
+      padding: 6px;
+      position: relative;
+      margin-right: 10px; }
+    .section .directions-detail .steps .step.l1 {
+      color: #fff;
+      background: #285083; }
+    .section .directions-detail .steps .step.l2 {
+      color: #fff;
+      background: #006D58; }
+    .section .directions-detail .steps .step.l3 {
+      color: #fff;
+      background: #DF3F31; }
+    .section .directions-detail .steps .step.l4 {
+      color: #444;
+      background: #FFD400; }
+    .section .directions-detail .steps .step.l5 {
+      color: #fff;
+      background: #8C3583; }
+  .section .directions-detail .instructions {
+    width: 100%;
+    float: left; }

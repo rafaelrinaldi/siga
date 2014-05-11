@@ -1,0 +1,13 @@
+.fixed {
+  height: 50px;
+  background: transparent;
+  outline: none;
+
+  button {
+    height: inherit;
+  }
+
+  button:nth-child(2) {
+    float: right;
+  }
+}

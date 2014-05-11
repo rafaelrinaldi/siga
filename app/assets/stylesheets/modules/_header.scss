@@ -1,0 +1,28 @@
+.header {
+  position: absolute;
+  z-index: 9;
+  width: 100%;
+}
+
+.header__title {
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  color: red;
+}
+
+.header__controls {
+  position: relative;
+  width: 100%;
+}
+
+.header__control {
+  position: absolute;
+}
+
+.header__control:first-child {
+  left: 0;
+}
+.header__control:last-child {
+  right: 0;
+}

@@ -1,0 +1,15 @@
+<section class="station-hub" v-if="show" v-animation>
+  <h1>Estação: {{station.name}}</h1>
+  <h2>Linhas</h2>
+  <ul>
+    <li v-repeat="station.lines">{{name}}</li>
+  </ul>
+  <strong>Endereço</strong>
+  <p>{{station.address}}</p>
+
+  <strong>Horário de funcionamento</strong>
+  <p>{{station.schedule}}</p>
+
+  <strong>Descrição</strong>
+  <p>{{station.description}}</p>
+</section>

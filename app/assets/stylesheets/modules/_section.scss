@@ -1,0 +1,21 @@
+.section {
+  background: #eee;
+  position: absolute;
+  opacity: 1;
+  transition: all .2s ease;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.section.v-enter {
+  opacity: 0;
+  transform: translateX(160px);
+}
+
+.section.v-leave {
+}
+
+.section.retreat {
+  transform: translateX(220px);
+}

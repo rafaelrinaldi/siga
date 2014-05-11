@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+  <meta http-equiv="cleartype" content="on">
+
+  <title>Siga</title>
+  <link rel="stylesheet" href="application.css" />
+  <!-- @if NODE_ENV='production' -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.11/require.min.js"></script>
+  <!-- @endif -->
+
+  <!-- @if NODE_ENV='development' -->
+  <script src="../vendor/assets/bower/requirejs/require.js"></script>
+  <!-- @endif -->
+</head>
+<body>
+  <main id="app">
+    <header class="header" v-component="header"></header>
+    <nav class="navigation" v-component="navigation"></nav>
+    <section class="section" v-effect="fade">
+      <div class="{{currentView}}" v-view="currentView"></div>
+    </section>
+  </main>
+
+  <script>
+    require({
+      <!-- @if NODE_ENV='production' -->
+      baseUrl: './'
+      <!-- @endif -->
+
+      <!-- @if NODE_ENV='development' -->
+      baseUrl: '../app/assets/javascripts'
+      <!-- @endif -->
+    }, ['application']);
+  </script>
+</body>
+</html>
