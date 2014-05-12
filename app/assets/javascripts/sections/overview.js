@@ -69,11 +69,29 @@ define(
         this.overviewMap.initialize();
         this.overviewMap.on.loaded.addOnce(this.setUserLocationMarker, this);
         this.overviewMap.on.loaded.addOnce(this.placeLines, this);
+        this.requestUserLocation();
       },
 
-      setUserLocationMarker: function() {
+      requestUserLocation: function() {
+        var self = this;
+
+        getUserLocation()
+          .then(function(response) {
+            console.log('overview :: requestUserLocation() :: Got user location');
+            return toLatLng(response);
+          })
+          .catch(function(warn) {
+            console.warn(warn);
+            return self.overviewMap.getCenter();
+          })
+          .done(function(position) {
+            self.setUserLocationMarker(position);
+          });
+      },
+
+      setUserLocationMarker: function(position) {
         this.userLocationMarker = this.overviewMap.setMarker({
-          position: this.overviewMap.getCenter(),
+          position: position,
           animation: gmaps.Animation.BOUNCE
         });
       },
@@ -126,9 +144,6 @@ define(
           });
         });
 
-      },
-
-      placeLine: function(line) {
       }
     }
   });
