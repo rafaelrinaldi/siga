@@ -5,7 +5,7 @@ define(
   'lib/gmaps',
   'services/getUserLocation',
   'services/getStationByName',
-  'helpers/createMap',
+  'modules/map',
   'text!partials/sections/overview.html'
 ], function(
   $,
@@ -13,7 +13,7 @@ define(
   gmaps,
   getUserLocation,
   getStationByName,
-  createMap,
+  Map,
   template
 ) {
 
@@ -31,10 +31,12 @@ define(
 
     methods: {
       initialize: function() {
-        this.map = createMap('#overview-map');
+        this.map = new Map('#overview-map');
+        this.map.initialize();
+      },
 
-        // console.log(getStationById('estacao-barra-funda'));
-        console.log(getStationByName('anhangabau'));
+      setUserLocationMarker: function() {
+
       },
 
       placeLine: function(line) {

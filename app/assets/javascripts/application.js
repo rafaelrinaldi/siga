@@ -53,7 +53,7 @@ requirejs(
     'modules/navigation',
     'modules/directions',
     'modules/directionsDetail',
-    'modules/map',
+    // 'modules/map',
     './sections'
   ],
   function(
@@ -66,7 +66,7 @@ requirejs(
     Navigation,
     Directions,
     DirectionsDetail,
-    Map,
+    // Map,
     Sections
   ) {
     $(function() {
