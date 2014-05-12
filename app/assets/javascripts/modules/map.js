@@ -55,12 +55,15 @@ define(
     return marker;
   };
 
+  p.getMap = function() {
+    return this.map;
+  };
+
   p.getCenter = function() {
     return this.map.getCenter();
   };
 
   p.notifyTilesLoaded = function() {
-    console.log('dispatching');
     this.on.loaded.dispatch();
   };
 

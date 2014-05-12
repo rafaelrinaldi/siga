@@ -1,13 +1,11 @@
 {
   "estacao-jabaquara": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 0
+      }
     ],
-    "location": {
-      "address": "Term. Jabaquara, São Paulo, Brazil",
-      "latitude": -23.647066,
-      "longitude": -46.63954
-    },
     "title": "Jabaquara",
     "schedule": [
       {
@@ -18,17 +16,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.645754",
+      "longitude": "-46.642084"
+    }
   },
   "estacao-conceicao": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 1
+      }
     ],
-    "location": {
-      "address": "Conceição, Vila Guarani, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.636214,
-      "longitude": -46.641141
-    },
     "title": "Conceição",
     "schedule": [
       {
@@ -39,17 +39,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.63537",
+      "longitude": "-46.64146"
+    }
   },
   "estacao-sao-judas": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 2
+      }
     ],
-    "location": {
-      "address": "São Judas, São Paulo, Brazil",
-      "latitude": -23.6244547,
-      "longitude": -46.6379525
-    },
     "title": "São Judas",
     "schedule": [
       {
@@ -60,17 +62,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.62558",
+      "longitude": "-46.640778"
+    }
   },
   "estacao-saude": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 3
+      }
     ],
-    "location": {
-      "address": "Saúde, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.617243,
-      "longitude": -46.6343336
-    },
     "title": "Saúde",
     "schedule": [
       {
@@ -81,17 +85,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.619207",
+      "longitude": "-46.639354"
+    }
   },
   "estacao-praca-arvore": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 4
+      }
     ],
-    "location": {
-      "address": "Praça Da Árvore, São Paulo, Brazil",
-      "latitude": -23.61069,
-      "longitude": -46.637852
-    },
     "title": "Praça Da árvore",
     "schedule": [
       {
@@ -102,17 +108,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.61069",
+      "longitude": "-46.637852"
+    }
   },
   "estacao-santa-cruz": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 5
+      }
     ],
-    "location": {
-      "address": "Santa Cruz, São Paulo, Brazil",
-      "latitude": -23.599225,
-      "longitude": -46.63665899999999
-    },
     "title": "Santa Cruz",
     "schedule": [
       {
@@ -123,17 +131,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.599225",
+      "longitude": "-46.636659"
+    }
   },
   "estacao-vila-mariana": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 6
+      }
     ],
-    "location": {
-      "address": "Vila Mariana, São Paulo, Brazil",
-      "latitude": -23.5870563,
-      "longitude": -46.63574370000001
-    },
     "title": "Vila Mariana",
     "schedule": [
       {
@@ -144,18 +154,23 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.589541",
+      "longitude": "-46.634701"
+    }
   },
   "estacao-ana-rosa": {
     "lines": [
-      "linha-1-azul",
-      "linha-2-verde"
+      {
+        "id": "linha-1-azul",
+        "stop": 7
+      },
+      {
+        "id": "linha-2-verde",
+        "stop": 6
+      }
     ],
-    "location": {
-      "address": "Ana Rosa, São Paulo, Brazil",
-      "latitude": -23.581376,
-      "longitude": -46.638388
-    },
     "title": "Ana Rosa",
     "schedule": [
       {
@@ -166,18 +181,23 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.581376",
+      "longitude": "-46.638388"
+    }
   },
   "estacao-paraiso": {
     "lines": [
-      "linha-1-azul",
-      "linha-2-verde"
+      {
+        "id": "linha-1-azul",
+        "stop": 8
+      },
+      {
+        "id": "linha-2-verde",
+        "stop": 7
+      }
     ],
-    "location": {
-      "address": "Estação Paraíso, São Paulo, Brazil",
-      "latitude": -23.575922,
-      "longitude": -46.64141
-    },
     "title": "Paraíso",
     "schedule": [
       {
@@ -188,17 +208,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.575029",
+      "longitude": "-46.64075"
+    }
   },
   "estacao-vergueiro": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 9
+      }
     ],
-    "location": {
-      "address": "Vergueiro, São Paulo, Brazil",
-      "latitude": -23.568994,
-      "longitude": -46.639858
-    },
     "title": "Vergueiro",
     "schedule": [
       {
@@ -209,17 +231,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.568994",
+      "longitude": "-46.639858"
+    }
   },
   "estacao-sao-joaquim": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 10
+      }
     ],
-    "location": {
-      "address": "São Joaquim, São Paulo, Brazil",
-      "latitude": -22.8,
-      "longitude": -47.766667
-    },
     "title": "São Joaquim",
     "schedule": [
       {
@@ -230,17 +254,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.561912",
+      "longitude": "-46.638652"
+    }
   },
   "estacao-liberdade": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 11
+      }
     ],
-    "location": {
-      "address": "Estação Liberdade do Metro, São Paulo, Brazil",
-      "latitude": -23.5555348,
-      "longitude": -46.6359564
-    },
     "title": "Liberdade",
     "schedule": [
       {
@@ -251,18 +277,23 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.555535",
+      "longitude": "-46.635956"
+    }
   },
   "estacao-se": {
     "lines": [
-      "linha-1-azul",
-      "linha-3-vermelha"
+      {
+        "id": "linha-1-azul",
+        "stop": 12
+      },
+      {
+        "id": "linha-3-vermelha",
+        "stop": 12
+      }
     ],
-    "location": {
-      "address": "Praça da Sé, Centro, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.5492908,
-      "longitude": -46.6334714
-    },
     "title": "Sé",
     "schedule": [
       {
@@ -273,17 +304,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.549918",
+      "longitude": "-46.633204"
+    }
   },
   "estacao-sao-bento": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 13
+      }
     ],
-    "location": {
-      "address": "São Bento, São Paulo, Brazil",
-      "latitude": -23.4346555,
-      "longitude": -46.2494721
-    },
     "title": "São Bento",
     "schedule": [
       {
@@ -294,18 +327,23 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.54469",
+      "longitude": "-46.633263"
+    }
   },
   "estacao-luz": {
     "lines": [
-      "linha-1-azul",
-      "linha-4-amarela"
+      {
+        "id": "linha-1-azul",
+        "stop": 14
+      },
+      {
+        "id": "linha-4-amarela",
+        "stop": 0
+      }
     ],
-    "location": {
-      "address": "Estação Luz do Metrô - Avenida Cásper Líbero, Luz, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.538548,
-      "longitude": -46.6360091
-    },
     "title": "Luz",
     "schedule": [
       {
@@ -316,17 +354,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.537952",
+      "longitude": "-46.633515"
+    }
   },
   "estacao-tiradentes": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 15
+      }
     ],
-    "location": {
-      "address": "Tiradentes, Luz, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.530857,
-      "longitude": -46.63195899999999
-    },
     "title": "Tiradentes",
     "schedule": [
       {
@@ -337,17 +377,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.5337729",
+      "longitude": "-46.63232"
+    }
   },
   "estacao-armenia": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 16
+      }
     ],
-    "location": {
-      "address": "Armênia, Luz, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.5254296,
-      "longitude": -46.62611039999999
-    },
     "title": "Armênia",
     "schedule": [
       {
@@ -358,17 +400,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.5295174",
+      "longitude": "-46.6314382"
+    }
   },
   "estacao-portuguesa-tiete": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 17
+      }
     ],
-    "location": {
-      "address": "Portuguesa-tietê, Santana, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.516587,
-      "longitude": -46.62512299999999
-    },
     "title": "Portuguesa - Tietê",
     "schedule": [
       {
@@ -379,17 +423,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.516587",
+      "longitude": "-46.625123"
+    }
   },
   "estacao-carandiru": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 18
+      }
     ],
-    "location": {
-      "address": "Carandiru, Santana, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.509654,
-      "longitude": -46.62491
-    },
     "title": "Carandiru",
     "schedule": [
       {
@@ -400,17 +446,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.509654",
+      "longitude": "-46.62491"
+    }
   },
   "estacao-santana": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 19
+      }
     ],
-    "location": {
-      "address": "Estação Santana - Rua Doutor César, Santana, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.5163291,
-      "longitude": -46.1900731
-    },
     "title": "Santana",
     "schedule": [
       {
@@ -421,17 +469,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.503134",
+      "longitude": "-46.623861"
+    }
   },
   "estacao-jardim-sao-paulo": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 20
+      }
     ],
-    "location": {
-      "address": "Jardim São Paulo-ayrton Senna, Jardim São Paulo, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.492233,
-      "longitude": -46.616687
-    },
     "title": "Jardim São Paulo - Ayrton Senna",
     "schedule": [
       {
@@ -442,17 +492,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.492233",
+      "longitude": "-46.616687"
+    }
   },
   "estacao-parada-inglesa": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 21
+      }
     ],
-    "location": {
-      "address": "Parada Inglesa, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.4877778,
-      "longitude": -46.6080556
-    },
     "title": "Parada Inglesa",
     "schedule": [
       {
@@ -463,17 +515,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.487111",
+      "longitude": "-46.608877"
+    }
   },
   "estacao-tucuruvi": {
     "lines": [
-      "linha-1-azul"
+      {
+        "id": "linha-1-azul",
+        "stop": 22
+      }
     ],
-    "location": {
-      "address": "Tucuruvi, Vila Gustavo, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.480048,
-      "longitude": -46.60321099999999
-    },
     "title": "Tucuruvi",
     "schedule": [
       {
@@ -484,17 +538,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.480048",
+      "longitude": "-46.603211"
+    }
   },
   "estacao-vila-prudente": {
     "lines": [
-      "linha-2-verde"
+      {
+        "id": "linha-2-verde",
+        "stop": 0
+      }
     ],
-    "location": {
-      "address": "Vila Prudente, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.5797895,
-      "longitude": -46.5812872
-    },
     "title": "Vila Prudente",
     "schedule": [
       {
@@ -505,17 +561,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.584695",
+      "longitude": "-46.58153"
+    }
   },
   "estacao-tamanduatei": {
     "lines": [
-      "linha-2-verde"
+      {
+        "id": "linha-2-verde",
+        "stop": 1
+      }
     ],
-    "location": {
-      "address": "Tamanduatei, Vila Independência, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.592985,
-      "longitude": -46.589293
-    },
     "title": "Tamanduateí",
     "schedule": [
       {
@@ -526,17 +584,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.592984",
+      "longitude": "-46.589602"
+    }
   },
   "estacao-sacoma": {
     "lines": [
-      "linha-2-verde"
+      {
+        "id": "linha-2-verde",
+        "stop": 2
+      }
     ],
-    "location": {
-      "address": "Estação Sacomâ de Metrô - Rua Greenfeld, Sacomã, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.6012939,
-      "longitude": -46.6022211
-    },
     "title": "Sacomã",
     "schedule": [
       {
@@ -547,17 +607,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.602456",
+      "longitude": "-46.602319"
+    }
   },
   "estacao-alto-ipiranga": {
     "lines": [
-      "linha-2-verde"
+      {
+        "id": "linha-2-verde",
+        "stop": 3
+      }
     ],
-    "location": {
-      "address": "Alto Do Ipiranga, Vila Dom Pedro I, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.602126,
-      "longitude": -46.612638
-    },
     "title": "Alto Do Ipiranga",
     "schedule": [
       {
@@ -568,17 +630,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.602437",
+      "longitude": "-46.612713"
+    }
   },
   "estacao-santos-imigrantes": {
     "lines": [
-      "linha-2-verde"
+      {
+        "id": "linha-2-verde",
+        "stop": 4
+      }
     ],
-    "location": {
-      "address": "Santos-imigrantes, Vila Firmiano Pinto, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.595716,
-      "longitude": -46.620723
-    },
     "title": "Santos - Imigrantes",
     "schedule": [
       {
@@ -589,17 +653,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.595716",
+      "longitude": "-46.620723"
+    }
   },
   "estacao-chacara-klabin": {
     "lines": [
-      "linha-2-verde"
+      {
+        "id": "linha-2-verde",
+        "stop": 5
+      }
     ],
-    "location": {
-      "address": "Chácara Klabin, Jardim Vila Mariana, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.592527,
-      "longitude": -46.630193
-    },
     "title": "Chácara Klabin",
     "schedule": [
       {
@@ -610,17 +676,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.592527",
+      "longitude": "-46.630193"
+    }
   },
   "estacao-brigadeiro": {
     "lines": [
-      "linha-2-verde"
+      {
+        "id": "linha-2-verde",
+        "stop": 8
+      }
     ],
-    "location": {
-      "address": "Estação Brigadeiro de Metro, São Paulo, Brazil",
-      "latitude": -23.568277,
-      "longitude": -46.648152
-    },
     "title": "Brigadeiro",
     "schedule": [
       {
@@ -631,17 +699,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.568241",
+      "longitude": "-46.647981"
+    }
   },
   "estacao-trianon-masp": {
     "lines": [
-      "linha-2-verde"
+      {
+        "id": "linha-2-verde",
+        "stop": 9
+      }
     ],
-    "location": {
-      "address": "Trianon-masp, São Paulo, Brazil",
-      "latitude": -23.562506,
-      "longitude": -46.65516299999999
-    },
     "title": "Trianon - Masp",
     "schedule": [
       {
@@ -652,17 +722,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.5619028",
+      "longitude": "-46.6468096"
+    }
   },
   "estacao-consolacao": {
     "lines": [
-      "linha-2-verde"
+      {
+        "id": "linha-2-verde",
+        "stop": 10
+      }
     ],
-    "location": {
-      "address": "Consolação, Consolacao, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.556094,
-      "longitude": -46.662443
-    },
     "title": "Consolação",
     "schedule": [
       {
@@ -673,17 +745,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.558559",
+      "longitude": "-46.659569"
+    }
   },
   "estacao-clinicas": {
     "lines": [
-      "linha-2-verde"
+      {
+        "id": "linha-2-verde",
+        "stop": 11
+      }
     ],
-    "location": {
-      "address": "Estação das Clinicas, São Paulo, Brazil",
-      "latitude": -23.55419,
-      "longitude": -46.670723
-    },
     "title": "Clínicas",
     "schedule": [
       {
@@ -694,17 +768,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.555581",
+      "longitude": "-46.671949"
+    }
   },
   "estacao-sumare": {
     "lines": [
-      "linha-2-verde"
+      {
+        "id": "linha-2-verde",
+        "stop": 12
+      }
     ],
-    "location": {
-      "address": "Metro Sumare, São Paulo, Brazil",
-      "latitude": -23.5506341,
-      "longitude": -46.6782604
-    },
     "title": "S. N. Sra. De Fátima - Sumaré",
     "schedule": [
       {
@@ -715,17 +791,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.5506341",
+      "longitude": "-46.6782604"
+    }
   },
   "estacao-vila-madalena": {
     "lines": [
-      "linha-2-verde"
+      {
+        "id": "linha-2-verde",
+        "stop": 13
+      }
     ],
-    "location": {
-      "address": "Vila Madalena, São Paulo, Brazil",
-      "latitude": -23.5452786,
-      "longitude": -46.7019289
-    },
     "title": "Vila Madalena",
     "schedule": [
       {
@@ -736,17 +814,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.54672",
+      "longitude": "-46.690738"
+    }
   },
   "estacao-itaquera": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 0
+      }
     ],
-    "location": {
-      "address": "Corinthians-itaquera, Cidade Antonio Estevão de Carvalho, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.541854,
-      "longitude": -46.470514
-    },
     "title": "Corinthians - Itaquera",
     "schedule": [
       {
@@ -757,17 +837,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.541854",
+      "longitude": "-46.470514"
+    }
   },
   "estacao-artur-alvim": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 1
+      }
     ],
-    "location": {
-      "address": "Artur Alvim, Cidade Antonio Estevão de Carvalho, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.540491,
-      "longitude": -46.484316
-    },
     "title": "Artur Alvim",
     "schedule": [
       {
@@ -778,17 +860,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.541022",
+      "longitude": "-46.4847"
+    }
   },
   "estacao-patriarca": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 2
+      }
     ],
-    "location": {
-      "address": "Patriarca, São Paulo, Brazil",
-      "latitude": -23.531079,
-      "longitude": -46.501715
-    },
     "title": "Patriarca",
     "schedule": [
       {
@@ -799,17 +883,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.531079",
+      "longitude": "-46.501715"
+    }
   },
   "estacao-guilhermina-esperanca": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 3
+      }
     ],
-    "location": {
-      "address": "Estação Guilhermina - Esperança, São Paulo, Brazil",
-      "latitude": -23.5296917,
-      "longitude": -46.51677129999999
-    },
     "title": "Guilhermina - Esperança",
     "schedule": [
       {
@@ -820,17 +906,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.529195",
+      "longitude": "-46.516734"
+    }
   },
   "estacao-vila-matilde": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 4
+      }
     ],
-    "location": {
-      "address": "Estação Vila Matilde, São Paulo, Brazil",
-      "latitude": -23.531903,
-      "longitude": -46.530539
-    },
     "title": "Vila Matilde",
     "schedule": [
       {
@@ -841,17 +929,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.531903",
+      "longitude": "-46.530539"
+    }
   },
   "estacao-penha": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 5
+      }
     ],
-    "location": {
-      "address": "Penha, Penha de Franca, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.533648,
-      "longitude": -46.54395
-    },
     "title": "Penha",
     "schedule": [
       {
@@ -862,17 +952,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.532992",
+      "longitude": "-46.542828"
+    }
   },
   "estacao-carrao": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 6
+      }
     ],
-    "location": {
-      "address": "Carrão, Tatuapé, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.537601,
-      "longitude": -46.563637
-    },
     "title": "Carrão",
     "schedule": [
       {
@@ -883,17 +975,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.538001",
+      "longitude": "-46.561886"
+    }
   },
   "estacao-tatuape": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 7
+      }
     ],
-    "location": {
-      "address": "Estação Tatuape, São Paulo, Brazil",
-      "latitude": -23.540188,
-      "longitude": -46.576371
-    },
     "title": "Tatuapé",
     "schedule": [
       {
@@ -904,17 +998,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.542064",
+      "longitude": "-46.576215"
+    }
   },
   "estacao-belem": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 8
+      }
     ],
-    "location": {
-      "address": "Metrô Belém - Avenida Alcântara Machado, Belenzinho, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.5480192,
-      "longitude": -46.6029175
-    },
     "title": "Belém",
     "schedule": [
       {
@@ -925,17 +1021,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.54223",
+      "longitude": "-46.589778"
+    }
   },
   "estacao-bresser-mooca": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 9
+      }
     ],
-    "location": {
-      "address": "Bresser-mooca, Brás, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.546596,
-      "longitude": -46.607323
-    },
     "title": "Bresser - Mooca",
     "schedule": [
       {
@@ -946,17 +1044,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.546596",
+      "longitude": "-46.607323"
+    }
   },
   "estacao-bras": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 10
+      }
     ],
-    "location": {
-      "address": "Bras, Brás, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.544917,
-      "longitude": -46.616052
-    },
     "title": "Brás",
     "schedule": [
       {
@@ -967,17 +1067,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.547686",
+      "longitude": "-46.615285"
+    }
   },
   "estacao-pedro-II": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 11
+      }
     ],
-    "location": {
-      "address": "Pedro II, São Paulo, Brazil",
-      "latitude": -23.549809,
-      "longitude": -46.625474
-    },
     "title": "Pedro Ii",
     "schedule": [
       {
@@ -988,17 +1090,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.550022",
+      "longitude": "-46.625727"
+    }
   },
   "estacao-anhangabau": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 13
+      }
     ],
-    "location": {
-      "address": "Anhangabaú, Consolacao, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.547916,
-      "longitude": -46.63932399999999
-    },
     "title": "Anhangabaú",
     "schedule": [
       {
@@ -1009,18 +1113,23 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.547916",
+      "longitude": "-46.639324"
+    }
   },
   "estacao-republica": {
     "lines": [
-      "linha-3-vermelha",
-      "linha-4-amarela"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 14
+      },
+      {
+        "id": "linha-4-amarela",
+        "stop": 1
+      }
     ],
-    "location": {
-      "address": "República, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.5430556,
-      "longitude": -46.64388890000001
-    },
     "title": "República",
     "schedule": [
       {
@@ -1031,17 +1140,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.541929",
+      "longitude": "-46.642249"
+    }
   },
   "estacao-santa-cecilia": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 15
+      }
     ],
-    "location": {
-      "address": "Santa Cecília, São Paulo, Brazil",
-      "latitude": -23.5381968,
-      "longitude": -46.6572575
-    },
     "title": "Santa Cecília",
     "schedule": [
       {
@@ -1052,17 +1163,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.538694",
+      "longitude": "-46.649732"
+    }
   },
   "estacao-marechal-deodoro": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 16
+      }
     ],
-    "location": {
-      "address": "Marechal Deodoro, São Paulo, Brazil",
-      "latitude": -23.535048,
-      "longitude": -46.654522
-    },
     "title": "Marechal Deodoro",
     "schedule": [
       {
@@ -1073,17 +1186,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.533838",
+      "longitude": "-46.655863"
+    }
   },
   "estacao-barra-funda": {
     "lines": [
-      "linha-3-vermelha"
+      {
+        "id": "linha-3-vermelha",
+        "stop": 17
+      }
     ],
-    "location": {
-      "address": "Barra Funda, São Paulo, Brazil",
-      "latitude": -23.5271139,
-      "longitude": -46.6596712
-    },
     "title": "Palmeiras - Barra Funda",
     "schedule": [
       {
@@ -1094,17 +1209,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.525714",
+      "longitude": "-46.666782"
+    }
   },
   "estacao-paulista": {
     "lines": [
-      "linha-4-amarela"
+      {
+        "id": "linha-4-amarela",
+        "stop": 2
+      }
     ],
-    "location": {
-      "address": "Estação Paulista do Metro, São Paulo, Brazil",
-      "latitude": -23.555038,
-      "longitude": -46.6621
-    },
     "title": "Paulista",
     "schedule": [
       {
@@ -1115,17 +1232,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.555391",
+      "longitude": "-46.662713"
+    }
   },
   "estacao-faria-lima": {
     "lines": [
-      "linha-4-amarela"
+      {
+        "id": "linha-4-amarela",
+        "stop": 3
+      }
     ],
-    "location": {
-      "address": "Faria Lima, Pinheiros, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.567605,
-      "longitude": -46.69279299999999
-    },
     "title": "Faria Lima",
     "schedule": [
       {
@@ -1136,17 +1255,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.566972",
+      "longitude": "-46.693817"
+    }
   },
   "estacao-pinheiros": {
     "lines": [
-      "linha-4-amarela"
+      {
+        "id": "linha-4-amarela",
+        "stop": 4
+      }
     ],
-    "location": {
-      "address": "Estação Pinheiros De Metrô - Rua Gilberto Sabino, Pinheiros, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.5659344,
-      "longitude": -46.7010872
-    },
     "title": "Pinheiros",
     "schedule": [
       {
@@ -1157,17 +1278,19 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.566499",
+      "longitude": "-46.702082"
+    }
   },
   "estacao-butanta": {
     "lines": [
-      "linha-4-amarela"
+      {
+        "id": "linha-4-amarela",
+        "stop": 5
+      }
     ],
-    "location": {
-      "address": "Estação Butanta metro - Avenida Vital Brasil, Butantã, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.565,
-      "longitude": -46.7069444
-    },
     "title": "Butantã",
     "schedule": [
       {
@@ -1178,108 +1301,124 @@
         "period": "04h40 às 01h00",
         "title": "Sábados"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.571563",
+      "longitude": "-46.708667"
+    }
   },
   "estacao-capao-redondo": {
     "lines": [
-      "linha-5-lilas"
+      {
+        "id": "linha-5-lilas",
+        "stop": 0
+      }
     ],
-    "location": {
-      "address": "Capão Redondo, Cidade Auxiliadora, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.659955,
-      "longitude": -46.768691
-    },
     "title": "Capão Redondo",
     "schedule": [
       {
         "period": "04h40 às 00h10",
         "title": "Domingo A Sábado"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.659955",
+      "longitude": "-46.768691"
+    }
   },
   "estacao-campo-limpo": {
     "lines": [
-      "linha-5-lilas"
+      {
+        "id": "linha-5-lilas",
+        "stop": 1
+      }
     ],
-    "location": {
-      "address": "Campo Limpo, Cidade Auxiliadora, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.64897,
-      "longitude": -46.758831
-    },
     "title": "Campo Limpo",
     "schedule": [
       {
         "period": "04h40 às 00h10",
         "title": "Domingo A Sábado"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.64897",
+      "longitude": "-46.758831"
+    }
   },
   "estacao-vila-belezas": {
     "lines": [
-      "linha-5-lilas"
+      {
+        "id": "linha-5-lilas",
+        "stop": 2
+      }
     ],
-    "location": {
-      "address": "Estação Vila das Belezas - Rua Inácio Preto de Morais, Vila Nova das Belezas, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.6402473,
-      "longitude": -46.746074
-    },
     "title": "Vila Das Belezas",
     "schedule": [
       {
         "period": "04h40 às 00h10",
         "title": "Domingo A Sábado"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.640191",
+      "longitude": "-46.745659"
+    }
   },
   "estacao-giovanni-gronchi": {
     "lines": [
-      "linha-5-lilas"
+      {
+        "id": "linha-5-lilas",
+        "stop": 3
+      }
     ],
-    "location": {
-      "address": "Giovanni Gronchi, Jardim Mirante, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.643901,
-      "longitude": -46.734486
-    },
     "title": "Giovanni Gronchi",
     "schedule": [
       {
         "period": "04h40 às 00h10",
         "title": "Domingo A Sábado"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.643901",
+      "longitude": "-46.734486"
+    }
   },
   "estacao-santo-amaro": {
     "lines": [
-      "linha-5-lilas"
+      {
+        "id": "linha-5-lilas",
+        "stop": 4
+      }
     ],
-    "location": {
-      "address": "Santo Amaro, Jardim São Luís (Zona Oeste), Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.5901467,
-      "longitude": -46.7658338
-    },
     "title": "Santo Amaro",
     "schedule": [
       {
         "period": "04h40 às 00h10",
         "title": "Domingo A Sábado"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.655916",
+      "longitude": "-46.719686"
+    }
   },
   "estacao-largo-treze": {
     "lines": [
-      "linha-5-lilas"
+      {
+        "id": "linha-5-lilas",
+        "stop": 5
+      }
     ],
-    "location": {
-      "address": "Largo Treze, Santo Amaro, Sao Paulo - São Paulo, Brazil",
-      "latitude": -23.65453,
-      "longitude": -46.710536
-    },
     "title": "Largo Treze",
     "schedule": [
       {
         "period": "04h40 às 00h10",
         "title": "Domingo A Sábado"
       }
-    ]
+    ],
+    "location": {
+      "latitude": "-23.65453",
+      "longitude": "-46.710536"
+    }
   }
 }
