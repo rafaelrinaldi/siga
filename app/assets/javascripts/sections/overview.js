@@ -21,7 +21,6 @@ define(
     template: template,
 
     data: {
-      foo: 'bar'
     },
 
     ready: function() {
@@ -31,12 +30,21 @@ define(
 
     methods: {
       initialize: function() {
+        this.setMap();
+      },
+
+      setMap: function() {
         this.map = new Map('#overview-map');
         this.map.initialize();
+
+        this.map.on.loaded.add(this.setUserLocationMarker, this);
       },
 
       setUserLocationMarker: function() {
-
+        this.userLocationMarker = this.map.setMarker({
+          position: this.map.getCenter(),
+          animation: gmaps.Animation.BOUNCE
+        });
       },
 
       placeLine: function(line) {

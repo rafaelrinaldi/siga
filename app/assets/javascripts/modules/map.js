@@ -1,14 +1,16 @@
 define(
 [
   'jquery',
-  'mout/object/mixIn',
+  'signals',
   'lib/gmaps',
+  'mout/object/mixIn',
   'helpers/toLatLng',
-  'config',
+  'config'
 ], function(
   $,
-  mixIn,
+  Signal,
   gmaps,
+  mixIn,
   toLatLng,
   config
 ) {
@@ -18,6 +20,9 @@ define(
   function Map(container, options) {
     this.container = container;
     this.options = options;
+    this.on = {
+      loaded: new Signal()
+    };
   }
 
   p.initialize = function() {
@@ -30,6 +35,7 @@ define(
     console.log('Map :: initialize() :: Creating a new map at "%s"', this.container, this.options);
 
     this.map = new gmaps.Map($(this.container).get(0), this.options);
+    this.map.addListener('tilesloaded', $.proxy(this.notifyTilesLoaded, this));
   };
 
   p.setOptions = function(newOptions) {
@@ -39,6 +45,23 @@ define(
     }
 
     this.map.setOptions(mixIn(this.options, newOptions));
+  };
+
+  p.setMarker = function(options) {
+    var marker = new gmaps.Marker(
+      mixIn({map: this.map}, options)
+    );
+
+    return marker;
+  };
+
+  p.getCenter = function() {
+    return this.map.getCenter();
+  };
+
+  p.notifyTilesLoaded = function() {
+    console.log('dispatching');
+    this.on.loaded.dispatch();
   };
 
   return Map;
