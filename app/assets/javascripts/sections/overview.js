@@ -106,9 +106,8 @@ define(
             allPoints = [],
             map = this.overviewMap,
             lineOptions = this.lineOptions,
-            lineStations = {};
-
-        var stations;
+            lineStations = {},
+            stations;
 
         $.each(lines, function(index, line) {
 
@@ -120,15 +119,16 @@ define(
             position = toLatLng(station.location);
             color = lineOptions[line].color;
 
-            // map.setMarker({
-              // position: position,
-              // icon: {
-              //   path: gmaps.SymbolPath.CIRCLE,
-              //   scale: 3,
-              //   strokeColor: color,
-              //   strokeWeight: 15
-              // }
-            // });
+            // TODO: add a check to only print a marker if there's no marker for that coords
+            map.setMarker({
+              position: position,
+              icon: {
+                path: gmaps.SymbolPath.CIRCLE,
+                scale: 3,
+                strokeColor: color,
+                strokeWeight: 15
+              }
+            });
 
             points.push(position);
 
@@ -137,7 +137,7 @@ define(
           new gmaps.Polyline({
             path: points,
             strokeColor: color,
-            strokeWeight: 4,
+            strokeWeight: 6,
             strokeOpacity: .5,
             geodesic: true,
             map: map.getMap()

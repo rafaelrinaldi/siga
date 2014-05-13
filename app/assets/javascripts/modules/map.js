@@ -32,10 +32,29 @@ define(
       this.options.center = toLatLng(config.defaultCoordinates);
     }
 
+    this._setupMap();
+    this._setupInfoWindow();
+  };
+
+  p._setupMap = function() {
+    var self = this;
+
     console.log('Map :: initialize() :: Creating a new map at "%s"', this.container, this.options);
 
     this.map = new gmaps.Map($(this.container).get(0), this.options);
     this.map.addListener('tilesloaded', $.proxy(this.notifyTilesLoaded, this));
+
+    gmaps.event.addListener(this.map, 'click', function() {
+      self.infoWindow.close();
+    });
+  };
+
+  p._setupInfoWindow = function() {
+    var options = config.infoWindow;
+
+    this.infoWindow = new gmaps.InfoWindow({
+      size: new gmaps.Size(options.width, options.height)
+    });
   };
 
   p.setOptions = function(newOptions) {
@@ -48,9 +67,17 @@ define(
   };
 
   p.setMarker = function(options) {
-    var marker = new gmaps.Marker(
-      mixIn({map: this.map}, options)
-    );
+    var self = this,
+        marker = new gmaps.Marker(
+          mixIn({map: this.map}, options)
+        );
+
+    gmaps.event.addListener(marker, 'click', function() {
+      self.infoWindow.setContent('test');
+      self.infoWindow.open(self.map, marker);
+    });
+
+    // gmaps.event.trigger(marker, 'click');
 
     return marker;
   };

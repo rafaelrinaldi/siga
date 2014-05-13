@@ -14,5 +14,10 @@ define({
     streetViewControl: false,
     zoom: 13,
     // zoomControl: false
+  },
+
+  infoWindow: {
+    width: 150,
+    height: 50
   }
 });

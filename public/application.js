@@ -9127,6 +9127,11 @@ define('config',{
     streetViewControl: false,
     zoom: 13,
     // zoomControl: false
+  },
+
+  infoWindow: {
+    width: 150,
+    height: 50
   }
 });
 
@@ -16931,10 +16936,29 @@ define(
       this.options.center = toLatLng(config.defaultCoordinates);
     }
 
+    this._setupMap();
+    this._setupInfoWindow();
+  };
+
+  p._setupMap = function() {
+    var self = this;
+
     console.log('Map :: initialize() :: Creating a new map at "%s"', this.container, this.options);
 
     this.map = new gmaps.Map($(this.container).get(0), this.options);
     this.map.addListener('tilesloaded', $.proxy(this.notifyTilesLoaded, this));
+
+    gmaps.event.addListener(this.map, 'click', function() {
+      self.infoWindow.close();
+    });
+  };
+
+  p._setupInfoWindow = function() {
+    var options = config.infoWindow;
+
+    this.infoWindow = new gmaps.InfoWindow({
+      size: new gmaps.Size(options.width, options.height)
+    });
   };
 
   p.setOptions = function(newOptions) {
@@ -16947,9 +16971,17 @@ define(
   };
 
   p.setMarker = function(options) {
-    var marker = new gmaps.Marker(
-      mixIn({map: this.map}, options)
-    );
+    var self = this,
+        marker = new gmaps.Marker(
+          mixIn({map: this.map}, options)
+        );
+
+    gmaps.event.addListener(marker, 'click', function() {
+      self.infoWindow.setContent('test');
+      self.infoWindow.open(self.map, marker);
+    });
+
+    // gmaps.event.trigger(marker, 'click');
 
     return marker;
   };
@@ -17081,9 +17113,8 @@ define(
             allPoints = [],
             map = this.overviewMap,
             lineOptions = this.lineOptions,
-            lineStations = {};
-
-        var stations;
+            lineStations = {},
+            stations;
 
         $.each(lines, function(index, line) {
 
@@ -17095,15 +17126,16 @@ define(
             position = toLatLng(station.location);
             color = lineOptions[line].color;
 
-            // map.setMarker({
-              // position: position,
-              // icon: {
-              //   path: gmaps.SymbolPath.CIRCLE,
-              //   scale: 3,
-              //   strokeColor: color,
-              //   strokeWeight: 15
-              // }
-            // });
+            // TODO: add a check to only print a marker if there's no marker for that coords
+            map.setMarker({
+              position: position,
+              icon: {
+                path: gmaps.SymbolPath.CIRCLE,
+                scale: 3,
+                strokeColor: color,
+                strokeWeight: 15
+              }
+            });
 
             points.push(position);
 
@@ -17112,7 +17144,7 @@ define(
           new gmaps.Polyline({
             path: points,
             strokeColor: color,
-            strokeWeight: 4,
+            strokeWeight: 6,
             strokeOpacity: .5,
             geodesic: true,
             map: map.getMap()
