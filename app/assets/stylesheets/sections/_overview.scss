@@ -2,3 +2,15 @@
   width: 100%;
   height: 100%;
 }
+
+.section.overview {
+  position: relative;
+
+  .my-location-button {
+    position: absolute;
+    padding: 2em;
+    z-index: 99;
+    right: 1.5em;
+    bottom: 1.5em;
+  }
+}

@@ -63,6 +63,18 @@ define(
     });
   };
 
+  p.panTo = function(position) {
+    switch(position) {
+      case 'center' :
+        position = this.map.getCenter();
+      break;
+    }
+
+    console.log('->',position);
+
+    this.map.panTo(position);
+  };
+
   p.setOptions = function(newOptions) {
     if(!this.map) {
       console.warn('Map :: setOptions() :: No map instance was created yet');

@@ -16967,6 +16967,18 @@ define(
     });
   };
 
+  p.panTo = function(position) {
+    switch(position) {
+      case 'center' :
+        position = this.map.getCenter();
+      break;
+    }
+
+    console.log('->',position);
+
+    this.map.panTo(position);
+  };
+
   p.setOptions = function(newOptions) {
     if(!this.map) {
       console.warn('Map :: setOptions() :: No map instance was created yet');
@@ -17026,7 +17038,7 @@ define(
 });
 
 
-define('text!partials/sections/overview.html',[],function () { return '<div id="overview-map">here</div>\n';});
+define('text!partials/sections/overview.html',[],function () { return '<button class="my-location-button" v-on="click: moveToCenter()">My location</button>\n<div id="overview-map">here</div>\n';});
 
 define(
 'sections/overview',[
@@ -17115,6 +17127,8 @@ define(
             return self.overviewMap.getCenter();
           })
           .done(function(position) {
+            console.log('position',position);
+            self.userLocation = position;
             self.setUserLocationMarker(position);
           });
       },
@@ -17124,6 +17138,10 @@ define(
           position: position,
           animation: gmaps.Animation.BOUNCE
         });
+      },
+
+      moveToCenter: function() {
+        this.overviewMap.panTo(this.userLocation);
       },
 
       placeLines: function() {

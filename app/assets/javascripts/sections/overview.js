@@ -85,6 +85,8 @@ define(
             return self.overviewMap.getCenter();
           })
           .done(function(position) {
+            console.log('position',position);
+            self.userLocation = position;
             self.setUserLocationMarker(position);
           });
       },
@@ -94,6 +96,10 @@ define(
           position: position,
           animation: gmaps.Animation.BOUNCE
         });
+      },
+
+      moveToCenter: function() {
+        this.overviewMap.panTo(this.userLocation);
       },
 
       placeLines: function() {
