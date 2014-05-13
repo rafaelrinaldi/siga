@@ -1,5 +1,4 @@
 @import url("../../../vendor/assets/bower/normalize-css/normalize.css");
-@import url("../../../vendor/assets/bower/topcoat/css/topcoat-mobile-light.css");
 html, body {
   width: 100%;
   height: 100%; }
@@ -163,6 +162,7 @@ a, .link {
 
 .header__control:last-child {
   right: 0; }
+
 
 .map {
   width: 100%;

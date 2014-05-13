@@ -122,6 +122,8 @@ define(
             // TODO: add a check to only print a marker if there's no marker for that coords
             map.setMarker({
               position: position,
+              content: station.title,
+              id: station.id,
               icon: {
                 path: gmaps.SymbolPath.CIRCLE,
                 scale: 3,

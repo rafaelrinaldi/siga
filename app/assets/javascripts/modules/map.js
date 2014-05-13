@@ -50,10 +50,16 @@ define(
   };
 
   p._setupInfoWindow = function() {
-    var options = config.infoWindow;
+    var self = this,
+        options = config.infoWindow;
 
     this.infoWindow = new gmaps.InfoWindow({
       size: new gmaps.Size(options.width, options.height)
+    });
+
+    // Waits for the window to be fully attached to the DOM before watching for a click on it
+    gmaps.event.addListener(this.infoWindow, 'domready', function(event) {
+      $('.js-info-window').one('click', $.proxy(self._infoWindowClick, self));
     });
   };
 
@@ -72,14 +78,21 @@ define(
           mixIn({map: this.map}, options)
         );
 
-    gmaps.event.addListener(marker, 'click', function() {
-      self.infoWindow.setContent('test');
-      self.infoWindow.open(self.map, marker);
-    });
-
-    // gmaps.event.trigger(marker, 'click');
+    if(options.content && options.content.length) {
+      gmaps.event.addListener(marker, 'click', function() {
+        self.infoWindow.setContent(self.formatInfoWindowContent(options));
+        self.infoWindow.open(self.map, marker);
+      });
+    }
 
     return marker;
+  };
+
+  p.formatInfoWindowContent = function(options) {
+    return  '<div class="js-info-window info-window" data-station-id="' + options.id + '">' +
+              '<strong>' + options.content + '</strong>' +
+              '<button>+</button>' +
+            '</div>';
   };
 
   p.getMap = function() {
@@ -92,6 +105,16 @@ define(
 
   p.notifyTilesLoaded = function() {
     this.on.loaded.dispatch();
+  };
+
+  // TODO: Should call station detail
+  p._infoWindowClick = function(event) {
+    var target = $(event.target).parent(),
+        stationId = target.data('station-id');
+
+    if(this.infoWindow) {
+      this.infoWindow.close();
+    }
   };
 
   return Map;

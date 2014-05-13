@@ -1,5 +1,4 @@
 @import "../../../vendor/assets/bower/normalize-css/normalize.css";
-@import "../../../vendor/assets/bower/topcoat/css/topcoat-mobile-light.css";
 
 @import "helpers/mixins";
 
@@ -17,6 +16,7 @@
 @import "modules/marker";
 @import "modules/section";
 @import "modules/header";
+@import "modules/info_window";
 
 @import "sections/map";
 @import "sections/home";
