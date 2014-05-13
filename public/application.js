@@ -17127,7 +17127,6 @@ define(
             return self.overviewMap.getCenter();
           })
           .done(function(position) {
-            console.log('position',position);
             self.userLocation = position;
             self.setUserLocationMarker(position);
           });
