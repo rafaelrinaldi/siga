@@ -135,6 +135,7 @@ define(
               position: position,
               content: station.title,
               id: station.id,
+              // TODO: Move icon options to config file
               icon: {
                 path: gmaps.SymbolPath.CIRCLE,
                 scale: 3,

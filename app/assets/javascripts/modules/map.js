@@ -26,7 +26,7 @@ define(
   }
 
   p.initialize = function() {
-    this.options = mixIn(config.defaultMapOptions, this.options);
+    this.options = mixIn(config.defaultMapOptions, this.options || {});
 
     if(!this.options || !this.options.center) {
       this.options.center = toLatLng(config.defaultCoordinates);
@@ -39,7 +39,8 @@ define(
   p._setupMap = function() {
     var self = this;
 
-    console.log('Map :: initialize() :: Creating a new map at "%s"', this.container, this.options);
+    console.log('Map :: initialize() :: Creating a new map at "%s"', this.container);
+    console.dir(this.options);
 
     this.map = new gmaps.Map($(this.container).get(0), this.options);
     this.map.addListener('tilesloaded', $.proxy(this.notifyTilesLoaded, this));

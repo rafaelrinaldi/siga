@@ -49,6 +49,7 @@ requirejs(
     'config',
     'vue',
     'lib/gmaps',
+    'modules/router',
     'modules/header',
     'modules/navigation',
     'modules/directions',
@@ -62,6 +63,7 @@ requirejs(
     config,
     Vue,
     gmaps,
+    Router,
     Header,
     Navigation,
     Directions,
@@ -69,15 +71,22 @@ requirejs(
     // Map,
     Sections
   ) {
-    $(function() {
 
-      // Vue.config('debug', true);
+    var app;
 
-      // Vue.component('header', Header);
-      // Vue.component('navigation', Navigation);
-      // Vue.component('map', Map);
+    function _setupRouter() {
+      console.log('application :: _setupRouter() :: Setting up router');
 
-      var app = new Vue({
+      Router.initialize();
+      Router.on.matchRoute.add(function(route) {
+        app.setView(route);
+      });
+    }
+
+    function _setupApp() {
+      console.log('application :: _setupApp() :: Setting up app');
+
+      app = new Vue({
         el: '#app',
 
         components: {
@@ -99,17 +108,26 @@ requirejs(
         },
 
         methods: {
-          setView: function(which, options) {
-            this.currentView = which;
-            this.currentViewOptions = options || {};
+          test: function() {
+            console.log('testing');
+          },
+
+          setView: function(view, options) {
+            console.log('application :: setView() :: Should broadcast new view "%s" with options "%s"', view, options);
+
+            // this.currentView = view;
+            // this.$broadcast('app:setView:' + view, options);
           }
         }
       });
-
-    });
-
-    function bootstrap() {
-
     }
+
+    function _bootstrap() {
+      _setupApp();
+      _setupRouter();
+    }
+
+    // Bootstrap app on DOM ready.
+    $(_bootstrap);
   }
 );
