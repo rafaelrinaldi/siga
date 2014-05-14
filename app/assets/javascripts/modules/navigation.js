@@ -16,9 +16,8 @@ define(
     data: {
       isOpen: false,
       items: [
-        {id: 'map', title: 'Mapa'},
-        {id: 'directions', title: 'Trajetória'},
-        {id: 'notifications', title: 'Notificações'}
+        {id: 'overview', title: 'Mapa'},
+        {id: 'station', title: 'Detalhe estação'}
       ]
     },
 

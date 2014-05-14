@@ -15462,9 +15462,8 @@ define(
     data: {
       isOpen: false,
       items: [
-        {id: 'map', title: 'Mapa'},
-        {id: 'directions', title: 'Trajetória'},
-        {id: 'notifications', title: 'Notificações'}
+        {id: 'overview', title: 'Mapa'},
+        {id: 'station', title: 'Detalhe estação'}
       ]
     },
 
@@ -18113,7 +18112,8 @@ define(
     this.container = container;
     this.options = options;
     this.on = {
-      loaded: new Signal()
+      loaded: new Signal(),
+      markerClick: new Signal()
     };
   }
 
@@ -18193,6 +18193,7 @@ define(
     return marker;
   };
 
+  // TODO: This should be declared in the parent element
   p.formatInfoWindowContent = function(options) {
     return  '<div class="js-info-window info-window" data-station-id="' + options.id + '">' +
               '<strong>' + options.content + '</strong>' +
@@ -18213,13 +18214,16 @@ define(
   };
 
   // TODO: Should call station detail
+  // TODO: Should be generic (defined outside of this scope)
   p._infoWindowClick = function(event) {
     var target = $(event.target).parent(),
         stationId = target.data('station-id');
-        console.log('station-id', stationId);
+
     if(this.infoWindow) {
       this.infoWindow.close();
     }
+
+    this.on.markerClick.dispatch(stationId);
   };
 
   return Map;
@@ -18302,6 +18306,7 @@ define(
         this.overviewMap.initialize();
         this.overviewMap.on.loaded.addOnce(this.setUserLocationMarker, this);
         this.overviewMap.on.loaded.addOnce(this.placeLines, this);
+        this.overviewMap.on.markerClick.add(this.markerClick, this);
         this.requestUserLocation();
       },
 
@@ -18334,6 +18339,10 @@ define(
 
       moveToCenter: function() {
         this.overviewMap.panTo(this.userLocation);
+      },
+
+      markerClick: function(id) {
+        this.$root.$emit('app:setView', 'station', id);
       },
 
       placeLines: function() {
@@ -18440,7 +18449,7 @@ define(
       info: {}
     },
 
-    ready: function() {
+    attached: function() {
       // make sure dom is loaded and then fire the initialization method
       $($.proxy(this.initialize, this));
     },
@@ -18598,14 +18607,17 @@ requirejs(
         },
 
         methods: {
-          test: function() {
-            console.log('testing');
-          },
-
           setView: function(view, options) {
-            console.log('application :: setView() :: Should broadcast new view "%s" with options "%s"', view, options);
+            var log = 'application :: setView() :: Should broadcast new view "%s"';
 
-            // this.currentView = view;
+            if(options) {
+              log += ' with options "%s"';
+            }
+
+            console.log(log, view, options);
+
+            this.currentView = view;
+
             // this.$broadcast('app:setView:' + view, options);
           }
         }

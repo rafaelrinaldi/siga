@@ -21,7 +21,8 @@ define(
     this.container = container;
     this.options = options;
     this.on = {
-      loaded: new Signal()
+      loaded: new Signal(),
+      markerClick: new Signal()
     };
   }
 
@@ -101,6 +102,7 @@ define(
     return marker;
   };
 
+  // TODO: This should be declared in the parent element
   p.formatInfoWindowContent = function(options) {
     return  '<div class="js-info-window info-window" data-station-id="' + options.id + '">' +
               '<strong>' + options.content + '</strong>' +
@@ -121,13 +123,16 @@ define(
   };
 
   // TODO: Should call station detail
+  // TODO: Should be generic (defined outside of this scope)
   p._infoWindowClick = function(event) {
     var target = $(event.target).parent(),
         stationId = target.data('station-id');
-        console.log('station-id', stationId);
+
     if(this.infoWindow) {
       this.infoWindow.close();
     }
+
+    this.on.markerClick.dispatch(stationId);
   };
 
   return Map;

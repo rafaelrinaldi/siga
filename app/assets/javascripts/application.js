@@ -108,14 +108,17 @@ requirejs(
         },
 
         methods: {
-          test: function() {
-            console.log('testing');
-          },
-
           setView: function(view, options) {
-            console.log('application :: setView() :: Should broadcast new view "%s" with options "%s"', view, options);
+            var log = 'application :: setView() :: Should broadcast new view "%s"';
 
-            // this.currentView = view;
+            if(options) {
+              log += ' with options "%s"';
+            }
+
+            console.log(log, view, options);
+
+            this.currentView = view;
+
             // this.$broadcast('app:setView:' + view, options);
           }
         }

@@ -71,6 +71,7 @@ define(
         this.overviewMap.initialize();
         this.overviewMap.on.loaded.addOnce(this.setUserLocationMarker, this);
         this.overviewMap.on.loaded.addOnce(this.placeLines, this);
+        this.overviewMap.on.markerClick.add(this.markerClick, this);
         this.requestUserLocation();
       },
 
@@ -103,6 +104,10 @@ define(
 
       moveToCenter: function() {
         this.overviewMap.panTo(this.userLocation);
+      },
+
+      markerClick: function(id) {
+        this.$root.$emit('app:setView', 'station', id);
       },
 
       placeLines: function() {

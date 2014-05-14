@@ -133,6 +133,8 @@ a, .link {
   -ms-transform: translateX(160px);
   transform: translateX(160px); }
 
+.section.v-leave {
+  opacity: 0.99; }
 
 .section.retreat {
   -webkit-transform: translateX(220px);

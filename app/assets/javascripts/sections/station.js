@@ -25,7 +25,7 @@ define(
       info: {}
     },
 
-    ready: function() {
+    attached: function() {
       // make sure dom is loaded and then fire the initialization method
       $($.proxy(this.initialize, this));
     },
