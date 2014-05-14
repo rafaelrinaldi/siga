@@ -70,7 +70,7 @@ define(
       break;
     }
 
-    console.log('->',position);
+    console.log('Map :: panTo() :: Moving map to', position);
 
     this.map.panTo(position);
   };
@@ -123,7 +123,7 @@ define(
   p._infoWindowClick = function(event) {
     var target = $(event.target).parent(),
         stationId = target.data('station-id');
-
+        console.log('station-id', stationId);
     if(this.infoWindow) {
       this.infoWindow.close();
     }

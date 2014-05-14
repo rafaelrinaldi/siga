@@ -1,12 +1,15 @@
 define(
 [
-  'sections/overview'
+  'sections/overview',
+  'sections/station'
 ], function(
-  Overview
+  Overview,
+  Station
 ) {
 
   return {
-    'overview': Overview
+    'overview': Overview,
+    'station': Station
   };
 
 });

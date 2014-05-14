@@ -82,6 +82,7 @@ requirejs(
 
         components: {
           'overview': Sections.overview,
+          'station': Sections.station,
           'header': Header,
           'navigation': Navigation
           // 'directions': Directions,
@@ -90,9 +91,6 @@ requirejs(
         },
 
         ready: function() {
-          $.ready(function() {
-            console.log('fired');
-          })
           this.$on('app:setView', this.setView);
         },
 

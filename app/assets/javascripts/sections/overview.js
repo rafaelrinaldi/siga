@@ -3,7 +3,8 @@ define(
   'jquery',
   'vue',
   'lib/gmaps',
-  'mout/array/contains',
+  'mout/object/mixIn',
+  'config',
   'services/getUserLocation',
   'services/getStations',
   'services/getStationByName',
@@ -16,7 +17,8 @@ define(
   $,
   Vue,
   gmaps,
-  contains,
+  mixIn,
+  config,
   getUserLocation,
   getStations,
   getStationByName,
@@ -61,10 +63,10 @@ define(
 
     methods: {
       initialize: function() {
-        this.setMap();
+        this.setupMap();
       },
 
-      setMap: function() {
+      setupMap: function() {
         this.overviewMap = new Map('#overview-map');
         this.overviewMap.initialize();
         this.overviewMap.on.loaded.addOnce(this.setUserLocationMarker, this);
@@ -81,7 +83,7 @@ define(
             return toLatLng(response);
           })
           .catch(function(warn) {
-            console.warn(warn);
+            console.warn('overview :: requestUserLocation() ::', warn);
             return self.overviewMap.getCenter();
           })
           .done(function(position) {
@@ -91,6 +93,8 @@ define(
       },
 
       setUserLocationMarker: function(position) {
+        console.log('overview :: setUserLocationMarker ::', position);
+
         this.userLocationMarker = this.overviewMap.setMarker({
           position: position,
           animation: gmaps.Animation.BOUNCE
@@ -113,6 +117,8 @@ define(
             lineOptions = this.lineOptions,
             lineStations = {},
             stations;
+
+        console.log('overview :: placeLines() :: Rendering subway stations and lines');
 
         $.each(lines, function(index, line) {
 
@@ -141,14 +147,12 @@ define(
 
           });
 
-          new gmaps.Polyline({
+          // Create subway line path on the map
+          new gmaps.Polyline(mixIn(config.polyLine, {
             path: points,
             strokeColor: color,
-            strokeWeight: 6,
-            strokeOpacity: .5,
-            geodesic: true,
             map: map.getMap()
-          });
+          }));
         });
 
       }

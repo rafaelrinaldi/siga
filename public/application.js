@@ -9129,6 +9129,12 @@ define('config',{
     // zoomControl: false
   },
 
+  polyLine: {
+    strokeWeight: 6,
+    strokeOpacity: .5,
+    geodesic: true
+  },
+
   infoWindow: {
     width: 150,
     height: 50
@@ -16266,46 +16272,6 @@ define(
   }
 );
 
-define('mout/array/indexOf',[],function () {
-
-    /**
-     * Array.indexOf
-     */
-    function indexOf(arr, item, fromIndex) {
-        fromIndex = fromIndex || 0;
-        if (arr == null) {
-            return -1;
-        }
-
-        var len = arr.length,
-            i = fromIndex < 0 ? len + fromIndex : fromIndex;
-        while (i < len) {
-            // we iterate over sparse items since there is no way to make it
-            // work properly on IE 7-8. see #64
-            if (arr[i] === item) {
-                return i;
-            }
-
-            i++;
-        }
-
-        return -1;
-    }
-
-    return indexOf;
-});
-
-define('mout/array/contains',['./indexOf'], function (indexOf) {
-
-    /**
-     * If array contains values.
-     */
-    function contains(arr, val) {
-        return indexOf(arr, val) !== -1;
-    }
-    return contains;
-});
-
 define(
 'services/getUserLocation',[
   'q'
@@ -16380,6 +16346,46 @@ define(
 
   return getStationByName;
 
+});
+
+define('mout/array/indexOf',[],function () {
+
+    /**
+     * Array.indexOf
+     */
+    function indexOf(arr, item, fromIndex) {
+        fromIndex = fromIndex || 0;
+        if (arr == null) {
+            return -1;
+        }
+
+        var len = arr.length,
+            i = fromIndex < 0 ? len + fromIndex : fromIndex;
+        while (i < len) {
+            // we iterate over sparse items since there is no way to make it
+            // work properly on IE 7-8. see #64
+            if (arr[i] === item) {
+                return i;
+            }
+
+            i++;
+        }
+
+        return -1;
+    }
+
+    return indexOf;
+});
+
+define('mout/array/contains',['./indexOf'], function (indexOf) {
+
+    /**
+     * If array contains values.
+     */
+    function contains(arr, val) {
+        return indexOf(arr, val) !== -1;
+    }
+    return contains;
 });
 
 define(
@@ -16974,7 +16980,7 @@ define(
       break;
     }
 
-    console.log('->',position);
+    console.log('Map :: panTo() :: Moving map to', position);
 
     this.map.panTo(position);
   };
@@ -17027,7 +17033,7 @@ define(
   p._infoWindowClick = function(event) {
     var target = $(event.target).parent(),
         stationId = target.data('station-id');
-
+        console.log('station-id', stationId);
     if(this.infoWindow) {
       this.infoWindow.close();
     }
@@ -17045,7 +17051,8 @@ define(
   'jquery',
   'vue',
   'lib/gmaps',
-  'mout/array/contains',
+  'mout/object/mixIn',
+  'config',
   'services/getUserLocation',
   'services/getStations',
   'services/getStationByName',
@@ -17058,7 +17065,8 @@ define(
   $,
   Vue,
   gmaps,
-  contains,
+  mixIn,
+  config,
   getUserLocation,
   getStations,
   getStationByName,
@@ -17103,10 +17111,10 @@ define(
 
     methods: {
       initialize: function() {
-        this.setMap();
+        this.setupMap();
       },
 
-      setMap: function() {
+      setupMap: function() {
         this.overviewMap = new Map('#overview-map');
         this.overviewMap.initialize();
         this.overviewMap.on.loaded.addOnce(this.setUserLocationMarker, this);
@@ -17123,7 +17131,7 @@ define(
             return toLatLng(response);
           })
           .catch(function(warn) {
-            console.warn(warn);
+            console.warn('overview :: requestUserLocation() ::', warn);
             return self.overviewMap.getCenter();
           })
           .done(function(position) {
@@ -17133,6 +17141,8 @@ define(
       },
 
       setUserLocationMarker: function(position) {
+        console.log('overview :: setUserLocationMarker ::', position);
+
         this.userLocationMarker = this.overviewMap.setMarker({
           position: position,
           animation: gmaps.Animation.BOUNCE
@@ -17155,6 +17165,8 @@ define(
             lineOptions = this.lineOptions,
             lineStations = {},
             stations;
+
+        console.log('overview :: placeLines() :: Rendering subway stations and lines');
 
         $.each(lines, function(index, line) {
 
@@ -17183,14 +17195,12 @@ define(
 
           });
 
-          new gmaps.Polyline({
+          // Create subway line path on the map
+          new gmaps.Polyline(mixIn(config.polyLine, {
             path: points,
             strokeColor: color,
-            strokeWeight: 6,
-            strokeOpacity: .5,
-            geodesic: true,
             map: map.getMap()
-          });
+          }));
         });
 
       }
@@ -17200,14 +17210,75 @@ define(
 });
 
 define(
-'sections',[
-  'sections/overview'
+'services/getStationById',[
+  'services/getStations'
 ], function(
-  Overview
+  getStations
+) {
+
+  var stations = getStations();
+
+  function getStationById(id) {
+    return stations[id];
+  }
+
+  return getStationById;
+
+});
+
+
+define('text!partials/sections/station.html',[],function () { return '<h1>Station</h1>\n\n<div class="station-map"></div>\n\n<div class="station-info">\n  <h3>Status</h3>\n  <p>Ok</p>\n</div>\n\n<div class="station-info">\n  <h3>Localização</h3>\n  <p>Rua Afonso de Andrade, 122</p>\n</div>\n\n<div class="station-info">\n  <h3>Horário de funcionamento</h3>\n  <p>Domingo a Sexta – 04h40 às 00h06</p>\n</div>\n\n<div class="station-info">\n  <h3>Status</h3>\n  <p>Ok</p>\n</div>\n\n<div class="station-info">\n  <h3>Linhas</h3>\n  <p>3 vermelha</p>\n</div>\n';});
+
+define(
+'sections/station',[
+  'jquery',
+  'vue',
+  'lib/gmaps',
+  'modules/map',
+  'services/getStationById',
+  'text!partials/sections/station.html'
+], function(
+  $,
+  Vue,
+  gmaps,
+  Map,
+  getStationById,
+  template
+) {
+
+  return Vue.extend({
+    template: template,
+
+    data: {
+      id: ''
+    },
+
+    ready: function() {
+      // make sure dom is loaded and then fire the initialization method
+      $($.proxy(this.initialize, this));
+    },
+
+    methods: {
+      initialize: function() {
+        console.log('yo');
+      }
+    }
+  });
+
+});
+
+define(
+'sections',[
+  'sections/overview',
+  'sections/station'
+], function(
+  Overview,
+  Station
 ) {
 
   return {
-    'overview': Overview
+    'overview': Overview,
+    'station': Station
   };
 
 });
@@ -17296,6 +17367,7 @@ requirejs(
 
         components: {
           'overview': Sections.overview,
+          'station': Sections.station,
           'header': Header,
           'navigation': Navigation
           // 'directions': Directions,
@@ -17304,9 +17376,6 @@ requirejs(
         },
 
         ready: function() {
-          $.ready(function() {
-            console.log('fired');
-          })
           this.$on('app:setView', this.setView);
         },
 

@@ -16,6 +16,12 @@ define({
     // zoomControl: false
   },
 
+  polyLine: {
+    strokeWeight: 6,
+    strokeOpacity: .5,
+    geodesic: true
+  },
+
   infoWindow: {
     width: 150,
     height: 50
