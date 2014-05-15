@@ -1,7 +1,7 @@
 define({
   'linha-1-azul': {
     title: 'Linha 1 - Azul',
-    color: '#2980b9'
+    color: '#3a539b'
   },
 
   'linha-2-verde': {

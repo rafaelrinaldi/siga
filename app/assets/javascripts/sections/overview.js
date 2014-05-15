@@ -48,10 +48,9 @@ define(
       setupMap: function() {
         this.overviewMap = new Map('#overview-map');
         this.overviewMap.initialize();
-        this.overviewMap.on.loaded.addOnce(this.setUserLocationMarker, this);
-        this.overviewMap.on.loaded.addOnce(this.placeLines, this);
+        this.overviewMap.on.loaded.addOnce(this.requestUserLocation, this);
+        // this.overviewMap.on.loaded.addOnce(this.placeLines, this);
         this.overviewMap.on.markerClick.add(this.markerClick, this);
-        this.requestUserLocation();
       },
 
       requestUserLocation: function() {
@@ -69,6 +68,7 @@ define(
           .done(function(position) {
             self.userLocation = position;
             self.setUserLocationMarker(position);
+            self.placeLines();
           });
       },
 

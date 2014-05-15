@@ -17987,27 +17987,27 @@ define(
 define('lines',{
   'linha-1-azul': {
     title: 'Linha 1 - Azul',
-    color: 'blue'
+    color: '#3a539b'
   },
 
   'linha-2-verde': {
     title: 'Linha 2 - Verde',
-    color: 'green'
+    color: '#27ae60'
   },
 
   'linha-3-vermelha': {
     title: 'Linha 3 - Vermelha',
-    color: 'red'
+    color: '#c0392b'
   },
 
   'linha-4-amarela': {
     title: 'Linha 4 - Amarela',
-    color: 'yellow'
+    color: '#f1c40f'
   },
 
   'linha-5-lilas': {
     title: 'Linha 5 - Lilás',
-    color: 'magenta'
+    color: '#9b59b6'
   }
 });
 
@@ -18348,10 +18348,9 @@ define(
       setupMap: function() {
         this.overviewMap = new Map('#overview-map');
         this.overviewMap.initialize();
-        this.overviewMap.on.loaded.addOnce(this.setUserLocationMarker, this);
-        this.overviewMap.on.loaded.addOnce(this.placeLines, this);
+        this.overviewMap.on.loaded.addOnce(this.requestUserLocation, this);
+        // this.overviewMap.on.loaded.addOnce(this.placeLines, this);
         this.overviewMap.on.markerClick.add(this.markerClick, this);
-        this.requestUserLocation();
       },
 
       requestUserLocation: function() {
@@ -18369,6 +18368,7 @@ define(
           .done(function(position) {
             self.userLocation = position;
             self.setUserLocationMarker(position);
+            self.placeLines();
           });
       },
 
