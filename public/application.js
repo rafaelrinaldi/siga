@@ -9138,6 +9138,15 @@ define('config',{
   infoWindow: {
     width: 150,
     height: 50
+  },
+
+  areaRange: {
+    strokeColor: '#3498db',
+    strokeOpacity: .65,
+    strokeWeight: 2,
+    fillColor: '#3498db',
+    fillOpacity: .15,
+    radius: 175 // in meters
   }
 });
 
@@ -13767,6 +13776,144 @@ define('lib/gmaps',['async!http://maps.google.com/maps/api/js?v=3&sensor=false&k
     return window.google.maps;
 });
 
+define('mout/object/hasOwn',[],function () {
+
+    /**
+     * Safer Object.hasOwnProperty
+     */
+     function hasOwn(obj, prop){
+         return Object.prototype.hasOwnProperty.call(obj, prop);
+     }
+
+     return hasOwn;
+
+});
+
+define('mout/object/forIn',['./hasOwn'], function (hasOwn) {
+
+    var _hasDontEnumBug,
+        _dontEnums;
+
+    function checkDontEnum(){
+        _dontEnums = [
+                'toString',
+                'toLocaleString',
+                'valueOf',
+                'hasOwnProperty',
+                'isPrototypeOf',
+                'propertyIsEnumerable',
+                'constructor'
+            ];
+
+        _hasDontEnumBug = true;
+
+        for (var key in {'toString': null}) {
+            _hasDontEnumBug = false;
+        }
+    }
+
+    /**
+     * Similar to Array/forEach but works over object properties and fixes Don't
+     * Enum bug on IE.
+     * based on: http://whattheheadsaid.com/2010/10/a-safer-object-keys-compatibility-implementation
+     */
+    function forIn(obj, fn, thisObj){
+        var key, i = 0;
+        // no need to check if argument is a real object that way we can use
+        // it for arrays, functions, date, etc.
+
+        //post-pone check till needed
+        if (_hasDontEnumBug == null) checkDontEnum();
+
+        for (key in obj) {
+            if (exec(fn, obj, key, thisObj) === false) {
+                break;
+            }
+        }
+
+
+        if (_hasDontEnumBug) {
+            var ctor = obj.constructor,
+                isProto = !!ctor && obj === ctor.prototype;
+
+            while (key = _dontEnums[i++]) {
+                // For constructor, if it is a prototype object the constructor
+                // is always non-enumerable unless defined otherwise (and
+                // enumerated above).  For non-prototype objects, it will have
+                // to be defined on this object, since it cannot be defined on
+                // any prototype objects.
+                //
+                // For other [[DontEnum]] properties, check if the value is
+                // different than Object prototype value.
+                if (
+                    (key !== 'constructor' ||
+                        (!isProto && hasOwn(obj, key))) &&
+                    obj[key] !== Object.prototype[key]
+                ) {
+                    if (exec(fn, obj, key, thisObj) === false) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    function exec(fn, obj, key, thisObj){
+        return fn.call(thisObj, obj[key], key, obj);
+    }
+
+    return forIn;
+
+});
+
+define('mout/object/forOwn',['./hasOwn', './forIn'], function (hasOwn, forIn) {
+
+    /**
+     * Similar to Array/forEach but works over object properties and fixes Don't
+     * Enum bug on IE.
+     * based on: http://whattheheadsaid.com/2010/10/a-safer-object-keys-compatibility-implementation
+     */
+    function forOwn(obj, fn, thisObj){
+        forIn(obj, function(val, key){
+            if (hasOwn(obj, key)) {
+                return fn.call(thisObj, obj[key], key, obj);
+            }
+        });
+    }
+
+    return forOwn;
+
+});
+
+define('mout/object/mixIn',['./forOwn'], function(forOwn){
+
+    /**
+    * Combine properties from all the objects into first one.
+    * - This method affects target object in place, if you want to create a new Object pass an empty object as first param.
+    * @param {object} target    Target Object
+    * @param {...object} objects    Objects to be combined (0...n objects).
+    * @return {object} Target Object.
+    */
+    function mixIn(target, objects){
+        var i = 0,
+            n = arguments.length,
+            obj;
+        while(++i < n){
+            obj = arguments[i];
+            if (obj != null) {
+                forOwn(obj, copyProp, target);
+            }
+        }
+        return target;
+    }
+
+    function copyProp(val, key){
+        this[key] = val;
+    }
+
+    return mixIn;
+});
+
 /*jslint onevar:true, undef:true, newcap:true, regexp:true, bitwise:true, maxerr:50, indent:4, white:false, nomen:false, plusplus:false */
 /*global define:false, require:false, exports:false, module:false, signals:false */
 
@@ -17495,144 +17642,6 @@ return Q;
 
 });
 
-define('mout/object/hasOwn',[],function () {
-
-    /**
-     * Safer Object.hasOwnProperty
-     */
-     function hasOwn(obj, prop){
-         return Object.prototype.hasOwnProperty.call(obj, prop);
-     }
-
-     return hasOwn;
-
-});
-
-define('mout/object/forIn',['./hasOwn'], function (hasOwn) {
-
-    var _hasDontEnumBug,
-        _dontEnums;
-
-    function checkDontEnum(){
-        _dontEnums = [
-                'toString',
-                'toLocaleString',
-                'valueOf',
-                'hasOwnProperty',
-                'isPrototypeOf',
-                'propertyIsEnumerable',
-                'constructor'
-            ];
-
-        _hasDontEnumBug = true;
-
-        for (var key in {'toString': null}) {
-            _hasDontEnumBug = false;
-        }
-    }
-
-    /**
-     * Similar to Array/forEach but works over object properties and fixes Don't
-     * Enum bug on IE.
-     * based on: http://whattheheadsaid.com/2010/10/a-safer-object-keys-compatibility-implementation
-     */
-    function forIn(obj, fn, thisObj){
-        var key, i = 0;
-        // no need to check if argument is a real object that way we can use
-        // it for arrays, functions, date, etc.
-
-        //post-pone check till needed
-        if (_hasDontEnumBug == null) checkDontEnum();
-
-        for (key in obj) {
-            if (exec(fn, obj, key, thisObj) === false) {
-                break;
-            }
-        }
-
-
-        if (_hasDontEnumBug) {
-            var ctor = obj.constructor,
-                isProto = !!ctor && obj === ctor.prototype;
-
-            while (key = _dontEnums[i++]) {
-                // For constructor, if it is a prototype object the constructor
-                // is always non-enumerable unless defined otherwise (and
-                // enumerated above).  For non-prototype objects, it will have
-                // to be defined on this object, since it cannot be defined on
-                // any prototype objects.
-                //
-                // For other [[DontEnum]] properties, check if the value is
-                // different than Object prototype value.
-                if (
-                    (key !== 'constructor' ||
-                        (!isProto && hasOwn(obj, key))) &&
-                    obj[key] !== Object.prototype[key]
-                ) {
-                    if (exec(fn, obj, key, thisObj) === false) {
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    function exec(fn, obj, key, thisObj){
-        return fn.call(thisObj, obj[key], key, obj);
-    }
-
-    return forIn;
-
-});
-
-define('mout/object/forOwn',['./hasOwn', './forIn'], function (hasOwn, forIn) {
-
-    /**
-     * Similar to Array/forEach but works over object properties and fixes Don't
-     * Enum bug on IE.
-     * based on: http://whattheheadsaid.com/2010/10/a-safer-object-keys-compatibility-implementation
-     */
-    function forOwn(obj, fn, thisObj){
-        forIn(obj, function(val, key){
-            if (hasOwn(obj, key)) {
-                return fn.call(thisObj, obj[key], key, obj);
-            }
-        });
-    }
-
-    return forOwn;
-
-});
-
-define('mout/object/mixIn',['./forOwn'], function(forOwn){
-
-    /**
-    * Combine properties from all the objects into first one.
-    * - This method affects target object in place, if you want to create a new Object pass an empty object as first param.
-    * @param {object} target    Target Object
-    * @param {...object} objects    Objects to be combined (0...n objects).
-    * @return {object} Target Object.
-    */
-    function mixIn(target, objects){
-        var i = 0,
-            n = arguments.length,
-            obj;
-        while(++i < n){
-            obj = arguments[i];
-            if (obj != null) {
-                forOwn(obj, copyProp, target);
-            }
-        }
-        return target;
-    }
-
-    function copyProp(val, key){
-        this[key] = val;
-    }
-
-    return mixIn;
-});
-
 define(
   'services/getDestination',[
     'exports',
@@ -17674,7 +17683,7 @@ define(
 );
 
 
-define('text!stations.json',[],function () { return '{\n  "estacao-jabaquara": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 0\n      }\n    ],\n    "id": "estacao-jabaquara",\n    "title": "Jabaquara",\n    "schedule": [\n      {\n        "period": "04h40 às 00h06",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.645754",\n      "longitude": "-46.642084"\n    }\n  },\n  "estacao-conceicao": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 1\n      }\n    ],\n    "id": "estacao-conceicao",\n    "title": "Conceição",\n    "schedule": [\n      {\n        "period": "04h40 às 00h08",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.63537",\n      "longitude": "-46.64146"\n    }\n  },\n  "estacao-sao-judas": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 2\n      }\n    ],\n    "id": "estacao-sao-judas",\n    "title": "São Judas",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.62558",\n      "longitude": "-46.640778"\n    }\n  },\n  "estacao-saude": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 3\n      }\n    ],\n    "id": "estacao-saude",\n    "title": "Saúde",\n    "schedule": [\n      {\n        "period": "04h40 às 00h12",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.619207",\n      "longitude": "-46.639354"\n    }\n  },\n  "estacao-praca-arvore": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 4\n      }\n    ],\n    "id": "estacao-praca-arvore",\n    "title": "Praça Da árvore",\n    "schedule": [\n      {\n        "period": "04h40 às 00h14",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.61069",\n      "longitude": "-46.637852"\n    }\n  },\n  "estacao-santa-cruz": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 5\n      }\n    ],\n    "id": "estacao-santa-cruz",\n    "title": "Santa Cruz",\n    "schedule": [\n      {\n        "period": "04h40 às 00h16",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.599225",\n      "longitude": "-46.636659"\n    }\n  },\n  "estacao-vila-mariana": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 6\n      }\n    ],\n    "id": "estacao-vila-mariana",\n    "title": "Vila Mariana",\n    "schedule": [\n      {\n        "period": "04h40 às 00h18",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.589541",\n      "longitude": "-46.634701"\n    }\n  },\n  "estacao-ana-rosa": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 7\n      },\n      {\n        "id": "linha-2-verde",\n        "stop": 6\n      }\n    ],\n    "id": "estacao-ana-rosa",\n    "title": "Ana Rosa",\n    "schedule": [\n      {\n        "period": "04h40 às 00h20",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.581376",\n      "longitude": "-46.638388"\n    }\n  },\n  "estacao-paraiso": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 8\n      },\n      {\n        "id": "linha-2-verde",\n        "stop": 7\n      }\n    ],\n    "id": "estacao-paraiso",\n    "title": "Paraíso",\n    "schedule": [\n      {\n        "period": "04h40 às 00h22",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.575029",\n      "longitude": "-46.64075"\n    }\n  },\n  "estacao-vergueiro": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 9\n      }\n    ],\n    "id": "estacao-vergueiro",\n    "title": "Vergueiro",\n    "schedule": [\n      {\n        "period": "04h40 às 00h24",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.568994",\n      "longitude": "-46.639858"\n    }\n  },\n  "estacao-sao-joaquim": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 10\n      }\n    ],\n    "id": "estacao-sao-joaquim",\n    "title": "São Joaquim",\n    "schedule": [\n      {\n        "period": "04h40 às 00h26",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.561912",\n      "longitude": "-46.638652"\n    }\n  },\n  "estacao-liberdade": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 11\n      }\n    ],\n    "id": "estacao-liberdade",\n    "title": "Liberdade",\n    "schedule": [\n      {\n        "period": "04h40 às 00h28",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.555535",\n      "longitude": "-46.635956"\n    }\n  },\n  "estacao-se": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 12\n      },\n      {\n        "id": "linha-3-vermelha",\n        "stop": 12\n      }\n    ],\n    "id": "estacao-se",\n    "title": "Sé",\n    "schedule": [\n      {\n        "period": "04h40 às 00h29",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.549918",\n      "longitude": "-46.633204"\n    }\n  },\n  "estacao-sao-bento": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 13\n      }\n    ],\n    "id": "estacao-sao-bento",\n    "title": "São Bento",\n    "schedule": [\n      {\n        "period": "04h40 às 00h32",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.54469",\n      "longitude": "-46.633263"\n    }\n  },\n  "estacao-luz": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 14\n      },\n      {\n        "id": "linha-4-amarela",\n        "stop": 0\n      }\n    ],\n    "id": "estacao-luz",\n    "title": "Luz",\n    "schedule": [\n      {\n        "period": "04h40 às 00h30",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.537952",\n      "longitude": "-46.633515"\n    }\n  },\n  "estacao-tiradentes": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 15\n      }\n    ],\n    "id": "estacao-tiradentes",\n    "title": "Tiradentes",\n    "schedule": [\n      {\n        "period": "04h40 às 00h28",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.5337729",\n      "longitude": "-46.63232"\n    }\n  },\n  "estacao-armenia": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 16\n      }\n    ],\n    "id": "estacao-armenia",\n    "title": "Armênia",\n    "schedule": [\n      {\n        "period": "04h40 às 00h26",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.5295174",\n      "longitude": "-46.6314382"\n    }\n  },\n  "estacao-portuguesa-tiete": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 17\n      }\n    ],\n    "id": "estacao-portuguesa-tiete",\n    "title": "Portuguesa - Tietê",\n    "schedule": [\n      {\n        "period": "04h40 às 00h24",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.516587",\n      "longitude": "-46.625123"\n    }\n  },\n  "estacao-carandiru": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 18\n      }\n    ],\n    "id": "estacao-carandiru",\n    "title": "Carandiru",\n    "schedule": [\n      {\n        "period": "04h40 às 00h22",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.509654",\n      "longitude": "-46.62491"\n    }\n  },\n  "estacao-santana": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 19\n      }\n    ],\n    "id": "estacao-santana",\n    "title": "Santana",\n    "schedule": [\n      {\n        "period": "04h40 às 00h20",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.503134",\n      "longitude": "-46.623861"\n    }\n  },\n  "estacao-jardim-sao-paulo": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 20\n      }\n    ],\n    "id": "estacao-jardim-sao-paulo",\n    "title": "Jardim São Paulo - Ayrton Senna",\n    "schedule": [\n      {\n        "period": "04h40 às 00h18",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.492233",\n      "longitude": "-46.616687"\n    }\n  },\n  "estacao-parada-inglesa": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 21\n      }\n    ],\n    "id": "estacao-parada-inglesa",\n    "title": "Parada Inglesa",\n    "schedule": [\n      {\n        "period": "04h40 às 00h16",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.487111",\n      "longitude": "-46.608877"\n    }\n  },\n  "estacao-tucuruvi": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 22\n      }\n    ],\n    "id": "estacao-tucuruvi",\n    "title": "Tucuruvi",\n    "schedule": [\n      {\n        "period": "04h40 às 00h14",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.480048",\n      "longitude": "-46.603211"\n    }\n  },\n  "estacao-vila-prudente": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 0\n      }\n    ],\n    "id": "estacao-vila-prudente",\n    "title": "Vila Prudente",\n    "schedule": [\n      {\n        "period": "04h40 às 00h07",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.584695",\n      "longitude": "-46.58153"\n    }\n  },\n  "estacao-tamanduatei": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 1\n      }\n    ],\n    "id": "estacao-tamanduatei",\n    "title": "Tamanduateí",\n    "schedule": [\n      {\n        "period": "04h40 às 00h09",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.592984",\n      "longitude": "-46.589602"\n    }\n  },\n  "estacao-sacoma": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 2\n      }\n    ],\n    "id": "estacao-sacoma",\n    "title": "Sacomã",\n    "schedule": [\n      {\n        "period": "04h40 às 00h11",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.602456",\n      "longitude": "-46.602319"\n    }\n  },\n  "estacao-alto-ipiranga": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 3\n      }\n    ],\n    "id": "estacao-alto-ipiranga",\n    "title": "Alto Do Ipiranga",\n    "schedule": [\n      {\n        "period": "04h40 às 00h13",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.602437",\n      "longitude": "-46.612713"\n    }\n  },\n  "estacao-santos-imigrantes": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 4\n      }\n    ],\n    "id": "estacao-santos-imigrantes",\n    "title": "Santos - Imigrantes",\n    "schedule": [\n      {\n        "period": "04h40 às 0h16",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.595716",\n      "longitude": "-46.620723"\n    }\n  },\n  "estacao-chacara-klabin": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 5\n      }\n    ],\n    "id": "estacao-chacara-klabin",\n    "title": "Chácara Klabin",\n    "schedule": [\n      {\n        "period": "04h40 às 00h18",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.592527",\n      "longitude": "-46.630193"\n    }\n  },\n  "estacao-brigadeiro": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 8\n      }\n    ],\n    "id": "estacao-brigadeiro",\n    "title": "Brigadeiro",\n    "schedule": [\n      {\n        "period": "04h40 às 00h24",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.568241",\n      "longitude": "-46.647981"\n    }\n  },\n  "estacao-trianon-masp": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 9\n      }\n    ],\n    "id": "estacao-trianon-masp",\n    "title": "Trianon - Masp",\n    "schedule": [\n      {\n        "period": "04h40 às 0h22",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.5619028",\n      "longitude": "-46.6468096"\n    }\n  },\n  "estacao-consolacao": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 10\n      }\n    ],\n    "id": "estacao-consolacao",\n    "title": "Consolação",\n    "schedule": [\n      {\n        "period": "04h40 às 00h20",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.558559",\n      "longitude": "-46.659569"\n    }\n  },\n  "estacao-clinicas": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 11\n      }\n    ],\n    "id": "estacao-clinicas",\n    "title": "Clínicas",\n    "schedule": [\n      {\n        "period": "04h40 às 00h18",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.555581",\n      "longitude": "-46.671949"\n    }\n  },\n  "estacao-sumare": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 12\n      }\n    ],\n    "id": "estacao-sumare",\n    "title": "S. N. Sra. De Fátima - Sumaré",\n    "schedule": [\n      {\n        "period": "04h40 às 0h16",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.5506341",\n      "longitude": "-46.6782604"\n    }\n  },\n  "estacao-vila-madalena": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 13\n      }\n    ],\n    "id": "estacao-vila-madalena",\n    "title": "Vila Madalena",\n    "schedule": [\n      {\n        "period": "04h40 às 0h14",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.54672",\n      "longitude": "-46.690738"\n    }\n  },\n  "estacao-itaquera": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 0\n      }\n    ],\n    "id": "estacao-itaquera",\n    "title": "Corinthians - Itaquera",\n    "schedule": [\n      {\n        "period": "04h40 às 0h19",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.541854",\n      "longitude": "-46.470514"\n    }\n  },\n  "estacao-artur-alvim": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 1\n      }\n    ],\n    "id": "estacao-artur-alvim",\n    "title": "Artur Alvim",\n    "schedule": [\n      {\n        "period": "04h40 às 0h21",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.541022",\n      "longitude": "-46.4847"\n    }\n  },\n  "estacao-patriarca": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 2\n      }\n    ],\n    "id": "estacao-patriarca",\n    "title": "Patriarca",\n    "schedule": [\n      {\n        "period": "04h40 às 0h23",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.531079",\n      "longitude": "-46.501715"\n    }\n  },\n  "estacao-guilhermina-esperanca": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 3\n      }\n    ],\n    "id": "estacao-guilhermina-esperanca",\n    "title": "Guilhermina - Esperança",\n    "schedule": [\n      {\n        "period": "04h40 às 0h25",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.529195",\n      "longitude": "-46.516734"\n    }\n  },\n  "estacao-vila-matilde": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 4\n      }\n    ],\n    "id": "estacao-vila-matilde",\n    "title": "Vila Matilde",\n    "schedule": [\n      {\n        "period": "04h40 às 00h27",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.531903",\n      "longitude": "-46.530539"\n    }\n  },\n  "estacao-penha": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 5\n      }\n    ],\n    "id": "estacao-penha",\n    "title": "Penha",\n    "schedule": [\n      {\n        "period": "04h40 às 00h29",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.532992",\n      "longitude": "-46.542828"\n    }\n  },\n  "estacao-carrao": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 6\n      }\n    ],\n    "id": "estacao-carrao",\n    "title": "Carrão",\n    "schedule": [\n      {\n        "period": "04h40 às 0h31",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.538001",\n      "longitude": "-46.561886"\n    }\n  },\n  "estacao-tatuape": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 7\n      }\n    ],\n    "id": "estacao-tatuape",\n    "title": "Tatuapé",\n    "schedule": [\n      {\n        "period": "04h40 às 00h33",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.542064",\n      "longitude": "-46.576215"\n    }\n  },\n  "estacao-belem": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 8\n      }\n    ],\n    "id": "estacao-belem",\n    "title": "Belém",\n    "schedule": [\n      {\n        "period": "04h40 às 0h35",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.54223",\n      "longitude": "-46.589778"\n    }\n  },\n  "estacao-bresser-mooca": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 9\n      }\n    ],\n    "id": "estacao-bresser-mooca",\n    "title": "Bresser - Mooca",\n    "schedule": [\n      {\n        "period": "04h40 às 0h35",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.546596",\n      "longitude": "-46.607323"\n    }\n  },\n  "estacao-bras": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 10\n      }\n    ],\n    "id": "estacao-bras",\n    "title": "Brás",\n    "schedule": [\n      {\n        "period": "04h40 às 0h33",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.547686",\n      "longitude": "-46.615285"\n    }\n  },\n  "estacao-pedro-II": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 11\n      }\n    ],\n    "id": "estacao-pedro-II",\n    "title": "Pedro Ii",\n    "schedule": [\n      {\n        "period": "04h40 às 00h31",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.550022",\n      "longitude": "-46.625727"\n    }\n  },\n  "estacao-anhangabau": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 13\n      }\n    ],\n    "id": "estacao-anhangabau",\n    "title": "Anhangabaú",\n    "schedule": [\n      {\n        "period": "04h40 às 0h27",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.547916",\n      "longitude": "-46.639324"\n    }\n  },\n  "estacao-republica": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 14\n      },\n      {\n        "id": "linha-4-amarela",\n        "stop": 1\n      }\n    ],\n    "id": "estacao-republica",\n    "title": "República",\n    "schedule": [\n      {\n        "period": "04h40 às 00h25",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.541929",\n      "longitude": "-46.642249"\n    }\n  },\n  "estacao-santa-cecilia": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 15\n      }\n    ],\n    "id": "estacao-santa-cecilia",\n    "title": "Santa Cecília",\n    "schedule": [\n      {\n        "period": "04h40 às 00h23",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.538694",\n      "longitude": "-46.649732"\n    }\n  },\n  "estacao-marechal-deodoro": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 16\n      }\n    ],\n    "id": "estacao-marechal-deodoro",\n    "title": "Marechal Deodoro",\n    "schedule": [\n      {\n        "period": "04h40 às 0h21",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.533838",\n      "longitude": "-46.655863"\n    }\n  },\n  "estacao-barra-funda": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 17\n      }\n    ],\n    "id": "estacao-barra-funda",\n    "title": "Palmeiras - Barra Funda",\n    "schedule": [\n      {\n        "period": "04h40 às 0h19",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.525714",\n      "longitude": "-46.666782"\n    }\n  },\n  "estacao-paulista": {\n    "lines": [\n      {\n        "id": "linha-4-amarela",\n        "stop": 2\n      }\n    ],\n    "id": "estacao-paulista",\n    "title": "Paulista",\n    "schedule": [\n      {\n        "period": "04h40 às 00h00",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.555391",\n      "longitude": "-46.662713"\n    }\n  },\n  "estacao-faria-lima": {\n    "lines": [\n      {\n        "id": "linha-4-amarela",\n        "stop": 3\n      }\n    ],\n    "id": "estacao-faria-lima",\n    "title": "Faria Lima",\n    "schedule": [\n      {\n        "period": "04h40 às 00h00",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.566972",\n      "longitude": "-46.693817"\n    }\n  },\n  "estacao-pinheiros": {\n    "lines": [\n      {\n        "id": "linha-4-amarela",\n        "stop": 4\n      }\n    ],\n    "id": "estacao-pinheiros",\n    "title": "Pinheiros",\n    "schedule": [\n      {\n        "period": "04h40 às 00h00",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.566499",\n      "longitude": "-46.702082"\n    }\n  },\n  "estacao-butanta": {\n    "lines": [\n      {\n        "id": "linha-4-amarela",\n        "stop": 5\n      }\n    ],\n    "id": "estacao-butanta",\n    "title": "Butantã",\n    "schedule": [\n      {\n        "period": "04h40 às 00h00",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.571563",\n      "longitude": "-46.708667"\n    }\n  },\n  "estacao-capao-redondo": {\n    "lines": [\n      {\n        "id": "linha-5-lilas",\n        "stop": 0\n      }\n    ],\n    "id": "estacao-capao-redondo",\n    "title": "Capão Redondo",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sábado"\n      }\n    ],\n    "location": {\n      "latitude": "-23.659955",\n      "longitude": "-46.768691"\n    }\n  },\n  "estacao-campo-limpo": {\n    "lines": [\n      {\n        "id": "linha-5-lilas",\n        "stop": 1\n      }\n    ],\n    "id": "estacao-campo-limpo",\n    "title": "Campo Limpo",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sábado"\n      }\n    ],\n    "location": {\n      "latitude": "-23.64897",\n      "longitude": "-46.758831"\n    }\n  },\n  "estacao-vila-belezas": {\n    "lines": [\n      {\n        "id": "linha-5-lilas",\n        "stop": 2\n      }\n    ],\n    "id": "estacao-vila-belezas",\n    "title": "Vila Das Belezas",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sábado"\n      }\n    ],\n    "location": {\n      "latitude": "-23.640191",\n      "longitude": "-46.745659"\n    }\n  },\n  "estacao-giovanni-gronchi": {\n    "lines": [\n      {\n        "id": "linha-5-lilas",\n        "stop": 3\n      }\n    ],\n    "id": "estacao-giovanni-gronchi",\n    "title": "Giovanni Gronchi",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sábado"\n      }\n    ],\n    "location": {\n      "latitude": "-23.643901",\n      "longitude": "-46.734486"\n    }\n  },\n  "estacao-santo-amaro": {\n    "lines": [\n      {\n        "id": "linha-5-lilas",\n        "stop": 4\n      }\n    ],\n    "id": "estacao-santo-amaro",\n    "title": "Santo Amaro",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sábado"\n      }\n    ],\n    "location": {\n      "latitude": "-23.655916",\n      "longitude": "-46.719686"\n    }\n  },\n  "estacao-largo-treze": {\n    "lines": [\n      {\n        "id": "linha-5-lilas",\n        "stop": 5\n      }\n    ],\n    "id": "estacao-largo-treze",\n    "title": "Largo Treze",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sábado"\n      }\n    ],\n    "location": {\n      "latitude": "-23.65453",\n      "longitude": "-46.710536"\n    }\n  }\n}\n';});
+define('text!stations.json',[],function () { return '{\n  "estacao-jabaquara": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 0\n      }\n    ],\n    "id": "estacao-jabaquara",\n    "title": "Jabaquara",\n    "schedule": [\n      {\n        "period": "04h40 às 00h06",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.645754",\n      "longitude": "-46.642084",\n      "address": "Rua Dos Jequitibás, 80"\n    }\n  },\n  "estacao-conceicao": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 1\n      }\n    ],\n    "id": "estacao-conceicao",\n    "title": "Conceição",\n    "schedule": [\n      {\n        "period": "04h40 às 00h08",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.63537",\n      "longitude": "-46.64146",\n      "address": "Av. Eng. Armando De Arruda Pereira, 919"\n    }\n  },\n  "estacao-sao-judas": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 2\n      }\n    ],\n    "id": "estacao-sao-judas",\n    "title": "São Judas",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.62558",\n      "longitude": "-46.640778",\n      "address": "Av. Jabaquara, 2438"\n    }\n  },\n  "estacao-saude": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 3\n      }\n    ],\n    "id": "estacao-saude",\n    "title": "Saúde",\n    "schedule": [\n      {\n        "period": "04h40 às 00h12",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.619207",\n      "longitude": "-46.639354",\n      "address": "Av. Jabaquara, 1634"\n    }\n  },\n  "estacao-praca-arvore": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 4\n      }\n    ],\n    "id": "estacao-praca-arvore",\n    "title": "Praça Da árvore",\n    "schedule": [\n      {\n        "period": "04h40 às 00h14",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.61069",\n      "longitude": "-46.637852",\n      "address": "Praça Da árvore, 39"\n    }\n  },\n  "estacao-santa-cruz": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 5\n      }\n    ],\n    "id": "estacao-santa-cruz",\n    "title": "Santa Cruz",\n    "schedule": [\n      {\n        "period": "04h40 às 00h16",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.599225",\n      "longitude": "-46.636659",\n      "address": "Rua Domingos De Morais, 2564"\n    }\n  },\n  "estacao-vila-mariana": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 6\n      }\n    ],\n    "id": "estacao-vila-mariana",\n    "title": "Vila Mariana",\n    "schedule": [\n      {\n        "period": "04h40 às 00h18",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.589541",\n      "longitude": "-46.634701",\n      "address": "Av. Prof. Noé Azevedo, 255"\n    }\n  },\n  "estacao-ana-rosa": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 7\n      },\n      {\n        "id": "linha-2-verde",\n        "stop": 6\n      }\n    ],\n    "id": "estacao-ana-rosa",\n    "title": "Ana Rosa",\n    "schedule": [\n      {\n        "period": "04h40 às 00h20",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.581376",\n      "longitude": "-46.638388",\n      "address": "Rua Domingos De Morais, 505"\n    }\n  },\n  "estacao-paraiso": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 8\n      },\n      {\n        "id": "linha-2-verde",\n        "stop": 7\n      }\n    ],\n    "id": "estacao-paraiso",\n    "title": "Paraíso",\n    "schedule": [\n      {\n        "period": "04h40 às 00h22",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.575029",\n      "longitude": "-46.64075",\n      "address": "Rua Vergueiro, 1456"\n    }\n  },\n  "estacao-vergueiro": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 9\n      }\n    ],\n    "id": "estacao-vergueiro",\n    "title": "Vergueiro",\n    "schedule": [\n      {\n        "period": "04h40 às 00h24",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.568994",\n      "longitude": "-46.639858",\n      "address": "Rua Vergueiro, 790"\n    }\n  },\n  "estacao-sao-joaquim": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 10\n      }\n    ],\n    "id": "estacao-sao-joaquim",\n    "title": "São Joaquim",\n    "schedule": [\n      {\n        "period": "04h40 às 00h26",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.561912",\n      "longitude": "-46.638652",\n      "address": "Av. Liberdade, 1033"\n    }\n  },\n  "estacao-liberdade": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 11\n      }\n    ],\n    "id": "estacao-liberdade",\n    "title": "Liberdade",\n    "schedule": [\n      {\n        "period": "04h40 às 00h28",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.555535",\n      "longitude": "-46.635956",\n      "address": "Praça Da Liberdade, 133"\n    }\n  },\n  "estacao-se": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 12\n      },\n      {\n        "id": "linha-3-vermelha",\n        "stop": 12\n      }\n    ],\n    "id": "estacao-se",\n    "title": "Sé",\n    "schedule": [\n      {\n        "period": "04h40 às 00h29",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.549918",\n      "longitude": "-46.633204",\n      "address": "Praça Da Sé, S/nº"\n    }\n  },\n  "estacao-sao-bento": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 13\n      }\n    ],\n    "id": "estacao-sao-bento",\n    "title": "São Bento",\n    "schedule": [\n      {\n        "period": "04h40 às 00h32",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.54469",\n      "longitude": "-46.633263",\n      "address": "Largo São Bento, 109"\n    }\n  },\n  "estacao-luz": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 14\n      },\n      {\n        "id": "linha-4-amarela",\n        "stop": 0\n      }\n    ],\n    "id": "estacao-luz",\n    "title": "Luz",\n    "schedule": [\n      {\n        "period": "04h40 às 00h30",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.537952",\n      "longitude": "-46.633515",\n      "address": "Av. Prestes Maia, 925"\n    }\n  },\n  "estacao-tiradentes": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 15\n      }\n    ],\n    "id": "estacao-tiradentes",\n    "title": "Tiradentes",\n    "schedule": [\n      {\n        "period": "04h40 às 00h28",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.5337729",\n      "longitude": "-46.63232",\n      "address": "Av. Tiradentes, 551"\n    }\n  },\n  "estacao-armenia": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 16\n      }\n    ],\n    "id": "estacao-armenia",\n    "title": "Armênia",\n    "schedule": [\n      {\n        "period": "04h40 às 00h26",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.5295174",\n      "longitude": "-46.6314382",\n      "address": "Rua Pedro Vicente, 47"\n    }\n  },\n  "estacao-portuguesa-tiete": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 17\n      }\n    ],\n    "id": "estacao-portuguesa-tiete",\n    "title": "Portuguesa - Tietê",\n    "schedule": [\n      {\n        "period": "04h40 às 00h24",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.516587",\n      "longitude": "-46.625123",\n      "address": "Av. Cruzeiro Do Sul, 1777"\n    }\n  },\n  "estacao-carandiru": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 18\n      }\n    ],\n    "id": "estacao-carandiru",\n    "title": "Carandiru",\n    "schedule": [\n      {\n        "period": "04h40 às 00h22",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.509654",\n      "longitude": "-46.62491",\n      "address": "Av. Cruzeiro Do Sul, 2487"\n    }\n  },\n  "estacao-santana": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 19\n      }\n    ],\n    "id": "estacao-santana",\n    "title": "Santana",\n    "schedule": [\n      {\n        "period": "04h40 às 00h20",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.503134",\n      "longitude": "-46.623861",\n      "address": "Av. Cruzeiro Do Sul, 3173"\n    }\n  },\n  "estacao-jardim-sao-paulo": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 20\n      }\n    ],\n    "id": "estacao-jardim-sao-paulo",\n    "title": "Jardim São Paulo - Ayrton Senna",\n    "schedule": [\n      {\n        "period": "04h40 às 00h18",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.492233",\n      "longitude": "-46.616687",\n      "address": "Av. Leôncio De Magalhães, 1000"\n    }\n  },\n  "estacao-parada-inglesa": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 21\n      }\n    ],\n    "id": "estacao-parada-inglesa",\n    "title": "Parada Inglesa",\n    "schedule": [\n      {\n        "period": "04h40 às 00h16",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.487111",\n      "longitude": "-46.608877",\n      "address": "Av. Luís Dumont Villares, 1721"\n    }\n  },\n  "estacao-tucuruvi": {\n    "lines": [\n      {\n        "id": "linha-1-azul",\n        "stop": 22\n      }\n    ],\n    "id": "estacao-tucuruvi",\n    "title": "Tucuruvi",\n    "schedule": [\n      {\n        "period": "04h40 às 00h14",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.480048",\n      "longitude": "-46.603211",\n      "address": "Av. Dr. Antonio Maria De Laet, 100"\n    }\n  },\n  "estacao-vila-prudente": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 0\n      }\n    ],\n    "id": "estacao-vila-prudente",\n    "title": "Vila Prudente",\n    "schedule": [\n      {\n        "period": "04h40 às 00h07",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.584695",\n      "longitude": "-46.58153",\n      "address": "Avenida Professor Luiz Inácio De Anhaia Mello, 1.359"\n    }\n  },\n  "estacao-tamanduatei": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 1\n      }\n    ],\n    "id": "estacao-tamanduatei",\n    "title": "Tamanduateí",\n    "schedule": [\n      {\n        "period": "04h40 às 00h09",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.592984",\n      "longitude": "-46.589602",\n      "address": "Entre A Avenida Presidente Wilson E A Rua Guamiranga."\n    }\n  },\n  "estacao-sacoma": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 2\n      }\n    ],\n    "id": "estacao-sacoma",\n    "title": "Sacomã",\n    "schedule": [\n      {\n        "period": "04h40 às 00h11",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.602456",\n      "longitude": "-46.602319",\n      "address": "Sob A Rua Greenfeld, Entre As Ruas Bom Pastor E Lino Coutinho. "\n    }\n  },\n  "estacao-alto-ipiranga": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 3\n      }\n    ],\n    "id": "estacao-alto-ipiranga",\n    "title": "Alto Do Ipiranga",\n    "schedule": [\n      {\n        "period": "04h40 às 00h13",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.602437",\n      "longitude": "-46.612713",\n      "address": "Rua Dr. Gentil De Moura, Esquina Com Rua Visconde De Pirajá."\n    }\n  },\n  "estacao-santos-imigrantes": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 4\n      }\n    ],\n    "id": "estacao-santos-imigrantes",\n    "title": "Santos - Imigrantes",\n    "schedule": [\n      {\n        "period": "04h40 às 0h16",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.595716",\n      "longitude": "-46.620723",\n      "address": "Paralela Ao Viaduto Saioá E Perpendicular à Av. Dr. Ricardo Jafet"\n    }\n  },\n  "estacao-chacara-klabin": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 5\n      }\n    ],\n    "id": "estacao-chacara-klabin",\n    "title": "Chácara Klabin",\n    "schedule": [\n      {\n        "period": "04h40 às 00h18",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.592527",\n      "longitude": "-46.630193",\n      "address": "Rua Vergueiro Em Frente Ao Instituto De Ensino Liceu Pasteur."\n    }\n  },\n  "estacao-brigadeiro": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 8\n      }\n    ],\n    "id": "estacao-brigadeiro",\n    "title": "Brigadeiro",\n    "schedule": [\n      {\n        "period": "04h40 às 00h24",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.568241",\n      "longitude": "-46.647981",\n      "address": "Av. Paulista, S/nº (em Frente Ao Nº 447)"\n    }\n  },\n  "estacao-trianon-masp": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 9\n      }\n    ],\n    "id": "estacao-trianon-masp",\n    "title": "Trianon - Masp",\n    "schedule": [\n      {\n        "period": "04h40 às 0h22",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.5619028",\n      "longitude": "-46.6468096",\n      "address": "Av. Paulista, S/nº (em Frente Ao Nº 1485)"\n    }\n  },\n  "estacao-consolacao": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 10\n      }\n    ],\n    "id": "estacao-consolacao",\n    "title": "Consolação",\n    "schedule": [\n      {\n        "period": "04h40 às 00h20",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.558559",\n      "longitude": "-46.659569",\n      "address": "Av. Paulista, S/nº (em Frente Ao Nº 2163)"\n    }\n  },\n  "estacao-clinicas": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 11\n      }\n    ],\n    "id": "estacao-clinicas",\n    "title": "Clínicas",\n    "schedule": [\n      {\n        "period": "04h40 às 00h18",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.555581",\n      "longitude": "-46.671949",\n      "address": "Av. Dr. Arnaldo, 555"\n    }\n  },\n  "estacao-sumare": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 12\n      }\n    ],\n    "id": "estacao-sumare",\n    "title": "S. N. Sra. De Fátima - Sumaré",\n    "schedule": [\n      {\n        "period": "04h40 às 0h16",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.5506341",\n      "longitude": "-46.6782604",\n      "address": "Av. Dr.arnaldo, 1470"\n    }\n  },\n  "estacao-vila-madalena": {\n    "lines": [\n      {\n        "id": "linha-2-verde",\n        "stop": 13\n      }\n    ],\n    "id": "estacao-vila-madalena",\n    "title": "Vila Madalena",\n    "schedule": [\n      {\n        "period": "04h40 às 0h14",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.54672",\n      "longitude": "-46.690738",\n      "address": "Praça Américo Jacomino, 30"\n    }\n  },\n  "estacao-itaquera": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 0\n      }\n    ],\n    "id": "estacao-itaquera",\n    "title": "Corinthians - Itaquera",\n    "schedule": [\n      {\n        "period": "04h40 às 0h19",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.541854",\n      "longitude": "-46.470514",\n      "address": "Av. Projetada, 1900"\n    }\n  },\n  "estacao-artur-alvim": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 1\n      }\n    ],\n    "id": "estacao-artur-alvim",\n    "title": "Artur Alvim",\n    "schedule": [\n      {\n        "period": "04h40 às 0h21",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.541022",\n      "longitude": "-46.4847",\n      "address": "Av. Dr. Luiz Aires, 1800"\n    }\n  },\n  "estacao-patriarca": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 2\n      }\n    ],\n    "id": "estacao-patriarca",\n    "title": "Patriarca",\n    "schedule": [\n      {\n        "period": "04h40 às 0h23",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.531079",\n      "longitude": "-46.501715",\n      "address": "Av. Antonio E. Carvalho, 1990"\n    }\n  },\n  "estacao-guilhermina-esperanca": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 3\n      }\n    ],\n    "id": "estacao-guilhermina-esperanca",\n    "title": "Guilhermina - Esperança",\n    "schedule": [\n      {\n        "period": "04h40 às 0h25",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.529195",\n      "longitude": "-46.516734",\n      "address": "Rua Astorga, 800"\n    }\n  },\n  "estacao-vila-matilde": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 4\n      }\n    ],\n    "id": "estacao-vila-matilde",\n    "title": "Vila Matilde",\n    "schedule": [\n      {\n        "period": "04h40 às 00h27",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.531903",\n      "longitude": "-46.530539",\n      "address": "Rua Cel. Pedro Dias De Campos, 1173"\n    }\n  },\n  "estacao-penha": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 5\n      }\n    ],\n    "id": "estacao-penha",\n    "title": "Penha",\n    "schedule": [\n      {\n        "period": "04h40 às 00h29",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.532992",\n      "longitude": "-46.542828",\n      "address": "Av. Conde De Frontin, S/nº"\n    }\n  },\n  "estacao-carrao": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 6\n      }\n    ],\n    "id": "estacao-carrao",\n    "title": "Carrão",\n    "schedule": [\n      {\n        "period": "04h40 às 0h31",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.538001",\n      "longitude": "-46.561886",\n      "address": "Av. Radial Leste, S/nº (esquina Com Rua Apucarana)"\n    }\n  },\n  "estacao-tatuape": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 7\n      }\n    ],\n    "id": "estacao-tatuape",\n    "title": "Tatuapé",\n    "schedule": [\n      {\n        "period": "04h40 às 00h33",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.542064",\n      "longitude": "-46.576215",\n      "address": "Rua Melo Freire, S/nº (esquina Com A Rua Tuiuti)"\n    }\n  },\n  "estacao-belem": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 8\n      }\n    ],\n    "id": "estacao-belem",\n    "title": "Belém",\n    "schedule": [\n      {\n        "period": "04h40 às 0h35",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.54223",\n      "longitude": "-46.589778",\n      "address": "Av. Alcântara Machado, S/nº"\n    }\n  },\n  "estacao-bresser-mooca": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 9\n      }\n    ],\n    "id": "estacao-bresser-mooca",\n    "title": "Bresser - Mooca",\n    "schedule": [\n      {\n        "period": "04h40 às 0h35",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.546596",\n      "longitude": "-46.607323",\n      "address": "Rua Do Hipódromo, S/nº"\n    }\n  },\n  "estacao-bras": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 10\n      }\n    ],\n    "id": "estacao-bras",\n    "title": "Brás",\n    "schedule": [\n      {\n        "period": "04h40 às 0h33",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.547686",\n      "longitude": "-46.615285",\n      "address": "Rua Domingos Paiva, S/nº"\n    }\n  },\n  "estacao-pedro-II": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 11\n      }\n    ],\n    "id": "estacao-pedro-II",\n    "title": "Pedro Ii",\n    "schedule": [\n      {\n        "period": "04h40 às 00h31",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.550022",\n      "longitude": "-46.625727",\n      "address": "Rua Da Figueira, S/nº"\n    }\n  },\n  "estacao-anhangabau": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 13\n      }\n    ],\n    "id": "estacao-anhangabau",\n    "title": "Anhangabaú",\n    "schedule": [\n      {\n        "period": "04h40 às 0h27",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.547916",\n      "longitude": "-46.639324",\n      "address": "Rua Formosa, S/nº"\n    }\n  },\n  "estacao-republica": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 14\n      },\n      {\n        "id": "linha-4-amarela",\n        "stop": 1\n      }\n    ],\n    "id": "estacao-republica",\n    "title": "República",\n    "schedule": [\n      {\n        "period": "04h40 às 00h25",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.541929",\n      "longitude": "-46.642249",\n      "address": "Rua Do Arouche, 24"\n    }\n  },\n  "estacao-santa-cecilia": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 15\n      }\n    ],\n    "id": "estacao-santa-cecilia",\n    "title": "Santa Cecília",\n    "schedule": [\n      {\n        "period": "04h40 às 00h23",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.538694",\n      "longitude": "-46.649732",\n      "address": "Largo Santa Cecília, S/nº"\n    }\n  },\n  "estacao-marechal-deodoro": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 16\n      }\n    ],\n    "id": "estacao-marechal-deodoro",\n    "title": "Marechal Deodoro",\n    "schedule": [\n      {\n        "period": "04h40 às 0h21",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.533838",\n      "longitude": "-46.655863",\n      "address": "Praça Marechal Deodoro, S/nº"\n    }\n  },\n  "estacao-barra-funda": {\n    "lines": [\n      {\n        "id": "linha-3-vermelha",\n        "stop": 17\n      }\n    ],\n    "id": "estacao-barra-funda",\n    "title": "Palmeiras - Barra Funda",\n    "schedule": [\n      {\n        "period": "04h40 às 0h19",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.525714",\n      "longitude": "-46.666782",\n      "address": "Rua Bento Teobaldo Ferraz,119"\n    }\n  },\n  "estacao-paulista": {\n    "lines": [\n      {\n        "id": "linha-4-amarela",\n        "stop": 2\n      }\n    ],\n    "id": "estacao-paulista",\n    "title": "Paulista",\n    "schedule": [\n      {\n        "period": "04h40 às 00h00",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.555391",\n      "longitude": "-46.662713",\n      "address": "Rua Da Consolação, Próxima Ao Cruzamento Com A Avenida Paulista."\n    }\n  },\n  "estacao-faria-lima": {\n    "lines": [\n      {\n        "id": "linha-4-amarela",\n        "stop": 3\n      }\n    ],\n    "id": "estacao-faria-lima",\n    "title": "Faria Lima",\n    "schedule": [\n      {\n        "period": "04h40 às 00h00",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.566972",\n      "longitude": "-46.693817",\n      "address": "Avenida Faria Lima, Altura Do Número 940."\n    }\n  },\n  "estacao-pinheiros": {\n    "lines": [\n      {\n        "id": "linha-4-amarela",\n        "stop": 4\n      }\n    ],\n    "id": "estacao-pinheiros",\n    "title": "Pinheiros",\n    "schedule": [\n      {\n        "period": "04h40 às 00h00",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.566499",\n      "longitude": "-46.702082",\n      "address": "Rua Capri, 145."\n    }\n  },\n  "estacao-butanta": {\n    "lines": [\n      {\n        "id": "linha-4-amarela",\n        "stop": 5\n      }\n    ],\n    "id": "estacao-butanta",\n    "title": "Butantã",\n    "schedule": [\n      {\n        "period": "04h40 às 00h00",\n        "title": "Domingo A Sexta"\n      },\n      {\n        "period": "04h40 às 01h00",\n        "title": "Sábados"\n      }\n    ],\n    "location": {\n      "latitude": "-23.571563",\n      "longitude": "-46.708667",\n      "address": "Avenida Vital Brasil, Esquina Com A Rua Pirajussara."\n    }\n  },\n  "estacao-capao-redondo": {\n    "lines": [\n      {\n        "id": "linha-5-lilas",\n        "stop": 0\n      }\n    ],\n    "id": "estacao-capao-redondo",\n    "title": "Capão Redondo",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sábado"\n      }\n    ],\n    "location": {\n      "latitude": "-23.659955",\n      "longitude": "-46.768691",\n      "address": "Av. Carlos Caldeira Filho, 4261"\n    }\n  },\n  "estacao-campo-limpo": {\n    "lines": [\n      {\n        "id": "linha-5-lilas",\n        "stop": 1\n      }\n    ],\n    "id": "estacao-campo-limpo",\n    "title": "Campo Limpo",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sábado"\n      }\n    ],\n    "location": {\n      "latitude": "-23.64897",\n      "longitude": "-46.758831",\n      "address": "Rua Noanama, 85"\n    }\n  },\n  "estacao-vila-belezas": {\n    "lines": [\n      {\n        "id": "linha-5-lilas",\n        "stop": 2\n      }\n    ],\n    "id": "estacao-vila-belezas",\n    "title": "Vila Das Belezas",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sábado"\n      }\n    ],\n    "location": {\n      "latitude": "-23.640191",\n      "longitude": "-46.745659",\n      "address": "Av. Das Belezas, 880"\n    }\n  },\n  "estacao-giovanni-gronchi": {\n    "lines": [\n      {\n        "id": "linha-5-lilas",\n        "stop": 3\n      }\n    ],\n    "id": "estacao-giovanni-gronchi",\n    "title": "Giovanni Gronchi",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sábado"\n      }\n    ],\n    "location": {\n      "latitude": "-23.643901",\n      "longitude": "-46.734486",\n      "address": "Av. João Dias, 3569"\n    }\n  },\n  "estacao-santo-amaro": {\n    "lines": [\n      {\n        "id": "linha-5-lilas",\n        "stop": 4\n      }\n    ],\n    "id": "estacao-santo-amaro",\n    "title": "Santo Amaro",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sábado"\n      }\n    ],\n    "location": {\n      "latitude": "-23.655916",\n      "longitude": "-46.719686",\n      "address": "Av. Guido Caloi, 2221"\n    }\n  },\n  "estacao-largo-treze": {\n    "lines": [\n      {\n        "id": "linha-5-lilas",\n        "stop": 5\n      }\n    ],\n    "id": "estacao-largo-treze",\n    "title": "Largo Treze",\n    "schedule": [\n      {\n        "period": "04h40 às 00h10",\n        "title": "Domingo A Sábado"\n      }\n    ],\n    "location": {\n      "latitude": "-23.65453",\n      "longitude": "-46.710536",\n      "address": "Av Padre José Maria Com Rua Barão Do Rio Branco."\n    }\n  }\n}\n';});
 
 
 define('text!partials/directions_detail.html',[],function () { return '<div id="map">\n  map\n</div>\n<div class="steps">\n  <ul>\n    <li v-repeat="steps">\n      <span v-repeat="step: steps[$index]">\n        <span class="step {{step.line.name}}">{{step.departure}}</span>\n      </span>\n      <button v-on="click: selectRoute($index, $event)">Select</button>\n    </li>\n  </ul>\n</div>\n<div class="instructions">\n  <ul>\n    <li v-repeat="instructions">{{$value}}</li>\n  </ul>\n</div>\n';});
@@ -18193,6 +18202,20 @@ define(
     return marker;
   };
 
+  p.setAreaRange = function(options) {
+    var areaRange = new gmaps.Circle(
+      mixIn(
+        config.areaRange,
+        {map: this.map, center: this.location},
+        options
+      )
+    );
+
+    areaRange.bindTo('center', options.marker, 'position');
+
+    return areaRange;
+  };
+
   // TODO: This should be declared in the parent element
   p.formatInfoWindowContent = function(options) {
     return  '<div class="js-info-window info-window" data-station-id="' + options.id + '">' +
@@ -18298,6 +18321,7 @@ define(
 
     methods: {
       initialize: function() {
+        this.$dispatch('app:sectionReady', this);
         this.setupMap();
       },
 
@@ -18342,7 +18366,7 @@ define(
       },
 
       markerClick: function(id) {
-        this.$root.$emit('app:setView', 'station', id);
+        this.$dispatch('app:setView', 'station', {id: id});
       },
 
       placeLines: function() {
@@ -18445,7 +18469,7 @@ define(
     template: template,
 
     data: {
-      id: 'estacao-barra-funda',
+      id: '',
       info: {}
     },
 
@@ -18456,6 +18480,8 @@ define(
 
     methods: {
       initialize: function() {
+        // Notifying section ready.
+        this.$dispatch('app:sectionReady', this);
         this.setupMap();
       },
 
@@ -18468,13 +18494,23 @@ define(
           // mapTypeId: gmaps.MapTypeId.TERRAIN
         });
         this.stationMap.initialize();
-        this.stationMap.on.loaded.addOnce(this.setMarkers, this);
+        this.stationMap.on.loaded.addOnce(this.setMarker, this);
 
         console.log('station :: setupMap() :: Creating map for "%s" station', this.id);
       },
 
-      setMarkers: function() {
+      setMarker: function() {
         console.log('station :: setMarkers()');
+        var marker;
+
+        marker = this.stationMap.setMarker({
+          position: this.location,
+          animation: gmaps.Animation.BOUNCE
+        });
+
+        this.stationMap.setAreaRange({
+          marker: marker
+        });
       }
     }
   });
@@ -18548,6 +18584,7 @@ requirejs(
     'config',
     'vue',
     'lib/gmaps',
+    'mout/object/mixIn',
     'modules/router',
     'modules/header',
     'modules/navigation',
@@ -18562,6 +18599,7 @@ requirejs(
     config,
     Vue,
     gmaps,
+    mixIn,
     Router,
     Header,
     Navigation,
@@ -18593,12 +18631,10 @@ requirejs(
           'station': Sections.station,
           'header': Header,
           'navigation': Navigation
-          // 'directions': Directions,
-          // 'directions-detail': DirectionsDetail,
-          // 'map': Map
         },
 
         ready: function() {
+          this.$on('app:sectionReady', this.sectionReady);
           this.$on('app:setView', this.setView);
         },
 
@@ -18607,6 +18643,17 @@ requirejs(
         },
 
         methods: {
+          // TODO: Find a better approach to do this.
+          sectionReady: function(section) {
+            // Merge section data with options that were passed on `app:setView`
+            section.$data = $.extend(section.$data, this.currentViewOptions);
+          },
+
+          /**
+           * Setup a new view.
+           * @param {String} view View id.
+           * @param {Object} options Options (optional).
+           */
           setView: function(view, options) {
             var log = 'application :: setView() :: Should broadcast new view "%s"';
 
@@ -18617,14 +18664,15 @@ requirejs(
             console.log(log, view, options);
 
             this.currentView = view;
-
-            // this.$broadcast('app:setView:' + view, options);
+            this.currentViewOptions = options;
           }
         }
       });
     }
 
     function _bootstrap() {
+      Vue.config('debug', config.debug);
+
       _setupApp();
       _setupRouter();
     }

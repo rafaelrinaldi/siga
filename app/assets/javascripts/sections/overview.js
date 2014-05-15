@@ -63,6 +63,7 @@ define(
 
     methods: {
       initialize: function() {
+        this.$dispatch('app:sectionReady', this);
         this.setupMap();
       },
 
@@ -107,7 +108,7 @@ define(
       },
 
       markerClick: function(id) {
-        this.$root.$emit('app:setView', 'station', id);
+        this.$dispatch('app:setView', 'station', {id: id});
       },
 
       placeLines: function() {

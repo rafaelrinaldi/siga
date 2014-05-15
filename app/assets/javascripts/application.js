@@ -49,6 +49,7 @@ requirejs(
     'config',
     'vue',
     'lib/gmaps',
+    'mout/object/mixIn',
     'modules/router',
     'modules/header',
     'modules/navigation',
@@ -63,6 +64,7 @@ requirejs(
     config,
     Vue,
     gmaps,
+    mixIn,
     Router,
     Header,
     Navigation,
@@ -94,12 +96,10 @@ requirejs(
           'station': Sections.station,
           'header': Header,
           'navigation': Navigation
-          // 'directions': Directions,
-          // 'directions-detail': DirectionsDetail,
-          // 'map': Map
         },
 
         ready: function() {
+          this.$on('app:sectionReady', this.sectionReady);
           this.$on('app:setView', this.setView);
         },
 
@@ -108,6 +108,17 @@ requirejs(
         },
 
         methods: {
+          // TODO: Find a better approach to do this.
+          sectionReady: function(section) {
+            // Merge section data with options that were passed on `app:setView`
+            section.$data = $.extend(section.$data, this.currentViewOptions);
+          },
+
+          /**
+           * Setup a new view.
+           * @param {String} view View id.
+           * @param {Object} options Options (optional).
+           */
           setView: function(view, options) {
             var log = 'application :: setView() :: Should broadcast new view "%s"';
 
@@ -118,14 +129,15 @@ requirejs(
             console.log(log, view, options);
 
             this.currentView = view;
-
-            // this.$broadcast('app:setView:' + view, options);
+            this.currentViewOptions = options;
           }
         }
       });
     }
 
     function _bootstrap() {
+      Vue.config('debug', config.debug);
+
       _setupApp();
       _setupRouter();
     }

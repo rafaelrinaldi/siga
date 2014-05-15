@@ -102,6 +102,20 @@ define(
     return marker;
   };
 
+  p.setAreaRange = function(options) {
+    var areaRange = new gmaps.Circle(
+      mixIn(
+        config.areaRange,
+        {map: this.map, center: this.location},
+        options
+      )
+    );
+
+    areaRange.bindTo('center', options.marker, 'position');
+
+    return areaRange;
+  };
+
   // TODO: This should be declared in the parent element
   p.formatInfoWindowContent = function(options) {
     return  '<div class="js-info-window info-window" data-station-id="' + options.id + '">' +

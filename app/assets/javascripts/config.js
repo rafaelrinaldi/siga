@@ -1,6 +1,6 @@
 define({
   //>>includeStart("offline", pragmas.offline);
-  debug: true,
+  debug: false,
   //>>includeEnd("offline");
 
   defaultCoordinates: {
@@ -25,5 +25,14 @@ define({
   infoWindow: {
     width: 150,
     height: 50
+  },
+
+  areaRange: {
+    strokeColor: '#3498db',
+    strokeOpacity: .65,
+    strokeWeight: 2,
+    fillColor: '#3498db',
+    fillOpacity: .15,
+    radius: 175 // in meters
   }
 });

@@ -21,7 +21,7 @@ define(
     template: template,
 
     data: {
-      id: 'estacao-barra-funda',
+      id: '',
       info: {}
     },
 
@@ -32,6 +32,8 @@ define(
 
     methods: {
       initialize: function() {
+        // Notifying section ready.
+        this.$dispatch('app:sectionReady', this);
         this.setupMap();
       },
 
@@ -44,13 +46,23 @@ define(
           // mapTypeId: gmaps.MapTypeId.TERRAIN
         });
         this.stationMap.initialize();
-        this.stationMap.on.loaded.addOnce(this.setMarkers, this);
+        this.stationMap.on.loaded.addOnce(this.setMarker, this);
 
         console.log('station :: setupMap() :: Creating map for "%s" station', this.id);
       },
 
-      setMarkers: function() {
+      setMarker: function() {
         console.log('station :: setMarkers()');
+        var marker;
+
+        marker = this.stationMap.setMarker({
+          position: this.location,
+          animation: gmaps.Animation.BOUNCE
+        });
+
+        this.stationMap.setAreaRange({
+          marker: marker
+        });
       }
     }
   });
