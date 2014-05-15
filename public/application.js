@@ -18348,8 +18348,8 @@ define(
       setupMap: function() {
         this.overviewMap = new Map('#overview-map');
         this.overviewMap.initialize();
+        // Request user location when map is loaded
         this.overviewMap.on.loaded.addOnce(this.requestUserLocation, this);
-        // this.overviewMap.on.loaded.addOnce(this.placeLines, this);
         this.overviewMap.on.markerClick.add(this.markerClick, this);
       },
 
@@ -18424,9 +18424,9 @@ define(
               // TODO: Change icon symbol
               icon: {
                 path: gmaps.SymbolPath.CIRCLE,
-                scale: 3,
+                scale: 2,
                 strokeColor: color,
-                strokeWeight: 15
+                strokeWeight: 12
               }
             });
 
