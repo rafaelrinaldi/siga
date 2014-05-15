@@ -116,7 +116,7 @@ define(
     return areaRange;
   };
 
-  // TODO: This should be declared in the parent element
+  // TODO: This should be declared outside of this context
   p.formatInfoWindowContent = function(options) {
     return  '<div class="js-info-window info-window" data-station-id="' + options.id + '">' +
               '<strong>' + options.content + '</strong>' +

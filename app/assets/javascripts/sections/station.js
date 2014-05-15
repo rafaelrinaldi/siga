@@ -34,12 +34,12 @@ define(
       initialize: function() {
         // Notifying section ready.
         this.$dispatch('app:sectionReady', this);
+
         this.setupMap();
       },
 
       setupMap: function() {
         this.station = getStationById(this.id);
-        console.log(this.station.schedule);
         this.location = toLatLng(this.station.location);
         this.stationMap = new Map('#station-map', {
           center: this.location,
@@ -54,6 +54,7 @@ define(
 
       setMarker: function() {
         console.log('station :: setMarkers()');
+
         var marker,
             area;
 

@@ -8,6 +8,7 @@ define(
   'services/getUserLocation',
   'services/getStations',
   'services/getStationByName',
+  'services/getLine',
   'services/getLines',
   'services/getLineStations',
   'modules/map',
@@ -22,6 +23,7 @@ define(
   getUserLocation,
   getStations,
   getStationByName,
+  getLine,
   getLines,
   getLineStations,
   Map,
@@ -32,32 +34,8 @@ define(
   return Vue.extend({
     template: template,
 
-    data: {
-      lineOptions: {
-        'linha-1-azul': {
-          color: 'blue'
-        },
-
-        'linha-2-verde': {
-          color: 'green'
-        },
-
-        'linha-3-vermelha': {
-          color: 'red'
-        },
-
-        'linha-4-amarela': {
-          color: 'yellow'
-        },
-
-        'linha-5-lilas': {
-          color: 'magenta'
-        }
-      }
-    },
-
     ready: function() {
-      // make sure dom is loaded and then fire the initialization method
+      // Make sure dom is loaded and then fire the initialization method
       $($.proxy(this.initialize, this));
     },
 
@@ -120,7 +98,7 @@ define(
             points = [],
             allPoints = [],
             map = this.overviewMap,
-            lineOptions = this.lineOptions,
+            lineModel = {},
             lineStations = {},
             stations;
 
@@ -128,14 +106,14 @@ define(
 
         $.each(lines, function(index, line) {
 
+          lineModel = getLine(line);
           stations = getLineStations(line);
           points = [];
 
           $.each(stations, function(index, station) {
 
-            console.log(station);
             position = toLatLng(station.location);
-            color = lineOptions[line].color;
+            color = lineModel.color;
 
             // TODO: add a check to only print a marker if there's no marker for that coords
             map.setMarker({
@@ -143,6 +121,7 @@ define(
               content: station.title,
               id: station.id,
               // TODO: Move icon options to config file
+              // TODO: Change icon symbol
               icon: {
                 path: gmaps.SymbolPath.CIRCLE,
                 scale: 3,
