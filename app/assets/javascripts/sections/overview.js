@@ -133,6 +133,7 @@ define(
 
           $.each(stations, function(index, station) {
 
+            console.log(station);
             position = toLatLng(station.location);
             color = lineOptions[line].color;
 

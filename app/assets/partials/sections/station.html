@@ -7,20 +7,24 @@
 
 <div class="station-info">
   <h3>Localização</h3>
-  <p>Rua Afonso de Andrade, 122</p>
+  <p>{{station.location.address}}</p>
 </div>
 
 <div class="station-info">
   <h3>Horário de funcionamento</h3>
-  <p>Domingo a Sexta – 04h40 às 00h06</p>
-</div>
-
-<div class="station-info">
-  <h3>Status</h3>
-  <p>Ok</p>
+  <ul>
+    <li v-repeat="schedule: station.schedule">
+      <p>{{schedule.title}}</p>
+      <p>{{schedule.period}}</p>
+    </li>
+  </ul>
 </div>
 
 <div class="station-info">
   <h3>Linhas</h3>
-  <p>3 vermelha</p>
+  <ul>
+    <li v-repeat="line: station.lines">
+      <p style="color: {{line.color}}; font-weight: bold;">{{line.title}}</p>
+    </li>
+  </ul>
 </div>

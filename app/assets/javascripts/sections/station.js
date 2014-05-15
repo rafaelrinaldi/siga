@@ -21,7 +21,7 @@ define(
     template: template,
 
     data: {
-      id: '',
+      id: 'estacao-barra-funda',
       info: {}
     },
 
@@ -39,6 +39,7 @@ define(
 
       setupMap: function() {
         this.station = getStationById(this.id);
+        console.log(this.station.schedule);
         this.location = toLatLng(this.station.location);
         this.stationMap = new Map('#station-map', {
           center: this.location,
@@ -53,14 +54,15 @@ define(
 
       setMarker: function() {
         console.log('station :: setMarkers()');
-        var marker;
+        var marker,
+            area;
 
         marker = this.stationMap.setMarker({
           position: this.location,
           animation: gmaps.Animation.BOUNCE
         });
 
-        this.stationMap.setAreaRange({
+        area = this.stationMap.setAreaRange({
           marker: marker
         });
       }
