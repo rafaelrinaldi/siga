@@ -12,5 +12,6 @@
   <button v-on="click: submit($event)">Submit</button>
 </div>
 
-<button v-on="click: swapUserInput">Swap</button>
-<div class="directions-suggestions">suggestions</div>
+<button v-on="click: getNearbyStation(this.origin)">Nearby station</button>
+<button v-on="click: swapUserInput" hidden>Swap</button>
+<div class="directions-suggestions" hidden>suggestions</div>

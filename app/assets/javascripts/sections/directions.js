@@ -15,8 +15,8 @@ define(
     template: template,
 
     data: {
-      origin: 'foo',
-      destination: 'bar'
+      origin: 'barra funda',
+      destination: 'anhangabau'
     },
 
     attached: function() {
@@ -33,10 +33,14 @@ define(
         var userInput = {
           origin: this.origin,
           destination: this.destination
-        }
+        };
 
         this.destination = userInput.origin;
         this.origin = userInput.destination;
+      },
+
+      getNearbyStation: function(location) {
+        console.log('getNearbyStation', location);
       }
     }
   });

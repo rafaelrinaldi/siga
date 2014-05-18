@@ -107,7 +107,8 @@ requirejs(
         },
 
         data: {
-          currentView: 'splash'
+          currentView: 'splash',
+          foo: 'bar'
         },
 
         methods: {

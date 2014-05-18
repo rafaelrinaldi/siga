@@ -148,7 +148,7 @@ define(
                 strokeColor: color,
                 strokeWeight: 12
               }
-            });
+            }, true);
 
             points.push(position);
 

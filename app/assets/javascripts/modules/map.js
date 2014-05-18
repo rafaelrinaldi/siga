@@ -22,6 +22,7 @@ define(
   function Map(container, options) {
     this.container = container;
     this.options = options;
+    this.markers = [];
     this.on = {
       loaded: new Signal(),
       markerClick: new Signal()
@@ -51,7 +52,13 @@ define(
     this.map = new gmaps.Map($(this.container).get(0), this.options);
     this.map.addListener('tilesloaded', $.proxy(this.notifyTilesLoaded, this));
 
-    gmaps.event.addListener(this.map, 'click', function() {
+    gmaps.event.addListener(this.map, 'click', function(event) {
+      var coordinates = {
+        latitude: event.latLng.lat(),
+        longitude: event.latLng.lng()
+      };
+      // console.log(coordinates);
+      console.log(self.getNearestMarker(coordinates).content);
       self.infoWindow.close();
     });
   };
@@ -88,10 +95,12 @@ define(
       return;
     }
 
-    this.map.setOptions(mixIn(this.options, newOptions));
+    this.map.setOptions(
+      mixIn(this.options, newOptions)
+    );
   };
 
-  p.setMarker = function(options) {
+  p.setMarker = function(options, shouldCache) {
     var self = this,
         marker = new gmaps.Marker(
           mixIn({map: this.map}, options)
@@ -104,7 +113,72 @@ define(
       });
     }
 
+    if(shouldCache) {
+      this.markers.push(marker);
+    }
+
     return marker;
+  };
+
+  /**
+   * Get the nearest marker from a given coordinate (geocode location).
+   * Uses the Haversine formula to figure things out: http://www.movable-type.co.uk/scripts/latlong.html
+   * @param {Object} coordinates Expect "latitude" and "longitude" to be defined.
+   * @return {Marker} Marker instance.
+   */
+  p.getNearestMarker = function(coordinates) {
+    var markerLatitude,
+        markerLongitude,
+        // "d" is a Haversine variable to indicate a distance between two points
+        dLatitude,
+        dLongitude,
+        // Haversine variables
+        a,
+        c,
+        d,
+        // Helper to convert a value to radians
+        toRadians = function(value) { return value * Math.PI / 180; },
+        // Coordinates
+        latitude = coordinates.latitude || 0,
+        longitude = coordinates.longitude || 0,
+        // Coordinates in radians
+        latitudeInRadians = toRadians(latitude),
+        longitudeInRadians = toRadians(longitude),
+        // Radius of Earth in KM
+        R = 6371,
+        distances = [],
+        closest = -1,
+        totalMarkers = this.markers.length,
+        index = 0;
+
+      for(; index < totalMarkers; ++index) {
+        markerLatitude = this.markers[index].position.lat();
+        markerLongitude = this.markers[index].position.lng();
+        dLatitude = toRadians(markerLatitude - latitude);
+        dLongitude = toRadians(markerLongitude - longitude);
+
+        a = Math.sin(dLatitude * .5) *
+            Math.sin(dLatitude * .5) +
+            Math.cos(latitudeInRadians) *
+            Math.cos(latitudeInRadians) *
+            Math.sin(dLongitude * .5) *
+            Math.sin(dLongitude * .5);
+
+        c = 2 * Math.atan2(
+                  Math.sqrt(a),
+                  Math.sqrt(1 - a)
+                );
+
+        d = R * c;
+
+        distances[index] = d;
+
+        if(closest === -1 || d < distances[closest]) {
+          closest = index;
+        }
+      }
+
+    return this.markers[closest];
   };
 
   p.setAreaRange = function(options) {
@@ -157,6 +231,9 @@ define(
   p.dispose = function() {
     this.on.loaded.removeAll();
     this.on.markerClick.removeAll();
+
+    this.markers.length = 0;
+    this.markers = null;
 
     if(this.map) {
       gmaps.event.removeListener(this.map, 'tilesloaded');
