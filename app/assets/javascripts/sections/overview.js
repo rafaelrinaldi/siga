@@ -39,6 +39,15 @@ define(
       $($.proxy(this.initialize, this));
     },
 
+    attached: function() {
+      console.log('attached');
+      // $($.proxy(this.initialize, this));
+    },
+
+    created: function() {
+      // $($.proxy(this.initialize, this));
+    },
+
     methods: {
       initialize: function() {
         this.$dispatch('app:sectionReady', this);

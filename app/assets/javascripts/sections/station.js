@@ -21,8 +21,7 @@ define(
     template: template,
 
     data: {
-      id: 'estacao-barra-funda',
-      info: {}
+      id: 'estacao-barra-funda'
     },
 
     attached: function() {
@@ -39,7 +38,7 @@ define(
       },
 
       setupMap: function() {
-        this.station = getStationById(this.id);
+        this.station = getStationById(this.$options.id);
         this.location = toLatLng(this.station.location);
         this.stationMap = new Map('#station-map', {
           center: this.location,

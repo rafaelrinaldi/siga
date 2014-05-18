@@ -111,8 +111,7 @@ requirejs(
           // TODO: Find a better approach to do this.
           sectionReady: function(section) {
             // Merge section data with options that were passed on `app:setView`
-            // TODO: Change this from $data to $options.
-            section.$data = $.extend(section.$data, this.currentViewOptions);
+            section.$options = this.currentViewOptions;
           },
 
           /**

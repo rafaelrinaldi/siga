@@ -18503,6 +18503,15 @@ define(
       $($.proxy(this.initialize, this));
     },
 
+    attached: function() {
+      console.log('attached');
+      // $($.proxy(this.initialize, this));
+    },
+
+    created: function() {
+      // $($.proxy(this.initialize, this));
+    },
+
     methods: {
       initialize: function() {
         this.$dispatch('app:sectionReady', this);
@@ -18671,8 +18680,7 @@ define(
     template: template,
 
     data: {
-      id: 'estacao-barra-funda',
-      info: {}
+      id: 'estacao-barra-funda'
     },
 
     attached: function() {
@@ -18689,7 +18697,7 @@ define(
       },
 
       setupMap: function() {
-        this.station = getStationById(this.id);
+        this.station = getStationById(this.$options.id);
         this.location = toLatLng(this.station.location);
         this.stationMap = new Map('#station-map', {
           center: this.location,
@@ -18874,8 +18882,7 @@ requirejs(
           // TODO: Find a better approach to do this.
           sectionReady: function(section) {
             // Merge section data with options that were passed on `app:setView`
-            // TODO: Change this from $data to $options.
-            section.$data = $.extend(section.$data, this.currentViewOptions);
+            section.$options = this.currentViewOptions;
           },
 
           /**
