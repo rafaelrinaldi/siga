@@ -52,13 +52,7 @@ define(
     this.map = new gmaps.Map($(this.container).get(0), this.options);
     this.map.addListener('tilesloaded', $.proxy(this.notifyTilesLoaded, this));
 
-    gmaps.event.addListener(this.map, 'click', function(event) {
-      var coordinates = {
-        latitude: event.latLng.lat(),
-        longitude: event.latLng.lng()
-      };
-      // console.log(coordinates);
-      console.log(self.getNearestMarker(coordinates).content);
+    gmaps.event.addListener(this.map, 'click', function() {
       self.infoWindow.close();
     });
   };

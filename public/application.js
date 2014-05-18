@@ -18479,13 +18479,7 @@ define(
     this.map = new gmaps.Map($(this.container).get(0), this.options);
     this.map.addListener('tilesloaded', $.proxy(this.notifyTilesLoaded, this));
 
-    gmaps.event.addListener(this.map, 'click', function(event) {
-      var coordinates = {
-        latitude: event.latLng.lat(),
-        longitude: event.latLng.lng()
-      };
-      // console.log(coordinates);
-      console.log(self.getNearestMarker(coordinates).content);
+    gmaps.event.addListener(this.map, 'click', function() {
       self.infoWindow.close();
     });
   };
@@ -18765,7 +18759,7 @@ define(
             self.userLocation = position;
             self.setUserLocationMarker(position);
             self.placeLines();
-            console.log('finished placing lines');
+            self.saveMarkersToApplication();
           });
       },
 
@@ -18784,6 +18778,10 @@ define(
 
       markerClick: function(id) {
         this.$dispatch('app:setView', 'station', {id: id});
+      },
+
+      saveMarkersToApplication: function() {
+        this.$root.subwayCoverageMarkers = this.overviewMap.markers;
       },
 
       placeLines: function() {

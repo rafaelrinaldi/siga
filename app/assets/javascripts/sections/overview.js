@@ -88,7 +88,7 @@ define(
             self.userLocation = position;
             self.setUserLocationMarker(position);
             self.placeLines();
-            console.log('finished placing lines');
+            self.saveMarkersToApplication();
           });
       },
 
@@ -107,6 +107,10 @@ define(
 
       markerClick: function(id) {
         this.$dispatch('app:setView', 'station', {id: id});
+      },
+
+      saveMarkersToApplication: function() {
+        this.$root.subwayCoverageMarkers = this.overviewMap.markers;
       },
 
       placeLines: function() {
