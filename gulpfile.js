@@ -1,5 +1,4 @@
-var open = require('open'),
-    gulp = require('gulp'),
+var gulp = require('gulp'),
     connect = require('gulp-connect'),
     rjs = require('requirejs').optimize,
     preprocess = require('gulp-preprocess'),
