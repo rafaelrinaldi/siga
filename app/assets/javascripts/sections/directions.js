@@ -3,11 +3,15 @@ define(
   'jquery',
   'vue',
   'lib/gmaps',
+  'services/getStationByName',
+  'services/getStationsByName',
   'text!partials/sections/directions.html'
 ], function(
   $,
   Vue,
   gmaps,
+  getStationByName,
+  getStationsByName,
   template
 ) {
 
@@ -15,18 +19,39 @@ define(
     template: template,
 
     data: {
+      suggestions: [],
       origin: 'barra funda',
-      destination: 'anhangabau'
+      destination: 'anhangabau',
+      lastInput: ''
     },
 
     attached: function() {
-      // this.context = $(this.$el);
+      this.context = $(this.$el);
       // this.submit = this.context.find('.js-submit-directions');
+      this.userInput = this.context.find('.js-user-input');
+      this.nearestStation = getStationByName(this.origin);
+
+      this.userInput.focusin($.proxy(this.userInputFocus, this));
     },
 
     methods: {
       submit: function(event) {
-        console.log('"%s" to "%s"', this.origin, this.destination);
+        getStationsByName(this.origin);
+        //console.log('"%s" to "%s"', this.origin, this.destination);
+      },
+
+      suggestStations: function(input) {
+        this.suggestions = getStationsByName(this[input]);
+      },
+
+      selectSuggestion: function(suggestion) {
+        if(this.lastInput && this.lastInput.length) {
+          this[this.lastInput] = suggestion;
+        }
+      },
+
+      cleanupSuggestions: function() {
+        this.suggestions = [];
       },
 
       swapUserInput: function() {
@@ -39,8 +64,13 @@ define(
         this.origin = userInput.destination;
       },
 
+      userInputFocus: function(event) {
+        var input = $(event.currentTarget).attr('id');
+        this.lastInput = input;
+      },
+
       getNearbyStation: function(location) {
-        console.log('getNearbyStation', location);
+        this.origin = this.nearestStation.title;
       }
     }
   });

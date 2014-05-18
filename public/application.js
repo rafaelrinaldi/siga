@@ -18098,7 +18098,7 @@ define(
       this.$dispatch('app:sectionReady', this);
       var self = this;
       setTimeout(function() {
-        self.$dispatch('app:setView', 'overview');
+        self.$dispatch('app:setView', 'directions');
       }, 250);
     },
 
@@ -18156,14 +18156,130 @@ define(
 
 });
 
+define('mout/string/WHITE_SPACES',[],function() {
+    /**
+     * Contains all Unicode white-spaces. Taken from
+     * http://en.wikipedia.org/wiki/Whitespace_character.
+     */
+    return [
+        ' ', '\n', '\r', '\t', '\f', '\v', '\u00A0', '\u1680', '\u180E',
+        '\u2000', '\u2001', '\u2002', '\u2003', '\u2004', '\u2005', '\u2006',
+        '\u2007', '\u2008', '\u2009', '\u200A', '\u2028', '\u2029', '\u202F',
+        '\u205F', '\u3000'
+    ];
+});
+
+define('mout/string/ltrim',['../lang/toString', './WHITE_SPACES'], function(toString, WHITE_SPACES){
+    /**
+     * Remove chars from beginning of string.
+     */
+    function ltrim(str, chars) {
+        str = toString(str);
+        chars = chars || WHITE_SPACES;
+
+        var start = 0,
+            len = str.length,
+            charLen = chars.length,
+            found = true,
+            i, c;
+
+        while (found && start < len) {
+            found = false;
+            i = -1;
+            c = str.charAt(start);
+
+            while (++i < charLen) {
+                if (c === chars[i]) {
+                    found = true;
+                    start++;
+                    break;
+                }
+            }
+        }
+
+        return (start >= len) ? '' : str.substr(start, len);
+    }
+
+    return ltrim;
+});
+
+define('mout/string/rtrim',['../lang/toString', './WHITE_SPACES'], function(toString, WHITE_SPACES){
+    /**
+     * Remove chars from end of string.
+     */
+    function rtrim(str, chars) {
+        str = toString(str);
+        chars = chars || WHITE_SPACES;
+
+        var end = str.length - 1,
+            charLen = chars.length,
+            found = true,
+            i, c;
+
+        while (found && end >= 0) {
+            found = false;
+            i = -1;
+            c = str.charAt(end);
+
+            while (++i < charLen) {
+                if (c === chars[i]) {
+                    found = true;
+                    end--;
+                    break;
+                }
+            }
+        }
+
+        return (end >= 0) ? str.substring(0, end + 1) : '';
+    }
+
+    return rtrim;
+});
+
+define('mout/string/trim',['../lang/toString', './WHITE_SPACES', './ltrim', './rtrim'], function(toString, WHITE_SPACES, ltrim, rtrim){
+    /**
+     * Remove white-spaces from beginning and end of string.
+     */
+    function trim(str, chars) {
+        str = toString(str);
+        chars = chars || WHITE_SPACES;
+        return ltrim(rtrim(str, chars), chars);
+    }
+
+    return trim;
+});
+
+define(
+'helpers/sanitizeStationName',[
+  'mout/lang/toString',
+  'mout/string/trim',
+  'mout/string/replaceAccents'
+], function(
+  toString,
+  trim,
+  replaceAccents
+) {
+
+  function sanitizeStationName(name) {
+    name = toString(name);
+    name = trim(name);
+    name = replaceAccents(name);
+
+    return name;
+  }
+
+  return sanitizeStationName;
+
+});
+
 define(
 'services/getStationByName',[
   'jquery',
-  'mout/string/replaceAccents',
+  'helpers/sanitizeStationName',
   'services/getStations'
 ], function(
   $,
-  replaceAccents,
+  sanitizeStationName,
   getStations
 ) {
 
@@ -18175,8 +18291,8 @@ define(
 
     $.each(stations, function(key, value) {
       station = value;
-      search = replaceAccents(station.title);
-      return !search.match(new RegExp(replaceAccents(name), 'i'));
+      search = sanitizeStationName(station.title);
+      return !search.match(new RegExp(sanitizeStationName(name), 'gi'));
     });
 
     return station;
@@ -19005,19 +19121,246 @@ define(
 
 });
 
+define('mout/function/identity',[],function () {
 
-define('text!partials/sections/directions.html',[],function () { return '<div class="directions-input">\n  <div class="user-input">\n    <label for="directions-origin">Estação de origem</label>\n    <input type="search" id="directions-origin" name="directions-origin" v-model="origin">\n  </div>\n\n  <div class="user-input">\n    <label for="directions-destination">Estação de destino</label>\n    <input type="search" id="directions-destination" name="directions-destination" v-model="destination">\n  </div>\n\n  <button v-on="click: submit($event)">Submit</button>\n</div>\n\n<button v-on="click: getNearbyStation(this.origin)">Nearby station</button>\n<button v-on="click: swapUserInput" hidden>Swap</button>\n<div class="directions-suggestions" hidden>suggestions</div>\n';});
+    /**
+     * Returns the first argument provided to it.
+     */
+    function identity(val){
+        return val;
+    }
+
+    return identity;
+
+});
+
+define('mout/function/prop',[],function () {
+
+    /**
+     * Returns a function that gets a property of the passed object
+     */
+    function prop(name){
+        return function(obj){
+            return obj[name];
+        };
+    }
+
+    return prop;
+
+});
+
+define('mout/lang/isKind',['./kindOf'], function (kindOf) {
+    /**
+     * Check if value is from a specific "kind".
+     */
+    function isKind(val, kind){
+        return kindOf(val) === kind;
+    }
+    return isKind;
+});
+
+define('mout/lang/isArray',['./isKind'], function (isKind) {
+    /**
+     */
+    var isArray = Array.isArray || function (val) {
+        return isKind(val, 'Array');
+    };
+    return isArray;
+});
+
+define('mout/object/deepMatches',['./forOwn', '../lang/isArray'], function(forOwn, isArray) {
+
+    function containsMatch(array, pattern) {
+        var i = -1, length = array.length;
+        while (++i < length) {
+            if (deepMatches(array[i], pattern)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function matchArray(target, pattern) {
+        var i = -1, patternLength = pattern.length;
+        while (++i < patternLength) {
+            if (!containsMatch(target, pattern[i])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function matchObject(target, pattern) {
+        var result = true;
+        forOwn(pattern, function(val, key) {
+            if (!deepMatches(target[key], val)) {
+                // Return false to break out of forOwn early
+                return (result = false);
+            }
+        });
+
+        return result;
+    }
+
+    /**
+     * Recursively check if the objects match.
+     */
+    function deepMatches(target, pattern){
+        if (target && typeof target === 'object') {
+            if (isArray(target) && isArray(pattern)) {
+                return matchArray(target, pattern);
+            } else {
+                return matchObject(target, pattern);
+            }
+        } else {
+            return target === pattern;
+        }
+    }
+
+    return deepMatches;
+
+});
+
+define('mout/function/makeIterator_',['./identity', './prop', '../object/deepMatches'], function(identity, prop, deepMatches) {
+
+    /**
+     * Converts argument into a valid iterator.
+     * Used internally on most array/object/collection methods that receives a
+     * callback/iterator providing a shortcut syntax.
+     */
+    function makeIterator(src, thisObj){
+        if (src == null) {
+            return identity;
+        }
+        switch(typeof src) {
+            case 'function':
+                // function is the first to improve perf (most common case)
+                // also avoid using `Function#call` if not needed, which boosts
+                // perf a lot in some cases
+                return (typeof thisObj !== 'undefined')? function(val, i, arr){
+                    return src.call(thisObj, val, i, arr);
+                } : src;
+            case 'object':
+                return function(val){
+                    return deepMatches(val, src);
+                };
+            case 'string':
+            case 'number':
+                return prop(src);
+        }
+    }
+
+    return makeIterator;
+
+});
+
+define('mout/object/map',['./forOwn', '../function/makeIterator_'], function(forOwn, makeIterator) {
+
+    /**
+     * Creates a new object where all the values are the result of calling
+     * `callback`.
+     */
+    function mapValues(obj, callback, thisObj) {
+        callback = makeIterator(callback, thisObj);
+        var output = {};
+        forOwn(obj, function(val, key, obj) {
+            output[key] = callback(val, key, obj);
+        });
+
+        return output;
+    }
+    return mapValues;
+});
+
+define('mout/object/pluck',['./map', '../function/prop'], function (map, prop) {
+
+    /**
+     * Extract a list of property values.
+     */
+    function pluck(obj, propName){
+        return map(obj, prop(propName));
+    }
+
+    return pluck;
+
+});
+
+define('mout/object/values',['./forOwn'], function (forOwn) {
+
+    /**
+     * Get object values
+     */
+    function values(obj) {
+        var vals = [];
+        forOwn(obj, function(val, key){
+            vals.push(val);
+        });
+        return vals;
+    }
+
+    return values;
+
+});
+
+define(
+'services/getStationsByName',[
+  'jquery',
+  'mout/object/pluck',
+  'mout/object/values',
+  'helpers/sanitizeStationName',
+  'services/getStations'
+], function(
+  $,
+  pluck,
+  values,
+  sanitizeStationName,
+  getStations
+) {
+  var stations;
+
+  // Shout out to mout
+  stations = getStations();
+  stations = pluck(stations, 'title');
+  stations = values(stations);
+
+  function getStationsByName(name) {
+    var matches = [];
+
+    name = sanitizeStationName(name);
+
+    matches = $.grep(stations, function(station) {
+      return new RegExp(name, 'gi')
+              .test(
+                sanitizeStationName(station)
+              );
+    });
+
+    return matches;
+  }
+
+  return getStationsByName;
+
+});
+
+
+define('text!partials/sections/directions.html',[],function () { return '<div class="directions-input">\n  <div class="user-input">\n    <label for="origin">Estação de origem</label>\n    <input\n      type="search"\n      id="origin"\n      name="origin"\n      class="js-user-input"\n      v-model="origin"\n      v-on="keyup: suggestStations(\'origin\')"\n    >\n  </div>\n\n  <div class="user-input">\n    <label for="destination">Estação de destino</label>\n    <input\n      type="search"\n      id="destination"\n      name="destination"\n      class="js-user-input"\n      v-model="destination"\n      v-on="keyup: suggestStations(\'destination\')"\n    >\n  </div>\n\n  <button v-on="click: submit($event)">Submit</button>\n</div>\n\n<button v-on="click: getNearbyStation(this.origin)">Nearby station</button>\n<button v-on="click: swapUserInput">Swap</button>\n\n<div class="directions-suggestions">\n  <ul>\n    <li v-repeat="suggestions">\n      <button v-on="click: selectSuggestion($value), click: cleanupSuggestions">{{$value}}</button>\n    </li>\n  </ul>\n</div>\n';});
 
 define(
 'sections/directions',[
   'jquery',
   'vue',
   'lib/gmaps',
+  'services/getStationByName',
+  'services/getStationsByName',
   'text!partials/sections/directions.html'
 ], function(
   $,
   Vue,
   gmaps,
+  getStationByName,
+  getStationsByName,
   template
 ) {
 
@@ -19025,18 +19368,39 @@ define(
     template: template,
 
     data: {
+      suggestions: [],
       origin: 'barra funda',
-      destination: 'anhangabau'
+      destination: 'anhangabau',
+      lastInput: ''
     },
 
     attached: function() {
-      // this.context = $(this.$el);
+      this.context = $(this.$el);
       // this.submit = this.context.find('.js-submit-directions');
+      this.userInput = this.context.find('.js-user-input');
+      this.nearestStation = getStationByName(this.origin);
+
+      this.userInput.focusin($.proxy(this.userInputFocus, this));
     },
 
     methods: {
       submit: function(event) {
-        console.log('"%s" to "%s"', this.origin, this.destination);
+        getStationsByName(this.origin);
+        //console.log('"%s" to "%s"', this.origin, this.destination);
+      },
+
+      suggestStations: function(input) {
+        this.suggestions = getStationsByName(this[input]);
+      },
+
+      selectSuggestion: function(suggestion) {
+        if(this.lastInput && this.lastInput.length) {
+          this[this.lastInput] = suggestion;
+        }
+      },
+
+      cleanupSuggestions: function() {
+        this.suggestions = [];
       },
 
       swapUserInput: function() {
@@ -19049,8 +19413,13 @@ define(
         this.origin = userInput.destination;
       },
 
+      userInputFocus: function(event) {
+        var input = $(event.currentTarget).attr('id');
+        this.lastInput = input;
+      },
+
       getNearbyStation: function(location) {
-        console.log('getNearbyStation', location);
+        this.origin = this.nearestStation.title;
       }
     }
   });

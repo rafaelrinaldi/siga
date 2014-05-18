@@ -1,17 +1,38 @@
 <div class="directions-input">
   <div class="user-input">
-    <label for="directions-origin">Estação de origem</label>
-    <input type="search" id="directions-origin" name="directions-origin" v-model="origin">
+    <label for="origin">Estação de origem</label>
+    <input
+      type="search"
+      id="origin"
+      name="origin"
+      class="js-user-input"
+      v-model="origin"
+      v-on="keyup: suggestStations('origin')"
+    >
   </div>
 
   <div class="user-input">
-    <label for="directions-destination">Estação de destino</label>
-    <input type="search" id="directions-destination" name="directions-destination" v-model="destination">
+    <label for="destination">Estação de destino</label>
+    <input
+      type="search"
+      id="destination"
+      name="destination"
+      class="js-user-input"
+      v-model="destination"
+      v-on="keyup: suggestStations('destination')"
+    >
   </div>
 
   <button v-on="click: submit($event)">Submit</button>
 </div>
 
 <button v-on="click: getNearbyStation(this.origin)">Nearby station</button>
-<button v-on="click: swapUserInput" hidden>Swap</button>
-<div class="directions-suggestions" hidden>suggestions</div>
+<button v-on="click: swapUserInput">Swap</button>
+
+<div class="directions-suggestions">
+  <ul>
+    <li v-repeat="suggestions">
+      <button v-on="click: selectSuggestion($value), click: cleanupSuggestions">{{$value}}</button>
+    </li>
+  </ul>
+</div>

@@ -1,11 +1,11 @@
 define(
 [
   'jquery',
-  'mout/string/replaceAccents',
+  'helpers/sanitizeStationName',
   'services/getStations'
 ], function(
   $,
-  replaceAccents,
+  sanitizeStationName,
   getStations
 ) {
 
@@ -17,8 +17,8 @@ define(
 
     $.each(stations, function(key, value) {
       station = value;
-      search = replaceAccents(station.title);
-      return !search.match(new RegExp(replaceAccents(name), 'i'));
+      search = sanitizeStationName(station.title);
+      return !search.match(new RegExp(sanitizeStationName(name), 'gi'));
     });
 
     return station;
