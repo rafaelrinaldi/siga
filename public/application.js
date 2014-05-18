@@ -19376,17 +19376,20 @@ define(
 
     attached: function() {
       this.context = $(this.$el);
-      // this.submit = this.context.find('.js-submit-directions');
       this.userInput = this.context.find('.js-user-input');
       this.nearestStation = getStationByName(this.origin);
 
-      this.userInput.focusin($.proxy(this.userInputFocus, this));
+      this.userInput
+        .focusin($.proxy(this.userInputFocus, this))
+        // .focusout(function() {
+        //   Vue.nextTick($.proxy(self.cleanupSuggestions, self));
+        // });
     },
 
     methods: {
       submit: function(event) {
-        getStationsByName(this.origin);
-        //console.log('"%s" to "%s"', this.origin, this.destination);
+        // getStationsByName(this.origin);
+        console.log('"%s" to "%s"', this.origin, this.destination);
       },
 
       suggestStations: function(input) {
@@ -19414,8 +19417,9 @@ define(
       },
 
       userInputFocus: function(event) {
-        var input = $(event.currentTarget).attr('id');
-        this.lastInput = input;
+        var id = $(event.currentTarget).attr('id');
+
+        this.lastInput = id;
       },
 
       getNearbyStation: function(location) {
