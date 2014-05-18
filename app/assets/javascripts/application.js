@@ -13,7 +13,6 @@ require.config({
     'hasher': '../../../vendor/assets/bower/hasher/dist/js/hasher',
     'crossroads': '../../../vendor/assets/bower/crossroads.js/dist/crossroads',
 
-
     // Google Maps Helpers
     'richmarker': '../../../vendor/assets/bower/google-maps-utility-library-v3/richmarker/src/richmarker',
 
@@ -94,6 +93,7 @@ requirejs(
         components: {
           'overview': Sections.overview,
           'station': Sections.station,
+          'line': Sections.line,
           'header': Header,
           'navigation': Navigation
         },
