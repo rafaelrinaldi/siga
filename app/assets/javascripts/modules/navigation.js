@@ -22,17 +22,20 @@ define(
     },
 
     ready: function() {
-      this.section = $('.section');
       this.$root.$on('navigation.toggle', this.toggle.bind(this));
     },
 
     methods: {
+      getCurrentSection: function() {
+        return $('.section');
+      },
+
       open: function() {
-        this.section.toggleClass('retreat');
+        this.getCurrentSection().toggleClass('retreat');
       },
 
       close: function() {
-        this.section.removeClass('retreat');
+        this.getCurrentSection().removeClass('retreat');
       },
 
       toggle: function() {
