@@ -1,0 +1,16 @@
+<div class="directions-input">
+  <div class="user-input">
+    <label for="directions-origin">Estação de origem</label>
+    <input type="search" id="directions-origin" name="directions-origin" v-model="origin">
+  </div>
+
+  <div class="user-input">
+    <label for="directions-destination">Estação de destino</label>
+    <input type="search" id="directions-destination" name="directions-destination" v-model="destination">
+  </div>
+
+  <button v-on="click: submit($event)">Submit</button>
+</div>
+
+<button v-on="click: swapUserInput">Swap</button>
+<div class="directions-suggestions">suggestions</div>

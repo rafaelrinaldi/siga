@@ -16,8 +16,8 @@ define(
       this.$dispatch('app:sectionReady', this);
       var self = this;
       setTimeout(function() {
-        self.$dispatch('app:setView', 'overview');
-      }, 2000);
+        self.$dispatch('app:setView', 'directions');
+      }, 250);
     },
 
     methods: {

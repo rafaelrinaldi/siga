@@ -3,19 +3,22 @@ define(
   'sections/splash',
   'sections/overview',
   'sections/station',
-  'sections/line'
+  'sections/line',
+  'sections/directions'
 ], function(
   Splash,
   Overview,
   Station,
-  Line
+  Line,
+  Directions
 ) {
 
   return {
     'splash': Splash,
     'overview': Overview,
     'station': Station,
-    'line': Line
+    'line': Line,
+    'directions': Directions
   };
 
 });

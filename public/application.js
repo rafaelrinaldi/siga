@@ -18098,8 +18098,8 @@ define(
       this.$dispatch('app:sectionReady', this);
       var self = this;
       setTimeout(function() {
-        self.$dispatch('app:setView', 'overview');
-      }, 2000);
+        self.$dispatch('app:setView', 'directions');
+      }, 250);
     },
 
     methods: {
@@ -18907,24 +18907,75 @@ define(
 
 });
 
+
+define('text!partials/sections/directions.html',[],function () { return '<div class="directions-input">\n  <div class="user-input">\n    <label for="directions-origin">Estação de origem</label>\n    <input type="search" id="directions-origin" name="directions-origin" v-model="origin">\n  </div>\n\n  <div class="user-input">\n    <label for="directions-destination">Estação de destino</label>\n    <input type="search" id="directions-destination" name="directions-destination" v-model="destination">\n  </div>\n\n  <button v-on="click: submit($event)">Submit</button>\n</div>\n\n<button v-on="click: swapUserInput">Swap</button>\n<div class="directions-suggestions">suggestions</div>\n';});
+
+define(
+'sections/directions',[
+  'jquery',
+  'vue',
+  'lib/gmaps',
+  'text!partials/sections/directions.html'
+], function(
+  $,
+  Vue,
+  gmaps,
+  template
+) {
+
+  return Vue.extend({
+    template: template,
+
+    data: {
+      origin: 'foo',
+      destination: 'bar'
+    },
+
+    attached: function() {
+      // this.context = $(this.$el);
+      // this.submit = this.context.find('.js-submit-directions');
+    },
+
+    methods: {
+      submit: function(event) {
+        console.log('"%s" to "%s"', this.origin, this.destination);
+      },
+
+      swapUserInput: function() {
+        var userInput = {
+          origin: this.origin,
+          destination: this.destination
+        }
+
+        this.destination = userInput.origin;
+        this.origin = userInput.destination;
+      }
+    }
+  });
+
+});
+
 define(
 'sections',[
   'sections/splash',
   'sections/overview',
   'sections/station',
-  'sections/line'
+  'sections/line',
+  'sections/directions'
 ], function(
   Splash,
   Overview,
   Station,
-  Line
+  Line,
+  Directions
 ) {
 
   return {
     'splash': Splash,
     'overview': Overview,
     'station': Station,
-    'line': Line
+    'line': Line,
+    'directions': Directions
   };
 
 });
@@ -19026,6 +19077,7 @@ requirejs(
           'overview': Sections.overview,
           'station': Sections.station,
           'line': Sections.line,
+          'directions': Sections.directions,
           'header': Header,
           'navigation': Navigation
         },
@@ -19057,11 +19109,11 @@ requirejs(
 
             if(options) {
               log += ' with options "%s"';
+              console.log(log, view, options);
             } else {
               options = {};
+              console.log(log, view);
             }
-
-            console.log(log, view, options);
 
             this.currentView = view;
             this.currentViewOptions = options;

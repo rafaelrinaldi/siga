@@ -95,6 +95,7 @@ requirejs(
           'overview': Sections.overview,
           'station': Sections.station,
           'line': Sections.line,
+          'directions': Sections.directions,
           'header': Header,
           'navigation': Navigation
         },
@@ -126,11 +127,11 @@ requirejs(
 
             if(options) {
               log += ' with options "%s"';
+              console.log(log, view, options);
             } else {
               options = {};
+              console.log(log, view);
             }
-
-            console.log(log, view, options);
 
             this.currentView = view;
             this.currentViewOptions = options;
