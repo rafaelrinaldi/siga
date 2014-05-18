@@ -91,6 +91,7 @@ requirejs(
         el: '#app',
 
         components: {
+          'splash': Sections.splash,
           'overview': Sections.overview,
           'station': Sections.station,
           'line': Sections.line,
@@ -101,10 +102,11 @@ requirejs(
         ready: function() {
           this.$on('app:sectionReady', this.sectionReady);
           this.$on('app:setView', this.setView);
+          this.$watch('currentView', this.currentViewChanged);
         },
 
         data: {
-          currentView: 'overview'
+          currentView: 'splash'
         },
 
         methods: {
@@ -124,12 +126,18 @@ requirejs(
 
             if(options) {
               log += ' with options "%s"';
+            } else {
+              options = {};
             }
 
             console.log(log, view, options);
 
             this.currentView = view;
             this.currentViewOptions = options;
+          },
+
+          currentViewChanged: function() {
+            this.$.currentView.dispose();
           }
         }
       });

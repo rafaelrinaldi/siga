@@ -20,13 +20,12 @@ define(
   return Vue.extend({
     template: template,
 
-    data: {
-      id: 'estacao-barra-funda'
-    },
+    id: 'estacao-barra-funda',
+
+    replace: true,
 
     attached: function() {
-      // make sure dom is loaded and then fire the initialization method
-      $($.proxy(this.initialize, this));
+      this.initialize();
     },
 
     methods: {
@@ -37,8 +36,19 @@ define(
         this.setupMap();
       },
 
+      dispose: function() {
+        console.log('station :: dispose()');
+
+        if(this.stationMap) {
+          this.stationMap.dispose();
+          this.stationMap = null;
+        }
+      },
+
       setupMap: function() {
-        this.station = getStationById(this.$options.id);
+        var id = this.$options ? this.$options.id : 'estacao-barra-funda';
+
+        this.station = getStationById(id);
         this.location = toLatLng(this.station.location);
         this.stationMap = new Map('#station-map', {
           center: this.location,
@@ -48,7 +58,7 @@ define(
         this.stationMap.initialize();
         this.stationMap.on.loaded.addOnce(this.setMarker, this);
 
-        console.log('station :: setupMap() :: Creating map for "%s" station', this.id);
+        console.log('station :: setupMap() :: Creating map for "%s" station', id);
       },
 
       setMarker: function() {

@@ -16,8 +16,8 @@ define(
       data: {
         title: 'Siga',
         controls: [
-          {channel: 'map.setLocation', title: 'Location'},
-          {channel: 'navigation.toggle', title: 'Menu'}
+          {channel: 'navigation:gotoHome', title: 'Location'},
+          {channel: 'navigation:toggle', title: 'Menu'}
         ]
       },
 
@@ -26,7 +26,7 @@ define(
       },
 
       methods: {
-        setTitle: {
+        setTitle: function(title) {
         },
 
         // will broadcast the clicked item channel to the app instance

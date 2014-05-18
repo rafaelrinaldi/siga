@@ -4,6 +4,7 @@ define(
   'signals',
   'lib/gmaps',
   'mout/object/mixIn',
+  'mout/lang/clone',
   'helpers/toLatLng',
   'config'
 ], function(
@@ -11,6 +12,7 @@ define(
   Signal,
   gmaps,
   mixIn,
+  clone,
   toLatLng,
   config
 ) {
@@ -27,11 +29,17 @@ define(
   }
 
   p.initialize = function() {
-    this.options = mixIn(config.defaultMapOptions, this.options || {});
+    this.options = mixIn(
+                    clone(config.defaultMapOptions),
+                    this.options || {}
+                  );
 
     if(!this.options || !this.options.center) {
       this.options.center = toLatLng(config.defaultCoordinates);
     }
+
+    console.log('Map :: initialize() :: New map instance at "%s"', this.container);
+    console.dir(this.options);
 
     this._setupMap();
     this._setupInfoWindow();
@@ -39,9 +47,6 @@ define(
 
   p._setupMap = function() {
     var self = this;
-
-    console.log('Map :: initialize() :: Creating a new map at "%s"', this.container);
-    console.dir(this.options);
 
     this.map = new gmaps.Map($(this.container).get(0), this.options);
     this.map.addListener('tilesloaded', $.proxy(this.notifyTilesLoaded, this));
@@ -147,6 +152,16 @@ define(
     }
 
     this.on.markerClick.dispatch(stationId);
+  };
+
+  p.dispose = function() {
+    this.on.loaded.removeAll();
+    this.on.markerClick.removeAll();
+
+    if(this.map) {
+      gmaps.event.removeListener(this.map, 'tilesloaded');
+      gmaps.event.removeListener(this.map, 'click');
+    }
   };
 
   return Map;

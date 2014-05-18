@@ -15725,8 +15725,8 @@ define(
       data: {
         title: 'Siga',
         controls: [
-          {channel: 'map.setLocation', title: 'Location'},
-          {channel: 'navigation.toggle', title: 'Menu'}
+          {channel: 'navigation:gotoHome', title: 'Location'},
+          {channel: 'navigation:toggle', title: 'Menu'}
         ]
       },
 
@@ -15735,7 +15735,7 @@ define(
       },
 
       methods: {
-        setTitle: {
+        setTitle: function(title) {
         },
 
         // will broadcast the clicked item channel to the app instance
@@ -15776,7 +15776,8 @@ define(
     },
 
     ready: function() {
-      this.$root.$on('navigation.toggle', this.toggle.bind(this));
+      this.$root.$on('navigation:toggle', $.proxy(this.toggle, this));
+      this.$root.$on('navigation:gotoHome', $.proxy(this.gotoHome, this));
     },
 
     methods: {
@@ -15790,6 +15791,10 @@ define(
 
       close: function() {
         this.getCurrentSection().removeClass('retreat');
+      },
+
+      gotoHome: function() {
+        this.$dispatch('app:setView', 'overview');
       },
 
       toggle: function() {
@@ -18072,6 +18077,39 @@ define(
   }
 );
 
+
+define('text!partials/sections/splash.html',[],function () { return '<h1>splash page</h1>\n';});
+
+define(
+'sections/splash',[
+  'jquery',
+  'vue',
+  'text!partials/sections/splash.html'
+], function(
+  $,
+  Vue,
+  template
+) {
+
+  return Vue.extend({
+    template: template,
+
+    ready: function() {
+      this.$dispatch('app:sectionReady', this);
+      var self = this;
+      setTimeout(function() {
+        self.$dispatch('app:setView', 'overview');
+      }, 2000);
+    },
+
+    methods: {
+      dispose: function() {
+      }
+    }
+  });
+
+});
+
 define(
 'services/getUserLocation',[
   'q'
@@ -18289,6 +18327,89 @@ define(
 
 });
 
+define('mout/lang/kindOf',[],function () {
+
+    var _rKind = /^\[object (.*)\]$/,
+        _toString = Object.prototype.toString,
+        UNDEF;
+
+    /**
+     * Gets the "kind" of value. (e.g. "String", "Number", etc)
+     */
+    function kindOf(val) {
+        if (val === null) {
+            return 'Null';
+        } else if (val === UNDEF) {
+            return 'Undefined';
+        } else {
+            return _rKind.exec( _toString.call(val) )[1];
+        }
+    }
+    return kindOf;
+});
+
+define('mout/lang/isPlainObject',[],function () {
+
+    /**
+     * Checks if the value is created by the `Object` constructor.
+     */
+    function isPlainObject(value) {
+        return (!!value && typeof value === 'object' &&
+            value.constructor === Object);
+    }
+
+    return isPlainObject;
+
+});
+
+define('mout/lang/clone',['./kindOf', './isPlainObject', '../object/mixIn'], function (kindOf, isPlainObject, mixIn) {
+
+    /**
+     * Clone native types.
+     */
+    function clone(val){
+        switch (kindOf(val)) {
+            case 'Object':
+                return cloneObject(val);
+            case 'Array':
+                return cloneArray(val);
+            case 'RegExp':
+                return cloneRegExp(val);
+            case 'Date':
+                return cloneDate(val);
+            default:
+                return val;
+        }
+    }
+
+    function cloneObject(source) {
+        if (isPlainObject(source)) {
+            return mixIn({}, source);
+        } else {
+            return source;
+        }
+    }
+
+    function cloneRegExp(r) {
+        var flags = '';
+        flags += r.multiline ? 'm' : '';
+        flags += r.global ? 'g' : '';
+        flags += r.ignorecase ? 'i' : '';
+        return new RegExp(r.source, flags);
+    }
+
+    function cloneDate(date) {
+        return new Date(+date);
+    }
+
+    function cloneArray(arr) {
+        return arr.slice();
+    }
+
+    return clone;
+
+});
+
 define(
 'helpers/toLatLng',[
   'lib/gmaps'
@@ -18310,6 +18431,7 @@ define(
   'signals',
   'lib/gmaps',
   'mout/object/mixIn',
+  'mout/lang/clone',
   'helpers/toLatLng',
   'config'
 ], function(
@@ -18317,6 +18439,7 @@ define(
   Signal,
   gmaps,
   mixIn,
+  clone,
   toLatLng,
   config
 ) {
@@ -18333,11 +18456,17 @@ define(
   }
 
   p.initialize = function() {
-    this.options = mixIn(config.defaultMapOptions, this.options || {});
+    this.options = mixIn(
+                    clone(config.defaultMapOptions),
+                    this.options || {}
+                  );
 
     if(!this.options || !this.options.center) {
       this.options.center = toLatLng(config.defaultCoordinates);
     }
+
+    console.log('Map :: initialize() :: New map instance at "%s"', this.container);
+    console.dir(this.options);
 
     this._setupMap();
     this._setupInfoWindow();
@@ -18345,9 +18474,6 @@ define(
 
   p._setupMap = function() {
     var self = this;
-
-    console.log('Map :: initialize() :: Creating a new map at "%s"', this.container);
-    console.dir(this.options);
 
     this.map = new gmaps.Map($(this.container).get(0), this.options);
     this.map.addListener('tilesloaded', $.proxy(this.notifyTilesLoaded, this));
@@ -18455,6 +18581,16 @@ define(
     this.on.markerClick.dispatch(stationId);
   };
 
+  p.dispose = function() {
+    this.on.loaded.removeAll();
+    this.on.markerClick.removeAll();
+
+    if(this.map) {
+      gmaps.event.removeListener(this.map, 'tilesloaded');
+      gmaps.event.removeListener(this.map, 'click');
+    }
+  };
+
   return Map;
 
 });
@@ -18498,14 +18634,15 @@ define(
   return Vue.extend({
     template: template,
 
-    ready: function() {
+    replace: true,
+
+    attached: function() {
       // Make sure dom is loaded and then fire the initialization method
       $($.proxy(this.initialize, this));
     },
 
     attached: function() {
-      console.log('attached');
-      // $($.proxy(this.initialize, this));
+      this.initialize();
     },
 
     created: function() {
@@ -18516,6 +18653,15 @@ define(
       initialize: function() {
         this.$dispatch('app:sectionReady', this);
         this.setupMap();
+      },
+
+      dispose: function() {
+        console.log('overview :: dispose()');
+
+        if(this.overviewMap) {
+          this.overviewMap.dispose();
+          this.overviewMap = null;
+        }
       },
 
       setupMap: function() {
@@ -18542,6 +18688,7 @@ define(
             self.userLocation = position;
             self.setUserLocationMarker(position);
             self.placeLines();
+            console.log('finished placing lines');
           });
       },
 
@@ -18679,13 +18826,12 @@ define(
   return Vue.extend({
     template: template,
 
-    data: {
-      id: 'estacao-barra-funda'
-    },
+    id: 'estacao-barra-funda',
+
+    replace: true,
 
     attached: function() {
-      // make sure dom is loaded and then fire the initialization method
-      $($.proxy(this.initialize, this));
+      this.initialize();
     },
 
     methods: {
@@ -18696,8 +18842,19 @@ define(
         this.setupMap();
       },
 
+      dispose: function() {
+        console.log('station :: dispose()');
+
+        if(this.stationMap) {
+          this.stationMap.dispose();
+          this.stationMap = null;
+        }
+      },
+
       setupMap: function() {
-        this.station = getStationById(this.$options.id);
+        var id = this.$options ? this.$options.id : 'estacao-barra-funda';
+
+        this.station = getStationById(id);
         this.location = toLatLng(this.station.location);
         this.stationMap = new Map('#station-map', {
           center: this.location,
@@ -18707,7 +18864,7 @@ define(
         this.stationMap.initialize();
         this.stationMap.on.loaded.addOnce(this.setMarker, this);
 
-        console.log('station :: setupMap() :: Creating map for "%s" station', this.id);
+        console.log('station :: setupMap() :: Creating map for "%s" station', id);
       },
 
       setMarker: function() {
@@ -18752,16 +18909,19 @@ define(
 
 define(
 'sections',[
+  'sections/splash',
   'sections/overview',
   'sections/station',
   'sections/line'
 ], function(
+  Splash,
   Overview,
   Station,
   Line
 ) {
 
   return {
+    'splash': Splash,
     'overview': Overview,
     'station': Station,
     'line': Line
@@ -18862,6 +19022,7 @@ requirejs(
         el: '#app',
 
         components: {
+          'splash': Sections.splash,
           'overview': Sections.overview,
           'station': Sections.station,
           'line': Sections.line,
@@ -18872,10 +19033,11 @@ requirejs(
         ready: function() {
           this.$on('app:sectionReady', this.sectionReady);
           this.$on('app:setView', this.setView);
+          this.$watch('currentView', this.currentViewChanged);
         },
 
         data: {
-          currentView: 'overview'
+          currentView: 'splash'
         },
 
         methods: {
@@ -18895,12 +19057,18 @@ requirejs(
 
             if(options) {
               log += ' with options "%s"';
+            } else {
+              options = {};
             }
 
             console.log(log, view, options);
 
             this.currentView = view;
             this.currentViewOptions = options;
+          },
+
+          currentViewChanged: function() {
+            this.$.currentView.dispose();
           }
         }
       });

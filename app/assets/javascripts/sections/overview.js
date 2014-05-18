@@ -34,14 +34,15 @@ define(
   return Vue.extend({
     template: template,
 
-    ready: function() {
+    replace: true,
+
+    attached: function() {
       // Make sure dom is loaded and then fire the initialization method
       $($.proxy(this.initialize, this));
     },
 
     attached: function() {
-      console.log('attached');
-      // $($.proxy(this.initialize, this));
+      this.initialize();
     },
 
     created: function() {
@@ -52,6 +53,15 @@ define(
       initialize: function() {
         this.$dispatch('app:sectionReady', this);
         this.setupMap();
+      },
+
+      dispose: function() {
+        console.log('overview :: dispose()');
+
+        if(this.overviewMap) {
+          this.overviewMap.dispose();
+          this.overviewMap = null;
+        }
       },
 
       setupMap: function() {
@@ -78,6 +88,7 @@ define(
             self.userLocation = position;
             self.setUserLocationMarker(position);
             self.placeLines();
+            console.log('finished placing lines');
           });
       },
 

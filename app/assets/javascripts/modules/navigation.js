@@ -22,7 +22,8 @@ define(
     },
 
     ready: function() {
-      this.$root.$on('navigation.toggle', this.toggle.bind(this));
+      this.$root.$on('navigation:toggle', $.proxy(this.toggle, this));
+      this.$root.$on('navigation:gotoHome', $.proxy(this.gotoHome, this));
     },
 
     methods: {
@@ -36,6 +37,10 @@ define(
 
       close: function() {
         this.getCurrentSection().removeClass('retreat');
+      },
+
+      gotoHome: function() {
+        this.$dispatch('app:setView', 'overview');
       },
 
       toggle: function() {
