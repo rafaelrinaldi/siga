@@ -33,16 +33,14 @@
     "tests"
   ],
   "dependencies": {
-    "topcoat": "~0.8.0",
     "jquery": "~2.1.0",
     "requirejs": "~2.1.11",
     "mout": "~0.9.1",
-    "vue": "~0.10.3",
+    "vue": "~0.10.4",
     "text": "git@github.com:requirejs/text.git#~2.0.12",
     "normalize-css": "~3.0.1",
     "requirejs-plugins": "~1.0.2",
     "q": "git@github.com:kriskowal/q.git#v1",
-    "page.js": "git@github.com:visionmedia/page.js.git#~1.3.7",
     "crossroads.js": "git@github.com:millermedeiros/crossroads.js.git#~0.12.0",
     "hasher": "~1.2.0",
     "google-maps-utility-library-v3": "*"
