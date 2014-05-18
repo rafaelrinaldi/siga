@@ -87,8 +87,8 @@ define(
           .done(function(position) {
             self.userLocation = position;
             self.setUserLocationMarker(position);
-            self.placeLines();
-            self.saveMarkersToApplication();
+            self.placeStationMarkers();
+            self.saveUserNearestStation(position);
           });
       },
 
@@ -101,6 +101,22 @@ define(
         });
       },
 
+      saveUserNearestStation: function(position) {
+        var coordinates = {
+              latitude: position.lat(),
+              longitude: position.lng()
+            },
+            // User nearest station marker
+            userNearestStation = this.overviewMap.getNearestMarker(coordinates),
+            userNearestStationName = userNearestStation.content,
+            userNearestStationModel = getStationByName(userNearestStationName);
+
+        console.log('overview :: saveUserNearestStation() :: Saving the model of user\'s nearest station');
+        console.dir(userNearestStationModel);
+
+        this.$root.nearestStation = userNearestStationModel;
+      },
+
       moveToCenter: function() {
         this.overviewMap.panTo(this.userLocation);
       },
@@ -109,11 +125,21 @@ define(
         this.$dispatch('app:setView', 'station', {id: id});
       },
 
-      saveMarkersToApplication: function() {
-        this.$root.subwayCoverageMarkers = this.overviewMap.markers;
+      /**
+       * Draw subway line on the map
+       * @param {Array} stations List of subway station coordinates
+       */
+      placeLine: function(stations) {
+        console.log('overview :: placeLine()');
+
+        new gmaps.Polyline(mixIn(config.polyLine, {
+          path: stations,
+          strokeColor: color,
+          map: this.overviewMap.getMap()
+        }));
       },
 
-      placeLines: function() {
+      placeStationMarkers: function() {
         var lines = getLines(),
             firstStation,
             lastStation,
@@ -124,9 +150,10 @@ define(
             map = this.overviewMap,
             lineModel = {},
             lineStations = {},
-            stations;
+            stations,
+            self = this;
 
-        console.log('overview :: placeLines() :: Rendering subway stations and lines');
+        console.log('overview :: placeStationMarkers() :: Rendering subway stations and lines');
 
         $.each(lines, function(index, line) {
 
@@ -158,12 +185,8 @@ define(
 
           });
 
-          // Create subway line path on the map
-          new gmaps.Polyline(mixIn(config.polyLine, {
-            path: points,
-            strokeColor: color,
-            map: map.getMap()
-          }));
+          self.placeLine(points);
+
         });
 
       }

@@ -107,8 +107,7 @@ requirejs(
         },
 
         data: {
-          currentView: 'splash',
-          foo: 'bar'
+          currentView: 'splash'
         },
 
         methods: {
@@ -139,7 +138,7 @@ requirejs(
           },
 
           currentViewChanged: function() {
-            this.$.currentView.dispose();
+            Vue.nextTick(this.$.currentView.dispose);
           }
         }
       });
