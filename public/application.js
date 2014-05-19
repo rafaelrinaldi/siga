@@ -19260,12 +19260,11 @@ define(
         this.userInputGroup.addClass('is-focused');
 
         this.lastInput = id;
-
-        event.preventDefault();
       },
 
       userInputFocusOut: function() {
         this.userInputGroup.removeClass('is-focused');
+        // MBP.hideUrlBarOnLoad();
       },
 
       getNearbyStation: function(location) {

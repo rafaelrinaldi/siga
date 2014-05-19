@@ -13,6 +13,9 @@ body {
   transition: all 1s linear; }
 
 
+input[type='text'], textarea {
+  font-size: 1em; }
+
 .wrapper {
   position: relative;
   width: 100%;
