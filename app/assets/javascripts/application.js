@@ -55,7 +55,8 @@ requirejs(
     'modules/directions',
     'modules/directionsDetail',
     // 'modules/map',
-    './sections'
+    './sections',
+    'lib/h5bpHelpers'
   ],
   function(
     require,
@@ -145,9 +146,18 @@ requirejs(
       });
     }
 
+    function _fixKnownIssues() {
+      $(function() {
+        MBP.scaleFix();
+        MBP.gestureStart();
+        MBP.hideUrlBarOnLoad();
+      });
+    }
+
     function _bootstrap() {
       Vue.config('debug', config.debug);
 
+      _fixKnownIssues();
       _setupApp();
       _setupRouter();
     }

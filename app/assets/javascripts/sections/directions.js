@@ -92,6 +92,8 @@ define(
         this.userInputGroup.addClass('is-focused');
 
         this.lastInput = id;
+
+        event.preventDefault();
       },
 
       userInputFocusOut: function() {
