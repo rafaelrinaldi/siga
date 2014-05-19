@@ -19447,7 +19447,7 @@ define(
 });
 
 
-define('text!partials/sections/directions/detail.html',[],function () { return '<div id="directions-detail-map"></div>\n<div class="steps">\n  <ul>\n    <li v-repeat="steps">\n      <span v-repeat="step: steps[$index]">\n        <span class="step {{step.line.name}}">{{step.departure}}</span>\n      </span>\n      <button v-on="click: selectRoute($index, $event)">Select</button>\n    </li>\n  </ul>\n</div>\n<div class="instructions">\n  <ul>\n    <li v-repeat="instructions">{{$value}}</li>\n  </ul>\n</div>\n';});
+define('text!partials/sections/directions/detail.html',[],function () { return '<div id="directions-detail-map"></div>\n<div class="direction-detail-steps">\n  <ul>\n    <li v-repeat="route: routes">\n      {{route.headsign}}\n    </li>\n  </ul>\n</div>\n';});
 
 define(
 'sections/directions/detail',[
@@ -19502,107 +19502,99 @@ define(
             destination = toLatLng(this.destination.location);
 
         getDestination(origin, destination)
-          .then($.proxy(this.testRoutes, this));
+          .then($.proxy(this.filterValidRoutes, this))
+          .then($.proxy(this.parseSteps, this));
       },
 
-      parseRoutes: function(model) {
-        var steps = this.parseRoutesSteps(model.routes);
+      filterValidRoutes: function(model) {
+        var isValidRoute,
+            routes = [];
 
-        this.routes = model.routes;
-        this.steps = steps;
+        $.each(model.routes, function(routeIndex, route) {
+          // console.log('\n\n');
+          $.each(route.legs, function(legIndex, leg) {
+            $.each(leg.steps, function(stepIndex, step) {
+              isValidRoute = false;
 
-        console.log(steps);
-      },
-
-      testRoutes: function(model) {
-        var routes = model.routes;
-        console.log(routes);
-        return;
-
-        routes.forEach(function(route) {
-          route.legs.forEach(function(leg) {
-            vehicleTypes = [];
-            leg.steps.forEach(function(step) {
-              hasTransitDetails = step.transit;
-              if(hasTransitDetails) {
-                vehicleType = step.transit.line.vehicle.type;
-                // check if vehicle type is subway, otherwise doesn't use its data
-                // TODO: need to loop through vehicle tipes using `$.grep` to check if any
-                // occurrency has anything other than SUBWAY, doesn't matter the order.
-                hasValidVehicleType = vehicleType === 'SUBWAY';
-                if(hasValidVehicleType) {
-                  if(callback) {
-                    callback(index, route, leg, step);
-                  }
-                }
+              // If doesn't have transit information but travel mode is walking, it's a valid route.
+              if(!step.transit && step.travel_mode === 'WALKING') {
+                isValidRoute = true;
+              // Otherwise, if travel mode is transit and vehicle type is subway, it's also a valid route.
+              } else if(step.travel_mode === 'TRANSIT' && step.transit.line.vehicle.type === 'SUBWAY') {
+                isValidRoute = true;
               }
+
+              // console.log(step.instructions, isValidRoute);
+
+              return isValidRoute;
             });
           });
-          ++index;
+
+          if(isValidRoute) {
+            routes.push(route);
+          }
+          // console.log('is valid route?', isValidRoute);
         });
+
+        return routes;
       },
 
-      parseRoutesSteps: function(routes) {
-        var model,
-            steps = [],
-            LINE_ID_REGEX = /\s(.*)/i,
-            formatLineName = function(name) {
-              return name.match(LINE_ID_REGEX)[0].toLowerCase().trim();
+      parseSteps: function(routes) {
+        var steps = [],
+            legModel = {},
+            stepModel = {};
+
+        $.each(routes, function(routeIndex, route) {
+          console.log('\n');
+          $.each(route.legs, function(legIndex, leg) {
+            legModel = {
+              departure: leg.departure_time.text,
+              arrival: leg.arrival_time.text,
+              duration: leg.duration.text,
+              distance: leg.distance.text,
+              totalStops: 0,
+              steps: []
             };
 
-        this.iterateThroughSubwayRoutes(routes, function(index, route, leg, step) {
-          // Create step array if it doesn't exist yet
-          if(!steps[index]) {
-            steps[index] = [];
-          }
+            $.each(leg.steps, function(stepIndex, step) {
+              stepModel = {
+                type: 'walking',
+                instructions: step.instructions
+              };
 
-          // Compose step model
-          model = {
-            line: {
-              name: formatLineName(step.transit.line.short_name),
-              color: step.transit.line.color,
-              textColor: step.transit.line.text_color
-            },
-            departure: step.transit.departure_stop.name,
-            arrival: step.transit.arrival_stop.name
-          }
+              if(step.transit && step.transit.line) {
+                stepModel.type = 'subway';
+                stepModel.direction = step.transit.headsign;
+                stepModel.departure = step.transit.departure_stop.name;
+                stepModel.arrival = step.transit.arrival_stop.name;
+                stepModel.totalStops = parseInt(step.transit.num_stops, 10);
 
-          // Update steps list
-          steps[index].push(model);
-        });
-
-        return steps;
-      },
-
-      iterateThroughSubwayRoutes: function(routes, callback) {
-        var index,
-            hasInnerSteps,
-            hasTransitDetails,
-            hasValidVehicleType,
-            vehicleType;
-
-        index = 0;
-
-        routes.forEach(function(route) {
-          route.legs.forEach(function(leg) {
-            vehicleTypes = [];
-            leg.steps.forEach(function(step) {
-              hasTransitDetails = step.transit;
-              if(hasTransitDetails) {
-                vehicleType = step.transit.line.vehicle.type;
-                // check if vehicle type is subway, otherwise doesn't use its data
-                // TODO: need to loop through vehicle tipes using `$.grep` to check if any
-                // occurrency has anything other than SUBWAY, doesn't matter the order.
-                hasValidVehicleType = vehicleType === 'SUBWAY';
-                if(hasValidVehicleType) {
-                  if(callback) {
-                    callback(index, route, leg, step);
-                  }
-                }
+                legModel.totalStops += stepModel.totalStops;
+                // console.log(step);
+                // console.log(step.transit.headsign);
+                // console.log(step.transit);
+                // stepModel.line = {
+                // }
+                // console.log(step.transit.line.short_name);
+                // console.log(step.transit.line.color);
               }
+
+              legModel.steps.push(stepModel);
+              /*
+              model = {
+                line: {
+                  name: formatLineName(step.transit.line.short_name),
+                  color: step.transit.line.color,
+                  textColor: step.transit.line.text_color
+                },
+                departure: step.transit.departure_stop.name,
+                arrival: step.transit.arrival_stop.name
+              }
+               */
             });
+console.log(legModel);
+          // steps.push(legModel);
           });
-          ++index;
         });
       }
     }
