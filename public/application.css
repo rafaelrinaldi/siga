@@ -13,7 +13,7 @@ body {
   transition: all 1s linear; }
 
 
-input[type='text'], textarea {
+input[type="text"], textarea {
   font-size: 1em; }
 
 .wrapper {

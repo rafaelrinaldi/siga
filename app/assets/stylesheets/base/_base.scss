@@ -16,4 +16,8 @@ body {
 #app {
 }
 
-input[type='text'],textarea {font-size:1em;}
+// To avoid weird zoom/scale on iOS when focusing an input text or text area
+input[type="text"],
+textarea {
+  font-size:1em;
+}
