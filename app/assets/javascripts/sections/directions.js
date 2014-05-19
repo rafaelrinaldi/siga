@@ -3,6 +3,7 @@ define(
   'jquery',
   'vue',
   'lib/gmaps',
+  'services/getLine',
   'services/getStationByName',
   'services/getStationsByName',
   'text!partials/sections/directions.html'
@@ -10,6 +11,7 @@ define(
   $,
   Vue,
   gmaps,
+  getLine,
   getStationByName,
   getStationsByName,
   template
@@ -37,15 +39,10 @@ define(
         this.nearestStation = getStationByName(this.origin);
 
         this.userInput
-          .focusin($.proxy(this.userInputFocus, this))
-          // .focusout(function() {
-          //   Vue.nextTick($.proxy(self.cleanupSuggestions, self));
-          // });
+          .focusin($.proxy(this.userInputFocus, this));
       },
 
       submit: function(event) {
-        // getStationsByName(this.origin);
-        // console.log('"%s" to "%s"', this.origin, this.destination);
         this.$dispatch('app:setView', 'directions-detail', {
           origin: this.origin,
           destination: this.destination
@@ -53,7 +50,14 @@ define(
       },
 
       suggestStations: function(input) {
-        this.suggestions = getStationsByName(this[input]);
+        var suggestions = getStationsByName(this[input]);
+
+        // Combine line details to stations models to display colors and stuff
+        this.suggestions =  $.each(suggestions, function(index, suggestion) {
+                              $.map(suggestion.lines, function(line) {
+                                return $.extend(line, getLine(line.id));
+                              });
+                            });
       },
 
       selectSuggestion: function(suggestion) {

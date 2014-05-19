@@ -1,38 +1,51 @@
 <div class="directions-input">
-  <div class="user-input">
-    <label for="origin">Estação de origem</label>
-    <input
-      type="search"
-      id="origin"
-      name="origin"
-      class="js-user-input"
-      v-model="origin"
-      v-on="keyup: suggestStations('origin')"
-    >
+
+  <div class="list">
+    <label class="item item-input">
+      <i class="icon ion-arrow-right-a placeholder-icon"></i>
+      <input
+        type="text"
+        id="origin"
+        name="origin"
+        class="js-user-input"
+        v-model="origin"
+        v-on="keyup: suggestStations('origin')"
+        placeholder="Origem"
+      >
+    </label>
+    <label class="item item-input">
+      <i class="icon ion-arrow-left-a placeholder-icon"></i>
+      <input
+        type="text"
+        id="destination"
+        name="destination"
+        class="js-user-input"
+        v-model="destination"
+        v-on="keyup: suggestStations('destination')"
+        placeholder="Destino"
+      >
+    </label>
+
   </div>
 
-  <div class="user-input">
-    <label for="destination">Estação de destino</label>
-    <input
-      type="search"
-      id="destination"
-      name="destination"
-      class="js-user-input"
-      v-model="destination"
-      v-on="keyup: suggestStations('destination')"
-    >
-  </div>
-
-  <button v-on="click: submit($event)">Submit</button>
+  <button class="button button-block button-positive" v-on="click: submit($event)">Submit</button>
 </div>
 
 <button v-on="click: getNearbyStation(this.origin)">Nearby station</button>
 <button v-on="click: swapUserInput">Swap</button>
 
-<div class="directions-suggestions">
-  <ul>
-    <li v-repeat="suggestions">
-      <button v-on="click: selectSuggestion($value), click: cleanupSuggestions">{{$value}}</button>
-    </li>
-  </ul>
-</div>
+<ul class="list directions-suggestions">
+  <li
+    class="item"
+    v-repeat="suggestion: suggestions"
+    v-on="click: selectSuggestion(suggestion.title), click: cleanupSuggestions"
+  >
+    <a href="#">
+      {{suggestion.title}}
+      <span
+        style="background: {{line.color}}; border-color: {{line.color}};"
+        v-repeat="line: suggestion.lines"
+      />
+    </a>
+  </li>
+</ul>

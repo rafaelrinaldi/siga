@@ -67,6 +67,9 @@ define(
 
     // Waits for the window to be fully attached to the DOM before watching for a click on it
     gmaps.event.addListener(this.infoWindow, 'domready', function(event) {
+      // Remove the "x" icon added by default by Google Maps to the info window
+      $('.gm-style-iw').next('div').remove();
+
       $('.js-info-window').one('click', $.proxy(self._infoWindowClick, self));
     });
   };
@@ -191,9 +194,9 @@ define(
 
   // TODO: This should be declared outside of this context
   p.formatInfoWindowContent = function(options) {
-    return  '<div class="js-info-window info-window" data-station-id="' + options.id + '">' +
-              '<strong>' + options.content + '</strong>' +
-              '<button>+</button>' +
+    return '<div class="js-info-window info-window" data-station-id="' + options.id + '" style="font-size: 20px;">' +
+              '<strong class="label">' + options.content + '</strong>' +
+              '<i class="icon ion-ios7-information-outline"></i>' +
             '</div>';
   };
 

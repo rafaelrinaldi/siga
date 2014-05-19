@@ -1,4 +1,12 @@
+<!--
 <strong class="header__title">{{title}}</strong>
 <div class="header__controls">
   <button class="header__control" v-repeat="controls" v-on="click: onClick(this.channel)">{{title}}</button>
+</div>
+-->
+
+<div class="bar bar-header">
+  <div class="h1 title">{{title}}</div>
+  <button class="button button-icon icon ion-navicon"></button>
+  <button class="button button-clear button-positive">Edit</button>
 </div>

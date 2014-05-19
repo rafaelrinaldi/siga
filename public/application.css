@@ -1,4 +1,5 @@
 @import url("../../../vendor/assets/bower/normalize-css/normalize.css");
+@import url("../../../vendor/assets/bower/ionic/release/css/ionic.css");
 html, body {
   width: 100%;
   height: 100%; }
@@ -118,7 +119,7 @@ a, .link {
   display: inline-block; }
 
 .section {
-  background: #eee;
+  background: #fff;
   position: absolute;
   opacity: 1;
   -webkit-transition: all 0.2s ease;
@@ -165,6 +166,19 @@ a, .link {
 .header__control:last-child {
   right: 0; }
 
+.info-window {
+  cursor: pointer;
+  padding-right: 0;
+  margin-left: 10px;
+  overflow: visible; }
+  .info-window .label {
+    color: #444; }
+  .info-window .icon {
+    font-size: 24px;
+    margin-left: 10px;
+    line-height: 24px;
+    vertical-align: middle;
+    color: #4a87ee; }
 
 .map {
   width: 100%;
@@ -234,3 +248,21 @@ a, .link {
 
 .section.directions {
   padding-top: 50px; }
+
+.directions-suggestions .item {
+  cursor: pointer;
+  padding: 14px 15px 14px 15px; }
+
+.directions-suggestions .item a {
+  color: #444; }
+
+.directions-suggestions span {
+  float: right;
+  width: 20px;
+  height: 20px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 4px;
+  margin-left: 10px; }
+  .directions-suggestions span:last-child {
+    margin-left: 0; }

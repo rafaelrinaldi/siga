@@ -1,14 +1,10 @@
 define(
 [
   'jquery',
-  'mout/object/pluck',
-  'mout/object/values',
   'helpers/sanitizeStationName',
   'services/getStations'
 ], function(
   $,
-  pluck,
-  values,
   sanitizeStationName,
   getStations
 ) {
@@ -16,20 +12,27 @@ define(
 
   // Shout out to mout
   stations = getStations();
-  stations = pluck(stations, 'title');
-  stations = values(stations);
 
   function getStationsByName(name) {
-    var matches = [];
+    var matches = [],
+        stationName,
+        matchStationRegex,
+        doesMatchStation,
+        lines;
 
     name = sanitizeStationName(name);
 
-    matches = $.grep(stations, function(station) {
-      return new RegExp(name, 'gi')
-              .test(
-                sanitizeStationName(station)
-              );
+    $.each(stations, function(stationIndex, station) {
+      stationName = sanitizeStationName(station.title);
+      matchStationRegex = new RegExp(name, 'gi');
+      doesMatchStation = matchStationRegex.test(stationName);
+
+      if(doesMatchStation) {
+        matches.push(station);
+      }
     });
+
+
 
     return matches;
   }

@@ -33,7 +33,6 @@ define(
       initialize: function() {
         this.origin = getStationByName(this.$options.origin);
         this.destination = getStationByName(this.$options.destination);
-        console.log(this.origin, this.destination);
         this.setupMap();
         this.requestDestination();
       },

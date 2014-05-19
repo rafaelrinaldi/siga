@@ -15705,7 +15705,7 @@ define(
 
 define('text',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
 
-define('text!partials/header.html',[],function () { return '<strong class="header__title">{{title}}</strong>\n<div class="header__controls">\n  <button class="header__control" v-repeat="controls" v-on="click: onClick(this.channel)">{{title}}</button>\n</div>\n';});
+define('text!partials/header.html',[],function () { return '<!--\n<strong class="header__title">{{title}}</strong>\n<div class="header__controls">\n  <button class="header__control" v-repeat="controls" v-on="click: onClick(this.channel)">{{title}}</button>\n</div>\n-->\n\n<div class="bar bar-header">\n  <div class="h1 title">{{title}}</div>\n  <button class="button button-icon icon ion-navicon"></button>\n  <button class="button button-clear button-positive">Edit</button>\n</div>\n';});
 
 define(
   'modules/header',[
@@ -18615,6 +18615,9 @@ define(
 
     // Waits for the window to be fully attached to the DOM before watching for a click on it
     gmaps.event.addListener(this.infoWindow, 'domready', function(event) {
+      // Remove the "x" icon added by default by Google Maps to the info window
+      $('.gm-style-iw').next('div').remove();
+
       $('.js-info-window').one('click', $.proxy(self._infoWindowClick, self));
     });
   };
@@ -18739,9 +18742,9 @@ define(
 
   // TODO: This should be declared outside of this context
   p.formatInfoWindowContent = function(options) {
-    return  '<div class="js-info-window info-window" data-station-id="' + options.id + '">' +
-              '<strong>' + options.content + '</strong>' +
-              '<button>+</button>' +
+    return '<div class="js-info-window info-window" data-station-id="' + options.id + '" style="font-size: 20px;">' +
+              '<strong class="label">' + options.content + '</strong>' +
+              '<i class="icon ion-ios7-information-outline"></i>' +
             '</div>';
   };
 
@@ -19117,200 +19120,13 @@ define(
 
 });
 
-define('mout/function/identity',[],function () {
-
-    /**
-     * Returns the first argument provided to it.
-     */
-    function identity(val){
-        return val;
-    }
-
-    return identity;
-
-});
-
-define('mout/function/prop',[],function () {
-
-    /**
-     * Returns a function that gets a property of the passed object
-     */
-    function prop(name){
-        return function(obj){
-            return obj[name];
-        };
-    }
-
-    return prop;
-
-});
-
-define('mout/lang/isKind',['./kindOf'], function (kindOf) {
-    /**
-     * Check if value is from a specific "kind".
-     */
-    function isKind(val, kind){
-        return kindOf(val) === kind;
-    }
-    return isKind;
-});
-
-define('mout/lang/isArray',['./isKind'], function (isKind) {
-    /**
-     */
-    var isArray = Array.isArray || function (val) {
-        return isKind(val, 'Array');
-    };
-    return isArray;
-});
-
-define('mout/object/deepMatches',['./forOwn', '../lang/isArray'], function(forOwn, isArray) {
-
-    function containsMatch(array, pattern) {
-        var i = -1, length = array.length;
-        while (++i < length) {
-            if (deepMatches(array[i], pattern)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    function matchArray(target, pattern) {
-        var i = -1, patternLength = pattern.length;
-        while (++i < patternLength) {
-            if (!containsMatch(target, pattern[i])) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    function matchObject(target, pattern) {
-        var result = true;
-        forOwn(pattern, function(val, key) {
-            if (!deepMatches(target[key], val)) {
-                // Return false to break out of forOwn early
-                return (result = false);
-            }
-        });
-
-        return result;
-    }
-
-    /**
-     * Recursively check if the objects match.
-     */
-    function deepMatches(target, pattern){
-        if (target && typeof target === 'object') {
-            if (isArray(target) && isArray(pattern)) {
-                return matchArray(target, pattern);
-            } else {
-                return matchObject(target, pattern);
-            }
-        } else {
-            return target === pattern;
-        }
-    }
-
-    return deepMatches;
-
-});
-
-define('mout/function/makeIterator_',['./identity', './prop', '../object/deepMatches'], function(identity, prop, deepMatches) {
-
-    /**
-     * Converts argument into a valid iterator.
-     * Used internally on most array/object/collection methods that receives a
-     * callback/iterator providing a shortcut syntax.
-     */
-    function makeIterator(src, thisObj){
-        if (src == null) {
-            return identity;
-        }
-        switch(typeof src) {
-            case 'function':
-                // function is the first to improve perf (most common case)
-                // also avoid using `Function#call` if not needed, which boosts
-                // perf a lot in some cases
-                return (typeof thisObj !== 'undefined')? function(val, i, arr){
-                    return src.call(thisObj, val, i, arr);
-                } : src;
-            case 'object':
-                return function(val){
-                    return deepMatches(val, src);
-                };
-            case 'string':
-            case 'number':
-                return prop(src);
-        }
-    }
-
-    return makeIterator;
-
-});
-
-define('mout/object/map',['./forOwn', '../function/makeIterator_'], function(forOwn, makeIterator) {
-
-    /**
-     * Creates a new object where all the values are the result of calling
-     * `callback`.
-     */
-    function mapValues(obj, callback, thisObj) {
-        callback = makeIterator(callback, thisObj);
-        var output = {};
-        forOwn(obj, function(val, key, obj) {
-            output[key] = callback(val, key, obj);
-        });
-
-        return output;
-    }
-    return mapValues;
-});
-
-define('mout/object/pluck',['./map', '../function/prop'], function (map, prop) {
-
-    /**
-     * Extract a list of property values.
-     */
-    function pluck(obj, propName){
-        return map(obj, prop(propName));
-    }
-
-    return pluck;
-
-});
-
-define('mout/object/values',['./forOwn'], function (forOwn) {
-
-    /**
-     * Get object values
-     */
-    function values(obj) {
-        var vals = [];
-        forOwn(obj, function(val, key){
-            vals.push(val);
-        });
-        return vals;
-    }
-
-    return values;
-
-});
-
 define(
 'services/getStationsByName',[
   'jquery',
-  'mout/object/pluck',
-  'mout/object/values',
   'helpers/sanitizeStationName',
   'services/getStations'
 ], function(
   $,
-  pluck,
-  values,
   sanitizeStationName,
   getStations
 ) {
@@ -19318,20 +19134,27 @@ define(
 
   // Shout out to mout
   stations = getStations();
-  stations = pluck(stations, 'title');
-  stations = values(stations);
 
   function getStationsByName(name) {
-    var matches = [];
+    var matches = [],
+        stationName,
+        matchStationRegex,
+        doesMatchStation,
+        lines;
 
     name = sanitizeStationName(name);
 
-    matches = $.grep(stations, function(station) {
-      return new RegExp(name, 'gi')
-              .test(
-                sanitizeStationName(station)
-              );
+    $.each(stations, function(stationIndex, station) {
+      stationName = sanitizeStationName(station.title);
+      matchStationRegex = new RegExp(name, 'gi');
+      doesMatchStation = matchStationRegex.test(stationName);
+
+      if(doesMatchStation) {
+        matches.push(station);
+      }
     });
+
+
 
     return matches;
   }
@@ -19341,13 +19164,14 @@ define(
 });
 
 
-define('text!partials/sections/directions.html',[],function () { return '<div class="directions-input">\n  <div class="user-input">\n    <label for="origin">Estação de origem</label>\n    <input\n      type="search"\n      id="origin"\n      name="origin"\n      class="js-user-input"\n      v-model="origin"\n      v-on="keyup: suggestStations(\'origin\')"\n    >\n  </div>\n\n  <div class="user-input">\n    <label for="destination">Estação de destino</label>\n    <input\n      type="search"\n      id="destination"\n      name="destination"\n      class="js-user-input"\n      v-model="destination"\n      v-on="keyup: suggestStations(\'destination\')"\n    >\n  </div>\n\n  <button v-on="click: submit($event)">Submit</button>\n</div>\n\n<button v-on="click: getNearbyStation(this.origin)">Nearby station</button>\n<button v-on="click: swapUserInput">Swap</button>\n\n<div class="directions-suggestions">\n  <ul>\n    <li v-repeat="suggestions">\n      <button v-on="click: selectSuggestion($value), click: cleanupSuggestions">{{$value}}</button>\n    </li>\n  </ul>\n</div>\n';});
+define('text!partials/sections/directions.html',[],function () { return '<div class="directions-input">\n\n  <div class="list">\n    <label class="item item-input">\n      <i class="icon ion-arrow-right-a placeholder-icon"></i>\n      <input\n        type="text"\n        id="origin"\n        name="origin"\n        class="js-user-input"\n        v-model="origin"\n        v-on="keyup: suggestStations(\'origin\')"\n        placeholder="Origem"\n      >\n    </label>\n    <label class="item item-input">\n      <i class="icon ion-arrow-left-a placeholder-icon"></i>\n      <input\n        type="text"\n        id="destination"\n        name="destination"\n        class="js-user-input"\n        v-model="destination"\n        v-on="keyup: suggestStations(\'destination\')"\n        placeholder="Destino"\n      >\n    </label>\n\n  </div>\n\n  <button class="button button-block button-positive" v-on="click: submit($event)">Submit</button>\n</div>\n\n<button v-on="click: getNearbyStation(this.origin)">Nearby station</button>\n<button v-on="click: swapUserInput">Swap</button>\n\n<ul class="list directions-suggestions">\n  <li\n    class="item"\n    v-repeat="suggestion: suggestions"\n    v-on="click: selectSuggestion(suggestion.title), click: cleanupSuggestions"\n  >\n    <a href="#">\n      {{suggestion.title}}\n      <span\n        style="background: {{line.color}}; border-color: {{line.color}};"\n        v-repeat="line: suggestion.lines"\n      />\n    </a>\n  </li>\n</ul>\n';});
 
 define(
 'sections/directions',[
   'jquery',
   'vue',
   'lib/gmaps',
+  'services/getLine',
   'services/getStationByName',
   'services/getStationsByName',
   'text!partials/sections/directions.html'
@@ -19355,6 +19179,7 @@ define(
   $,
   Vue,
   gmaps,
+  getLine,
   getStationByName,
   getStationsByName,
   template
@@ -19382,15 +19207,10 @@ define(
         this.nearestStation = getStationByName(this.origin);
 
         this.userInput
-          .focusin($.proxy(this.userInputFocus, this))
-          // .focusout(function() {
-          //   Vue.nextTick($.proxy(self.cleanupSuggestions, self));
-          // });
+          .focusin($.proxy(this.userInputFocus, this));
       },
 
       submit: function(event) {
-        // getStationsByName(this.origin);
-        // console.log('"%s" to "%s"', this.origin, this.destination);
         this.$dispatch('app:setView', 'directions-detail', {
           origin: this.origin,
           destination: this.destination
@@ -19398,7 +19218,14 @@ define(
       },
 
       suggestStations: function(input) {
-        this.suggestions = getStationsByName(this[input]);
+        var suggestions = getStationsByName(this[input]);
+
+        // Combine line details to stations models to display colors and stuff
+        this.suggestions =  $.each(suggestions, function(index, suggestion) {
+                              $.map(suggestion.lines, function(line) {
+                                return $.extend(line, getLine(line.id));
+                              });
+                            });
       },
 
       selectSuggestion: function(suggestion) {
@@ -19447,7 +19274,7 @@ define(
 });
 
 
-define('text!partials/sections/directions/detail.html',[],function () { return '<div id="directions-detail-map"></div>\n<div class="direction-detail-steps">\n  <ul>\n    <li v-repeat="route: routes">\n      {{route.headsign}}\n    </li>\n  </ul>\n</div>\n';});
+define('text!partials/sections/directions/detail.html',[],function () { return '<div id="directions-detail-map"></div>\n<div class="direction-detail-steps">\n  <ul>\n    <li v-repeat="route: routes"></li>\n  </ul>\n</div>\n';});
 
 define(
 'sections/directions/detail',[
@@ -19484,7 +19311,6 @@ define(
       initialize: function() {
         this.origin = getStationByName(this.$options.origin);
         this.destination = getStationByName(this.$options.destination);
-        console.log(this.origin, this.destination);
         this.setupMap();
         this.requestDestination();
       },
