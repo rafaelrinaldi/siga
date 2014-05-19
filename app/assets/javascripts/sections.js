@@ -4,13 +4,15 @@ define(
   'sections/overview',
   'sections/station',
   'sections/line',
-  'sections/directions'
+  'sections/directions',
+  'sections/directions/detail'
 ], function(
   Splash,
   Overview,
   Station,
   Line,
-  Directions
+  Directions,
+  DirectionsDetail
 ) {
 
   return {
@@ -18,7 +20,8 @@ define(
     'overview': Overview,
     'station': Station,
     'line': Line,
-    'directions': Directions
+    'directions': Directions,
+    'directionsDetail': DirectionsDetail
   };
 
 });

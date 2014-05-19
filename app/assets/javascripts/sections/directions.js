@@ -20,27 +20,36 @@ define(
 
     data: {
       suggestions: [],
-      origin: 'barra funda',
+      origin: 'brigadeiro',
       destination: 'anhangabau',
       lastInput: ''
     },
 
     attached: function() {
-      this.context = $(this.$el);
-      this.userInput = this.context.find('.js-user-input');
-      this.nearestStation = getStationByName(this.origin);
-
-      this.userInput
-        .focusin($.proxy(this.userInputFocus, this))
-        // .focusout(function() {
-        //   Vue.nextTick($.proxy(self.cleanupSuggestions, self));
-        // });
+      this.$dispatch('app:sectionReady', this);
+      this.initialize();
     },
 
     methods: {
+      initialize: function() {
+        this.context = $(this.$el);
+        this.userInput = this.context.find('.js-user-input');
+        this.nearestStation = getStationByName(this.origin);
+
+        this.userInput
+          .focusin($.proxy(this.userInputFocus, this))
+          // .focusout(function() {
+          //   Vue.nextTick($.proxy(self.cleanupSuggestions, self));
+          // });
+      },
+
       submit: function(event) {
         // getStationsByName(this.origin);
-        console.log('"%s" to "%s"', this.origin, this.destination);
+        // console.log('"%s" to "%s"', this.origin, this.destination);
+        this.$dispatch('app:setView', 'directions-detail', {
+          origin: this.origin,
+          destination: this.destination
+        });
       },
 
       suggestStations: function(input) {
@@ -75,6 +84,17 @@ define(
 
       getNearbyStation: function(location) {
         this.origin = this.nearestStation.title;
+      },
+
+      dispose: function() {
+        if(this.userInput) {
+          this.userInput.off('focusin');
+        }
+
+        if(this.suggestions) {
+          this.suggestions.length = 0;
+          this.suggestions = null;
+        }
       }
     }
   });

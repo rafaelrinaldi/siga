@@ -96,6 +96,7 @@ requirejs(
           'station': Sections.station,
           'line': Sections.line,
           'directions': Sections.directions,
+          'directions-detail': Sections.directionsDetail,
           'header': Header,
           'navigation': Navigation
         },

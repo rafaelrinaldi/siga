@@ -17833,8 +17833,13 @@ define(
     function getDestination(origin, destination) {
       var deferred = Q.defer();
 
-      request = mixIn(request, {origin: origin, destination: destination});
-      console.log(request);
+      request = mixIn(
+        request,
+        {
+          origin: origin,
+          destination: destination
+        }
+      );
 
       directions.route(request, function(result, status) {
         if(status === google.maps.DirectionsStatus.OK) {
@@ -18824,16 +18829,7 @@ define(
     replace: true,
 
     attached: function() {
-      // Make sure dom is loaded and then fire the initialization method
-      $($.proxy(this.initialize, this));
-    },
-
-    attached: function() {
       this.initialize();
-    },
-
-    created: function() {
-      // $($.proxy(this.initialize, this));
     },
 
     methods: {
@@ -19369,27 +19365,36 @@ define(
 
     data: {
       suggestions: [],
-      origin: 'barra funda',
+      origin: 'brigadeiro',
       destination: 'anhangabau',
       lastInput: ''
     },
 
     attached: function() {
-      this.context = $(this.$el);
-      this.userInput = this.context.find('.js-user-input');
-      this.nearestStation = getStationByName(this.origin);
-
-      this.userInput
-        .focusin($.proxy(this.userInputFocus, this))
-        // .focusout(function() {
-        //   Vue.nextTick($.proxy(self.cleanupSuggestions, self));
-        // });
+      this.$dispatch('app:sectionReady', this);
+      this.initialize();
     },
 
     methods: {
+      initialize: function() {
+        this.context = $(this.$el);
+        this.userInput = this.context.find('.js-user-input');
+        this.nearestStation = getStationByName(this.origin);
+
+        this.userInput
+          .focusin($.proxy(this.userInputFocus, this))
+          // .focusout(function() {
+          //   Vue.nextTick($.proxy(self.cleanupSuggestions, self));
+          // });
+      },
+
       submit: function(event) {
         // getStationsByName(this.origin);
-        console.log('"%s" to "%s"', this.origin, this.destination);
+        // console.log('"%s" to "%s"', this.origin, this.destination);
+        this.$dispatch('app:setView', 'directions-detail', {
+          origin: this.origin,
+          destination: this.destination
+        });
       },
 
       suggestStations: function(input) {
@@ -19424,6 +19429,181 @@ define(
 
       getNearbyStation: function(location) {
         this.origin = this.nearestStation.title;
+      },
+
+      dispose: function() {
+        if(this.userInput) {
+          this.userInput.off('focusin');
+        }
+
+        if(this.suggestions) {
+          this.suggestions.length = 0;
+          this.suggestions = null;
+        }
+      }
+    }
+  });
+
+});
+
+
+define('text!partials/sections/directions/detail.html',[],function () { return '<div id="directions-detail-map"></div>\n<div class="steps">\n  <ul>\n    <li v-repeat="steps">\n      <span v-repeat="step: steps[$index]">\n        <span class="step {{step.line.name}}">{{step.departure}}</span>\n      </span>\n      <button v-on="click: selectRoute($index, $event)">Select</button>\n    </li>\n  </ul>\n</div>\n<div class="instructions">\n  <ul>\n    <li v-repeat="instructions">{{$value}}</li>\n  </ul>\n</div>\n';});
+
+define(
+'sections/directions/detail',[
+  'jquery',
+  'vue',
+  'mout/array/contains',
+  'modules/map',
+  'services/getStationByName',
+  'services/getDestination',
+  'helpers/toLatLng',
+  'text!partials/sections/directions/detail.html'
+], function(
+  $,
+  Vue,
+  contains,
+  Map,
+  getStationByName,
+  getDestination,
+  toLatLng,
+  template
+) {
+
+  return Vue.extend({
+    template: template,
+
+    data: {},
+
+    attached: function() {
+      this.$dispatch('app:sectionReady', this);
+      this.initialize();
+    },
+
+    methods: {
+      initialize: function() {
+        this.origin = getStationByName(this.$options.origin);
+        this.destination = getStationByName(this.$options.destination);
+        this.setupMap();
+        this.requestDestination();
+      },
+
+      setupMap: function() {
+        var location = toLatLng(this.origin.location);
+
+        this.detailMap = new Map('#directions-detail-map', {
+          center: location
+        });
+        this.detailMap.initialize();
+      },
+
+      requestDestination: function() {
+        var origin = toLatLng(this.origin.location),
+            destination = toLatLng(this.destination.location);
+
+        getDestination(origin, destination)
+          .then($.proxy(this.testRoutes, this));
+      },
+
+      parseRoutes: function(model) {
+        var steps = this.parseRoutesSteps(model.routes);
+
+        this.routes = model.routes;
+        this.steps = steps;
+
+        console.log(steps);
+      },
+
+      testRoutes: function(model) {
+        var routes = model.routes;
+        console.log(routes);
+        return;
+
+        routes.forEach(function(route) {
+          route.legs.forEach(function(leg) {
+            vehicleTypes = [];
+            leg.steps.forEach(function(step) {
+              hasTransitDetails = step.transit;
+              if(hasTransitDetails) {
+                vehicleType = step.transit.line.vehicle.type;
+                // check if vehicle type is subway, otherwise doesn't use its data
+                // TODO: need to loop through vehicle tipes using `$.grep` to check if any
+                // occurrency has anything other than SUBWAY, doesn't matter the order.
+                hasValidVehicleType = vehicleType === 'SUBWAY';
+                if(hasValidVehicleType) {
+                  if(callback) {
+                    callback(index, route, leg, step);
+                  }
+                }
+              }
+            });
+          });
+          ++index;
+        });
+      },
+
+      parseRoutesSteps: function(routes) {
+        var model,
+            steps = [],
+            LINE_ID_REGEX = /\s(.*)/i,
+            formatLineName = function(name) {
+              return name.match(LINE_ID_REGEX)[0].toLowerCase().trim();
+            };
+
+        this.iterateThroughSubwayRoutes(routes, function(index, route, leg, step) {
+          // Create step array if it doesn't exist yet
+          if(!steps[index]) {
+            steps[index] = [];
+          }
+
+          // Compose step model
+          model = {
+            line: {
+              name: formatLineName(step.transit.line.short_name),
+              color: step.transit.line.color,
+              textColor: step.transit.line.text_color
+            },
+            departure: step.transit.departure_stop.name,
+            arrival: step.transit.arrival_stop.name
+          }
+
+          // Update steps list
+          steps[index].push(model);
+        });
+
+        return steps;
+      },
+
+      iterateThroughSubwayRoutes: function(routes, callback) {
+        var index,
+            hasInnerSteps,
+            hasTransitDetails,
+            hasValidVehicleType,
+            vehicleType;
+
+        index = 0;
+
+        routes.forEach(function(route) {
+          route.legs.forEach(function(leg) {
+            vehicleTypes = [];
+            leg.steps.forEach(function(step) {
+              hasTransitDetails = step.transit;
+              if(hasTransitDetails) {
+                vehicleType = step.transit.line.vehicle.type;
+                // check if vehicle type is subway, otherwise doesn't use its data
+                // TODO: need to loop through vehicle tipes using `$.grep` to check if any
+                // occurrency has anything other than SUBWAY, doesn't matter the order.
+                hasValidVehicleType = vehicleType === 'SUBWAY';
+                if(hasValidVehicleType) {
+                  if(callback) {
+                    callback(index, route, leg, step);
+                  }
+                }
+              }
+            });
+          });
+          ++index;
+        });
       }
     }
   });
@@ -19436,13 +19616,15 @@ define(
   'sections/overview',
   'sections/station',
   'sections/line',
-  'sections/directions'
+  'sections/directions',
+  'sections/directions/detail'
 ], function(
   Splash,
   Overview,
   Station,
   Line,
-  Directions
+  Directions,
+  DirectionsDetail
 ) {
 
   return {
@@ -19450,7 +19632,8 @@ define(
     'overview': Overview,
     'station': Station,
     'line': Line,
-    'directions': Directions
+    'directions': Directions,
+    'directionsDetail': DirectionsDetail
   };
 
 });
@@ -19553,6 +19736,7 @@ requirejs(
           'station': Sections.station,
           'line': Sections.line,
           'directions': Sections.directions,
+          'directions-detail': Sections.directionsDetail,
           'header': Header,
           'navigation': Navigation
         },

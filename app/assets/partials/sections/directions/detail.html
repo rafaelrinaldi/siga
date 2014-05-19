@@ -1,0 +1,16 @@
+<div id="directions-detail-map"></div>
+<div class="steps">
+  <ul>
+    <li v-repeat="steps">
+      <span v-repeat="step: steps[$index]">
+        <span class="step {{step.line.name}}">{{step.departure}}</span>
+      </span>
+      <button v-on="click: selectRoute($index, $event)">Select</button>
+    </li>
+  </ul>
+</div>
+<div class="instructions">
+  <ul>
+    <li v-repeat="instructions">{{$value}}</li>
+  </ul>
+</div>

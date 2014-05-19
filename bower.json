@@ -43,6 +43,7 @@
     "q": "git@github.com:kriskowal/q.git#v1",
     "crossroads.js": "git@github.com:millermedeiros/crossroads.js.git#~0.12.0",
     "hasher": "~1.2.0",
-    "google-maps-utility-library-v3": "*"
+    "google-maps-utility-library-v3": "*",
+    "ionic": "~0.9.27"
   }
 }

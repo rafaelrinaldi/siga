@@ -37,16 +37,7 @@ define(
     replace: true,
 
     attached: function() {
-      // Make sure dom is loaded and then fire the initialization method
-      $($.proxy(this.initialize, this));
-    },
-
-    attached: function() {
       this.initialize();
-    },
-
-    created: function() {
-      // $($.proxy(this.initialize, this));
     },
 
     methods: {

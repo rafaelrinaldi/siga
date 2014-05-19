@@ -171,47 +171,47 @@ a, .link {
   height: 100%; }
 
 
-.section .directions-detail {
+.section.directions-detail {
   width: inherit;
   height: inherit; }
-  .section .directions-detail #map {
+  .section.directions-detail #directions-detail-map {
     display: block;
     background: rgba(0, 0, 0, 0.5);
     width: 100%;
-    height: 90%;
+    height: 60%;
     float: left; }
-  .section .directions-detail .steps {
+  .section.directions-detail .steps {
     float: left; }
-    .section .directions-detail .steps ul {
+    .section.directions-detail .steps ul {
       padding: 0;
       margin: 0;
       list-style-type: none; }
-    .section .directions-detail .steps ul li {
+    .section.directions-detail .steps ul li {
       padding: 0;
       margin: 0;
       margin-top: 10px; }
-    .section .directions-detail .steps .step {
+    .section.directions-detail .steps .step {
       border-radius: 3px;
       font-weight: bold;
       padding: 6px;
       position: relative;
       margin-right: 10px; }
-    .section .directions-detail .steps .step.l1 {
+    .section.directions-detail .steps .step.l1 {
       color: #fff;
       background: #285083; }
-    .section .directions-detail .steps .step.l2 {
+    .section.directions-detail .steps .step.l2 {
       color: #fff;
       background: #006D58; }
-    .section .directions-detail .steps .step.l3 {
+    .section.directions-detail .steps .step.l3 {
       color: #fff;
       background: #DF3F31; }
-    .section .directions-detail .steps .step.l4 {
+    .section.directions-detail .steps .step.l4 {
       color: #444;
       background: #FFD400; }
-    .section .directions-detail .steps .step.l5 {
+    .section.directions-detail .steps .step.l5 {
       color: #fff;
       background: #8C3583; }
-  .section .directions-detail .instructions {
+  .section.directions-detail .instructions {
     width: 100%;
     float: left; }
 

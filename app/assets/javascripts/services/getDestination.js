@@ -20,8 +20,13 @@ define(
     function getDestination(origin, destination) {
       var deferred = Q.defer();
 
-      request = mixIn(request, {origin: origin, destination: destination});
-      console.log(request);
+      request = mixIn(
+        request,
+        {
+          origin: origin,
+          destination: destination
+        }
+      );
 
       directions.route(request, function(result, status) {
         if(status === google.maps.DirectionsStatus.OK) {
