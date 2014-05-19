@@ -33,6 +33,7 @@ define(
       initialize: function() {
         this.origin = getStationByName(this.$options.origin);
         this.destination = getStationByName(this.$options.destination);
+        console.log(this.origin, this.destination);
         this.setupMap();
         this.requestDestination();
       },
@@ -52,7 +53,7 @@ define(
 
         getDestination(origin, destination)
           .then($.proxy(this.filterValidRoutes, this))
-          .then($.proxy(this.parseSteps, this));
+          // .then($.proxy(this.parseSteps, this));
       },
 
       filterValidRoutes: function(model) {
@@ -60,7 +61,7 @@ define(
             routes = [];
 
         $.each(model.routes, function(routeIndex, route) {
-          // console.log('\n\n');
+          console.log('\n\n');
           $.each(route.legs, function(legIndex, leg) {
             $.each(leg.steps, function(stepIndex, step) {
               isValidRoute = false;
@@ -73,7 +74,7 @@ define(
                 isValidRoute = true;
               }
 
-              // console.log(step.instructions, isValidRoute);
+              console.log(step.instructions, isValidRoute);
 
               return isValidRoute;
             });
@@ -82,7 +83,7 @@ define(
           if(isValidRoute) {
             routes.push(route);
           }
-          // console.log('is valid route?', isValidRoute);
+          console.log('is valid route?', isValidRoute);
         });
 
         return routes;
@@ -92,6 +93,8 @@ define(
         var steps = [],
             legModel = {},
             stepModel = {};
+            console.log(routes);
+            return
 
         $.each(routes, function(routeIndex, route) {
           console.log('\n');
@@ -106,42 +109,26 @@ define(
             };
 
             $.each(leg.steps, function(stepIndex, step) {
+              console.log(step);
               stepModel = {
                 type: 'walking',
                 instructions: step.instructions
               };
 
-              if(step.transit && step.transit.line) {
-                stepModel.type = 'subway';
-                stepModel.direction = step.transit.headsign;
-                stepModel.departure = step.transit.departure_stop.name;
-                stepModel.arrival = step.transit.arrival_stop.name;
-                stepModel.totalStops = parseInt(step.transit.num_stops, 10);
+              // if(step.transit && step.transit.line) {
+              //   stepModel.type = 'subway';
+              //   stepModel.direction = step.transit.headsign;
+              //   stepModel.departure = step.transit.departure_stop.name;
+              //   stepModel.arrival = step.transit.arrival_stop.name;
+              //   stepModel.totalStops = parseInt(step.transit.num_stops, 10);
 
-                legModel.totalStops += stepModel.totalStops;
-                // console.log(step);
-                // console.log(step.transit.headsign);
-                // console.log(step.transit);
-                // stepModel.line = {
-                // }
-                // console.log(step.transit.line.short_name);
-                // console.log(step.transit.line.color);
-              }
+              //   legModel.totalStops += stepModel.totalStops;
+              // }
 
-              legModel.steps.push(stepModel);
-              /*
-              model = {
-                line: {
-                  name: formatLineName(step.transit.line.short_name),
-                  color: step.transit.line.color,
-                  textColor: step.transit.line.text_color
-                },
-                departure: step.transit.departure_stop.name,
-                arrival: step.transit.arrival_stop.name
-              }
-               */
+              // legModel.steps.push(stepModel);
+
             });
-console.log(legModel);
+          // console.log(legModel);
           // steps.push(legModel);
           });
         });
