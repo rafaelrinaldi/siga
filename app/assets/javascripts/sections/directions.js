@@ -35,11 +35,13 @@ define(
     methods: {
       initialize: function() {
         this.context = $(this.$el);
+        this.userInputGroup = this.context.find('.js-user-input-group');
         this.userInput = this.context.find('.js-user-input');
         this.nearestStation = getStationByName(this.origin);
 
         this.userInput
-          .focusin($.proxy(this.userInputFocus, this));
+          .focusin($.proxy(this.userInputFocus, this))
+          .focusout($.proxy(this.userInputFocusOut, this));
       },
 
       submit: function(event) {
@@ -80,10 +82,20 @@ define(
         this.origin = userInput.destination;
       },
 
+      setFocus: function() {
+      },
+
       userInputFocus: function(event) {
-        var id = $(event.currentTarget).attr('id');
+        var target = $(event.currentTarget),
+            id = target.attr('id');
+
+        this.userInputGroup.addClass('is-focused');
 
         this.lastInput = id;
+      },
+
+      userInputFocusOut: function() {
+        this.userInputGroup.removeClass('is-focused');
       },
 
       getNearbyStation: function(location) {

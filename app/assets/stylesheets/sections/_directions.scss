@@ -1,5 +1,19 @@
 .section.directions {
   padding-top: 50px;
+
+  .user-input {
+    transition: all .3s ease;
+    z-index: 99;
+  }
+
+  .user-input.is-focused {
+    transform: translateY(-50px);
+    // position: fixed;
+    // top: 0;
+    // left: 0;
+    // width: 100%;
+
+  }
 }
 
 .directions-suggestions .item {

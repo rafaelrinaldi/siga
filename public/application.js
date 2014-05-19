@@ -19164,7 +19164,7 @@ define(
 });
 
 
-define('text!partials/sections/directions.html',[],function () { return '<div class="directions-input">\n\n  <div class="list">\n    <label class="item item-input">\n      <i class="icon ion-arrow-right-a placeholder-icon"></i>\n      <input\n        type="text"\n        id="origin"\n        name="origin"\n        class="js-user-input"\n        v-model="origin"\n        v-on="keyup: suggestStations(\'origin\')"\n        placeholder="Origem"\n      >\n    </label>\n    <label class="item item-input">\n      <i class="icon ion-arrow-left-a placeholder-icon"></i>\n      <input\n        type="text"\n        id="destination"\n        name="destination"\n        class="js-user-input"\n        v-model="destination"\n        v-on="keyup: suggestStations(\'destination\')"\n        placeholder="Destino"\n      >\n    </label>\n\n  </div>\n\n  <button class="button button-block button-positive" v-on="click: submit($event)">Submit</button>\n</div>\n\n<button v-on="click: getNearbyStation(this.origin)">Nearby station</button>\n<button v-on="click: swapUserInput">Swap</button>\n\n<ul class="list directions-suggestions">\n  <li\n    class="item"\n    v-repeat="suggestion: suggestions"\n    v-on="click: selectSuggestion(suggestion.title), click: cleanupSuggestions"\n  >\n    <a href="#">\n      {{suggestion.title}}\n      <span\n        style="background: {{line.color}}; border-color: {{line.color}};"\n        v-repeat="line: suggestion.lines"\n      />\n    </a>\n  </li>\n</ul>\n';});
+define('text!partials/sections/directions.html',[],function () { return '<div class="directions-input">\n\n  <div class="list user-input js-user-input-group">\n\n    <label class="item item-input">\n      <i class="icon ion-arrow-right-a placeholder-icon"></i>\n      <input\n        type="text"\n        id="origin"\n        name="origin"\n        class="js-user-input"\n        v-model="origin"\n        v-on="keyup: suggestStations(\'origin\')"\n        placeholder="Origem"\n      >\n    </label>\n\n    <label class="item item-input">\n      <i class="icon ion-arrow-left-a placeholder-icon"></i>\n      <input\n        type="text"\n        id="destination"\n        name="destination"\n        class="js-user-input"\n        v-model="destination"\n        v-on="keyup: suggestStations(\'destination\')"\n        placeholder="Destino"\n      >\n    </label>\n\n  </div>\n\n  <button class="button button-block button-positive" v-on="click: submit($event)">Submit</button>\n</div>\n\n<button v-on="click: getNearbyStation(this.origin)">Nearby station</button>\n<button v-on="click: swapUserInput">Swap</button>\n\n<ul class="list directions-suggestions">\n  <li\n    class="item"\n    v-repeat="suggestion: suggestions"\n    v-on="click: selectSuggestion(suggestion.title), click: cleanupSuggestions"\n  >\n    <a href="#">\n      {{suggestion.title}}\n      <span\n        style="background: {{line.color}}; border-color: {{line.color}};"\n        v-repeat="line: suggestion.lines"\n      />\n    </a>\n  </li>\n</ul>\n';});
 
 define(
 'sections/directions',[
@@ -19203,11 +19203,13 @@ define(
     methods: {
       initialize: function() {
         this.context = $(this.$el);
+        this.userInputGroup = this.context.find('.js-user-input-group');
         this.userInput = this.context.find('.js-user-input');
         this.nearestStation = getStationByName(this.origin);
 
         this.userInput
-          .focusin($.proxy(this.userInputFocus, this));
+          .focusin($.proxy(this.userInputFocus, this))
+          .focusout($.proxy(this.userInputFocusOut, this));
       },
 
       submit: function(event) {
@@ -19248,10 +19250,20 @@ define(
         this.origin = userInput.destination;
       },
 
+      setFocus: function() {
+      },
+
       userInputFocus: function(event) {
-        var id = $(event.currentTarget).attr('id');
+        var target = $(event.currentTarget),
+            id = target.attr('id');
+
+        this.userInputGroup.addClass('is-focused');
 
         this.lastInput = id;
+      },
+
+      userInputFocusOut: function() {
+        this.userInputGroup.removeClass('is-focused');
       },
 
       getNearbyStation: function(location) {

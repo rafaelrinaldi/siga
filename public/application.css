@@ -248,6 +248,14 @@ a, .link {
 
 .section.directions {
   padding-top: 50px; }
+  .section.directions .user-input {
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+    z-index: 99; }
+  .section.directions .user-input.is-focused {
+    -webkit-transform: translateY(-50px);
+    -ms-transform: translateY(-50px);
+    transform: translateY(-50px); }
 
 .directions-suggestions .item {
   cursor: pointer;
