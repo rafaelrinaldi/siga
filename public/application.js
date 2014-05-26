@@ -18804,7 +18804,7 @@ define(
     this.setActiveMarker(marker);
   };
 
-  p.setActiveMarker = function(marker) {
+  p.setActiveMarker = function(marker, shouldPanMap) {
     if(!marker) {
       console.warn('Map :: setActiveMarker() :: Invalid marker');
       return;
@@ -18817,6 +18817,10 @@ define(
     }
 
     marker.setTitle('is-active');
+
+    if(shouldPanMap) {
+      this.panTo(marker.position);
+    }
 
     this.activeMarker = marker;
   };
@@ -18959,7 +18963,7 @@ define(
       },
 
       nearestStation: function() {
-        this.overviewMap.setActiveMarker(this.userNearestStationMarker);
+        this.overviewMap.setActiveMarker(this.userNearestStationMarker, true);
       },
 
       infoWindowClick: function(event, id) {

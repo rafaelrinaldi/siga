@@ -246,7 +246,7 @@ define(
     this.setActiveMarker(marker);
   };
 
-  p.setActiveMarker = function(marker) {
+  p.setActiveMarker = function(marker, shouldPanMap) {
     if(!marker) {
       console.warn('Map :: setActiveMarker() :: Invalid marker');
       return;
@@ -259,6 +259,10 @@ define(
     }
 
     marker.setTitle('is-active');
+
+    if(shouldPanMap) {
+      this.panTo(marker.position);
+    }
 
     this.activeMarker = marker;
   };

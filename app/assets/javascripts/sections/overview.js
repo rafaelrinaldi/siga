@@ -115,7 +115,7 @@ define(
       },
 
       nearestStation: function() {
-        this.overviewMap.setActiveMarker(this.userNearestStationMarker);
+        this.overviewMap.setActiveMarker(this.userNearestStationMarker, true);
       },
 
       infoWindowClick: function(event, id) {
