@@ -1,0 +1,40 @@
+.stations-list {
+  padding: 0 0 0 0;
+  list-style-type: none;
+  position: relative;
+}
+
+.stations-list:before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 20px;
+  height: 100%;
+  background: #8c3583;
+  border-radius: 20px;
+}
+
+.stations-list__station {
+  margin-left: 30px;
+  margin-top: 30px;
+}
+
+.stations-list__station:first-child {
+  padding-top: 40px;
+}
+
+.stations-list__station:last-child {
+  padding-bottom: 40px;
+}
+
+.stations-list__station:before {
+  content: "";
+  display: block;
+  width: 15px;
+  height: 15px;
+  margin-top: 2px;
+  left: 2px;
+  background: #fff;
+  position: absolute;
+  border-radius: 10px;
+}

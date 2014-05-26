@@ -138,7 +138,7 @@ define(
     }
 
     this.map.setOptions(
-      mixIn(this.options, newOptions)
+      mixIn({}, this.options, newOptions)
     );
   };
 

@@ -5,6 +5,7 @@
 
   // Mixins
   "helpers/mixins",
+  "helpers/classes",
 
   // Base styling
   "base/base",
@@ -24,9 +25,13 @@
   "modules/header",
   "modules/info_window",
   "modules/marker",
+  "modules/stations_list",
 
   // Sections
   "sections/overview",
   "sections/station",
   "sections/directions",
-  "sections/directions_detail";
+  "sections/directions_detail",
+  "sections/search",
+  "sections/line",
+  "sections/status";

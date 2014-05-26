@@ -13,7 +13,7 @@ define({
     panControl: false,
     streetViewControl: false,
     zoom: 13,
-    // zoomControl: false
+    zoomControl: false
   },
 
   stationMarker: {

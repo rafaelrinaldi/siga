@@ -14,10 +14,16 @@ define(
       template: template,
 
       data: {
-        title: 'Siga',
+        title: 'Status',
         controls: [
-          {channel: 'navigation:gotoHome', title: 'Location'},
-          {channel: 'navigation:toggle', title: 'Menu'}
+          {
+            channel: 'navigation:toggleNavigation',
+            klass: 'button button-icon icon ion-ios7-arrow-back'
+          },
+          {
+            channel: 'navigation:goToSearch',
+            klass: 'button button-icon icon ion-ios7-search-strong'
+          }
         ]
       },
 
@@ -26,12 +32,18 @@ define(
       },
 
       methods: {
-        setTitle: function(title) {
+        setTitle: function(newTitle) {
+          this.title = newTitle;
+        },
+
+        setControls: function(newControls) {
+          this.controls = newControls;
         },
 
         // will broadcast the clicked item channel to the app instance
         onClick: function(channel) {
-          this.$dispatch(channel);
+          console.log('onClick', channel);
+          // this.$dispatch(channel);
         }
       }
 

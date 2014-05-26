@@ -120,7 +120,6 @@ define(
       },
 
       infoWindowClick: function(event, id) {
-        console.log(event);
         this.$dispatch('app:setView', 'station', {id: id});
       },
 

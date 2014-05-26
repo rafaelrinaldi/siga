@@ -9205,7 +9205,7 @@ define('config',{
     panControl: false,
     streetViewControl: false,
     zoom: 13,
-    // zoomControl: false
+    zoomControl: false
   },
 
   stationMarker: {
@@ -15715,7 +15715,7 @@ define(
 
 define('text',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
 
-define('text!partials/header.html',[],function () { return '<!--\n<strong class="header__title">{{title}}</strong>\n<div class="header__controls">\n  <button class="header__control" v-repeat="controls" v-on="click: onClick(this.channel)">{{title}}</button>\n</div>\n-->\n\n<div class="bar bar-header">\n  <div class="h1 title">{{title}}</div>\n  <button class="button button-icon icon ion-navicon"></button>\n  <button class="button button-clear button-positive">Edit</button>\n</div>\n';});
+define('text!partials/header.html',[],function () { return '<div class="bar bar-header">\n  <div class="h1 title">{{title}}</div>\n  <button\n    class="{{control.klass}}"\n    title="{{control.title}}"\n    v-repeat="control: controls"\n    v-on="click: onClick(control.channel)"\n    >\n    {{control.title}}\n  </button>\n</div>\n';});
 
 define(
   'modules/header',[
@@ -15733,10 +15733,16 @@ define(
       template: template,
 
       data: {
-        title: 'Siga',
+        title: 'Status',
         controls: [
-          {channel: 'navigation:gotoHome', title: 'Location'},
-          {channel: 'navigation:toggle', title: 'Menu'}
+          {
+            channel: 'navigation:toggleNavigation',
+            klass: 'button button-icon icon ion-ios7-arrow-back'
+          },
+          {
+            channel: 'navigation:goToSearch',
+            klass: 'button button-icon icon ion-ios7-search-strong'
+          }
         ]
       },
 
@@ -15745,12 +15751,18 @@ define(
       },
 
       methods: {
-        setTitle: function(title) {
+        setTitle: function(newTitle) {
+          this.title = newTitle;
+        },
+
+        setControls: function(newControls) {
+          this.controls = newControls;
         },
 
         // will broadcast the clicked item channel to the app instance
         onClick: function(channel) {
-          this.$dispatch(channel);
+          console.log('onClick', channel);
+          // this.$dispatch(channel);
         }
       }
 
@@ -18113,7 +18125,7 @@ define(
       this.$dispatch('app:sectionReady', this);
       var self = this;
       setTimeout(function() {
-        self.$dispatch('app:setView', 'overview');
+        self.$dispatch('app:setView', 'status');
       }, 250);
     },
 
@@ -18667,7 +18679,7 @@ define(
     }
 
     this.map.setOptions(
-      mixIn(this.options, newOptions)
+      mixIn({}, this.options, newOptions)
     );
   };
 
@@ -18858,7 +18870,7 @@ define(
 });
 
 
-define('text!partials/sections/overview.html',[],function () { return '<button class="my-location-button" v-on="click: moveToCenter">My location</button>\n<button class="my-location-button" v-on="click: nearestStation" style="display: inline-block;">Nearest station</button>\n<div id="overview-map">here</div>\n';});
+define('text!partials/sections/overview.html',[],function () { return '<button\n  class="nearest-station-button button icon ion-navigate"\n  v-on="click: nearestStation">\n</button>\n<div id="overview-map">here</div>\n';});
 
 define(
 'sections/overview',[
@@ -18982,7 +18994,6 @@ define(
       },
 
       infoWindowClick: function(event, id) {
-        console.log(event);
         this.$dispatch('app:setView', 'station', {id: id});
       },
 
@@ -19183,7 +19194,7 @@ define(
 });
 
 
-define('text!partials/sections/line.html',[],function () { return '<h1>Line detail</h1>\n';});
+define('text!partials/sections/line.html',[],function () { return '<div class="no-header-container">\n  <ul class="stations-list">\n    <li class="stations-list__station">Capão Redondo</li>\n    <li class="stations-list__station">Campo Limpo</li>\n    <li class="stations-list__station">Vila das Belezas</li>\n    <li class="stations-list__station">Giovani Gronchi</li>\n    <li class="stations-list__station">Santo Amaro</li>\n    <li class="stations-list__station">Largo Treze</li>\n  </ul>\n</div>\n';});
 
 define(
 'sections/line',[
@@ -19246,7 +19257,7 @@ define(
 });
 
 
-define('text!partials/sections/directions.html',[],function () { return '<div class="directions-input">\n\n  <div class="list user-input js-user-input-group">\n\n    <label class="item item-input">\n      <i class="icon ion-arrow-right-a placeholder-icon"></i>\n      <input\n        type="text"\n        id="origin"\n        name="origin"\n        class="js-user-input"\n        v-model="origin"\n        v-on="keyup: suggestStations(\'origin\')"\n        placeholder="Origem"\n      >\n    </label>\n\n    <label class="item item-input">\n      <i class="icon ion-arrow-left-a placeholder-icon"></i>\n      <input\n        type="text"\n        id="destination"\n        name="destination"\n        class="js-user-input"\n        v-model="destination"\n        v-on="keyup: suggestStations(\'destination\')"\n        placeholder="Destino"\n      >\n    </label>\n\n  </div>\n\n  <button class="button button-block button-positive" v-on="click: submit($event)">Submit</button>\n</div>\n\n<button v-on="click: getNearbyStation(this.origin)">Nearby station</button>\n<button v-on="click: swapUserInput">Swap</button>\n\n<ul class="list directions-suggestions">\n  <li\n    class="item"\n    v-repeat="suggestion: suggestions"\n    v-on="click: selectSuggestion(suggestion.title), click: cleanupSuggestions"\n  >\n    <a href="#">\n      {{suggestion.title}}\n      <span\n        style="background: {{line.color}}; border-color: {{line.color}};"\n        v-repeat="line: suggestion.lines"\n      />\n    </a>\n  </li>\n</ul>\n';});
+define('text!partials/sections/directions.html',[],function () { return '<div class="directions-input">\n\n  <div class="list user-input js-user-input-group">\n\n    <label class="item item-input">\n      <i class="icon ion-android-arrow-up-right placeholder-icon"></i>\n      <input\n        type="text"\n        id="origin"\n        name="origin"\n        class="js-user-input"\n        v-model="origin"\n        v-on="keyup: suggestStations(\'origin\')"\n        placeholder="Origem"\n      >\n    </label>\n\n    <label class="item item-input">\n      <i class="icon ion-android-arrow-down-left placeholder-icon"></i>\n      <input\n        type="text"\n        id="destination"\n        name="destination"\n        class="js-user-input"\n        v-model="destination"\n        v-on="keyup: suggestStations(\'destination\')"\n        placeholder="Destino"\n      >\n    </label>\n\n  </div>\n\n</div>\n\n<ul class="list directions-suggestions">\n  <li\n    class="item"\n    v-repeat="suggestion: suggestions"\n    v-on="click: selectSuggestion(suggestion.title), click: cleanupSuggestions"\n  >\n    <a href="#">\n      {{suggestion.title}}\n      <span\n        style="background: {{line.color}}; border-color: {{line.color}};"\n        v-repeat="line: suggestion.lines"\n      />\n    </a>\n  </li>\n</ul>\n\n<div class="tabs tabs-icon-top">\n  <a class="tab-item" v-on="click: getNearbyStation(this.origin)">\n    <i class="icon ion-navigate"></i>\n    Mais próxima\n  </a>\n  <a class="tab-item" v-on="click: swapUserInput">\n    <i class="icon ion-shuffle"></i>\n    Inverter\n  </a>\n  <a class="tab-item" v-on="click: submit($event)">\n    <i class="icon ion-android-locate"></i>\n    Direção\n  </a>\n</div>\n';});
 
 define(
 'sections/directions',[
@@ -19272,8 +19283,8 @@ define(
 
     data: {
       suggestions: [],
-      origin: 'tamanduatei',
-      destination: 'itaquera',
+      origin: 'Brigadeiro',
+      destination: 'Anhangabaú',
       lastInput: ''
     },
 
@@ -19369,7 +19380,7 @@ define(
 });
 
 
-define('text!partials/sections/directions/detail.html',[],function () { return '<div id="directions-detail-map"></div>\n<div class="direction-detail-steps">\n  <ul>\n    <li v-repeat="route: routes"></li>\n  </ul>\n</div>\n';});
+define('text!partials/sections/directions/detail.html',[],function () { return '<div id="directions-detail-map"></div>\n\n<!-- Metrô em direção a Vila Prudente true detail.js:76\nAnde para Paraíso true detail.js:76\nMetrô em direção a Tucuruvi true detail.js:76\nAnde para Sé true detail.js:76\nMetrô em direção a Palmeiras - Barra Funda true detail.js:76\nis valid route? true  -->\n\n<ul class="fake list">\n    <li class="item">\n    <i class="icon ion-record" style="color: #006d58;"></i>\n    VPR\n    <i class="icon ion-record" style="color: #285083;"></i>\n    TUC\n    <i class="icon ion-record" style="color: #df3f31;"></i>\n    BFN\n    </li>\n    <li class="item">\n    <i class="icon ion-record" style="color: #006d58;"></i>\n    VMD\n    <i class="icon ion-record" style="color: #285083;"></i>\n    LUZ\n    <i class="icon ion-record" style="color: #df3f31;"></i>\n    AGB\n    </li>\n</ul>\n\n<div class="direction-detail-steps" hidden>\n  <ul>\n    <li v-repeat="route: routes"></li>\n  </ul>\n</div>\n';});
 
 define(
 'sections/directions/detail',[
@@ -19510,6 +19521,46 @@ define(
 
 });
 
+
+define('text!partials/sections/search.html',[],function () { return '<div class="no-header-container">\n  <h1>search bitch</h1>\n</div>\n';});
+
+define(
+'sections/search',[
+  'jquery',
+  'vue',
+  'text!partials/sections/search.html'
+], function(
+  $,
+  Vue,
+  template
+) {
+
+  return Vue.extend({
+    template: template
+  });
+
+});
+
+
+define('text!partials/sections/status.html',[],function () { return '<h1>status</h1>\n';});
+
+define(
+'sections/status',[
+  'jquery',
+  'vue',
+  'text!partials/sections/status.html'
+], function(
+  $,
+  Vue,
+  template
+) {
+
+  return Vue.extend({
+    template: template
+  });
+
+});
+
 define(
 'sections',[
   'sections/splash',
@@ -19517,14 +19568,18 @@ define(
   'sections/station',
   'sections/line',
   'sections/directions',
-  'sections/directions/detail'
+  'sections/directions/detail',
+  'sections/search',
+  'sections/status'
 ], function(
   Splash,
   Overview,
   Station,
   Line,
   Directions,
-  DirectionsDetail
+  DirectionsDetail,
+  Search,
+  Status
 ) {
 
   return {
@@ -19533,7 +19588,9 @@ define(
     'station': Station,
     'line': Line,
     'directions': Directions,
-    'directionsDetail': DirectionsDetail
+    'directionsDetail': DirectionsDetail,
+    'search': Search,
+    'status': Status
   };
 
 });
@@ -20044,6 +20101,8 @@ requirejs(
           'overview': Sections.overview,
           'station': Sections.station,
           'line': Sections.line,
+          'status': Sections.status,
+          'search': Sections.search,
           'directions': Sections.directions,
           'directions-detail': Sections.directionsDetail,
           'header': Header,
@@ -20107,7 +20166,6 @@ requirejs(
 
       _fixKnownIssues();
       _setupApp();
-      _setupRouter();
     }
 
     // Bootstrap app on DOM ready.

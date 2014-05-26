@@ -3,7 +3,7 @@
   <div class="list user-input js-user-input-group">
 
     <label class="item item-input">
-      <i class="icon ion-arrow-right-a placeholder-icon"></i>
+      <i class="icon ion-android-arrow-up-right placeholder-icon"></i>
       <input
         type="text"
         id="origin"
@@ -16,7 +16,7 @@
     </label>
 
     <label class="item item-input">
-      <i class="icon ion-arrow-left-a placeholder-icon"></i>
+      <i class="icon ion-android-arrow-down-left placeholder-icon"></i>
       <input
         type="text"
         id="destination"
@@ -30,11 +30,7 @@
 
   </div>
 
-  <button class="button button-block button-positive" v-on="click: submit($event)">Submit</button>
 </div>
-
-<button v-on="click: getNearbyStation(this.origin)">Nearby station</button>
-<button v-on="click: swapUserInput">Swap</button>
 
 <ul class="list directions-suggestions">
   <li
@@ -51,3 +47,18 @@
     </a>
   </li>
 </ul>
+
+<div class="tabs tabs-icon-top">
+  <a class="tab-item" v-on="click: getNearbyStation(this.origin)">
+    <i class="icon ion-navigate"></i>
+    Mais próxima
+  </a>
+  <a class="tab-item" v-on="click: swapUserInput">
+    <i class="icon ion-shuffle"></i>
+    Inverter
+  </a>
+  <a class="tab-item" v-on="click: submit($event)">
+    <i class="icon ion-android-locate"></i>
+    Direção
+  </a>
+</div>

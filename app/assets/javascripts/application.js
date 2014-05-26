@@ -96,6 +96,8 @@ requirejs(
           'overview': Sections.overview,
           'station': Sections.station,
           'line': Sections.line,
+          'status': Sections.status,
+          'search': Sections.search,
           'directions': Sections.directions,
           'directions-detail': Sections.directionsDetail,
           'header': Header,
@@ -159,7 +161,6 @@ requirejs(
 
       _fixKnownIssues();
       _setupApp();
-      _setupRouter();
     }
 
     // Bootstrap app on DOM ready.

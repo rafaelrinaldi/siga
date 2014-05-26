@@ -5,14 +5,18 @@ define(
   'sections/station',
   'sections/line',
   'sections/directions',
-  'sections/directions/detail'
+  'sections/directions/detail',
+  'sections/search',
+  'sections/status'
 ], function(
   Splash,
   Overview,
   Station,
   Line,
   Directions,
-  DirectionsDetail
+  DirectionsDetail,
+  Search,
+  Status
 ) {
 
   return {
@@ -21,7 +25,9 @@ define(
     'station': Station,
     'line': Line,
     'directions': Directions,
-    'directionsDetail': DirectionsDetail
+    'directionsDetail': DirectionsDetail,
+    'search': Search,
+    'status': Status
   };
 
 });

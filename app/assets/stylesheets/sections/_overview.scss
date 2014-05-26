@@ -6,10 +6,10 @@
 .section.overview {
   position: relative;
 
-  .my-location-button {
+  .nearest-station-button {
+    font-size: 20px;
     position: absolute;
-    padding: 2em;
-    z-index: 99;
+    z-index: 9;
     right: 1.5em;
     bottom: 1.5em;
   }
