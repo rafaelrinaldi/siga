@@ -1,27 +1,32 @@
-@import "../../../vendor/assets/bower/normalize-css/normalize.css";
-@import "../../../vendor/assets/bower/ionic/release/css/ionic.css";
+@import
 
-@import "helpers/mixins";
+  // Ionic framework
+  "../../../vendor/assets/bower/ionic/release/css/ionic.css",
 
-@import "base/base";
+  // Mixins
+  "helpers/mixins",
 
-@import "core/core";
-@import "core/fixed";
-@import "core/application";
-@import "core/navigation";
+  // Base styling
+  "base/base",
 
-@import "layout/application";
+  // Core elements
+  "core/core",
+  "core/fixed",
+  "core/application",
+  "core/navigation",
 
-@import "modules/link";
-@import "modules/station_hub";
-@import "modules/marker";
-@import "modules/section";
-@import "modules/header";
-@import "modules/info_window";
+  // Layout specific
+  "layout/application",
 
-@import "sections/map";
-@import "sections/home";
-@import "sections/directions_detail";
-@import "sections/overview";
-@import "sections/station";
-@import "sections/directions";
+  // Reusable modules
+  "modules/link",
+  "modules/section",
+  "modules/header",
+  "modules/info_window",
+  "modules/marker",
+
+  // Sections
+  "sections/overview",
+  "sections/station",
+  "sections/directions",
+  "sections/directions_detail";

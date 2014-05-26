@@ -9208,9 +9208,19 @@ define('config',{
     // zoomControl: false
   },
 
+  stationMarker: {
+    // Equivalent of `gmaps.SymbolPath.CIRCLE`
+    path: 0,
+    fillColor: '#fff',
+    fillOpacity: 1,
+    scale: 6,
+    optimize: false,
+    strokeWeight: 4
+  },
+
   polyLine: {
     strokeWeight: 6,
-    strokeOpacity: .5,
+    strokeOpacity: .85,
     geodesic: true
   },
 
@@ -18103,7 +18113,7 @@ define(
       this.$dispatch('app:sectionReady', this);
       var self = this;
       setTimeout(function() {
-        self.$dispatch('app:setView', 'directions');
+        self.$dispatch('app:setView', 'overview');
       }, 250);
     },
 
@@ -18310,27 +18320,27 @@ define(
 define('lines',{
   'linha-1-azul': {
     title: 'Linha 1 - Azul',
-    color: '#3a539b'
+    color: '#285083'
   },
 
   'linha-2-verde': {
     title: 'Linha 2 - Verde',
-    color: '#27ae60'
+    color: '#006d58'
   },
 
   'linha-3-vermelha': {
     title: 'Linha 3 - Vermelha',
-    color: '#c0392b'
+    color: '#df3f31'
   },
 
   'linha-4-amarela': {
     title: 'Linha 4 - Amarela',
-    color: '#f1c40f'
+    color: '#ffd400'
   },
 
   'linha-5-lilas': {
     title: 'Linha 5 - Lilás',
-    color: '#9b59b6'
+    color: '#8c3583'
   }
 });
 
@@ -18573,11 +18583,13 @@ define(
     this.markers = [];
     this.on = {
       loaded: new Signal(),
-      markerClick: new Signal()
+      markerClick: new Signal(),
+      infoWindowClick: new Signal()
     };
   }
 
   p.initialize = function() {
+    // NOTE: Changed from `clone()` in `defaultMapOptions` to passing an empty object first
     this.options = mixIn(
                     clone(config.defaultMapOptions),
                     this.options || {}
@@ -18648,7 +18660,7 @@ define(
   p.setMarker = function(options, shouldCache) {
     var self = this,
         marker = new gmaps.Marker(
-          mixIn({map: this.map}, options)
+          mixIn({}, {map: this.map}, options)
         );
 
     if(options.content && options.content.length) {
@@ -18658,11 +18670,25 @@ define(
       });
     }
 
+    gmaps.event.addListener(marker, 'click', $.proxy(this._markerClick, this));
+
     if(shouldCache) {
       this.markers.push(marker);
     }
 
     return marker;
+  };
+
+  p.getMarkerByCoordinates = function(coordinates) {
+    var match;
+
+    coordinates = coordinates.toString();
+
+    match = $.grep(this.markers, function(marker) {
+      return marker.position.toString() == coordinates;
+    });
+
+    return match[0];
   };
 
   /**
@@ -18770,11 +18796,21 @@ define(
       this.infoWindow.close();
     }
 
-    this.on.markerClick.dispatch(stationId);
+    this.on.infoWindowClick.dispatch(event, stationId);
+  };
+
+  p._markerClick = function(event) {
+    if(this.activeMarker) {
+      this.activeMarker.setTitle('');
+    }
+
+    this.activeMarker = this.getMarkerByCoordinates(event.latLng);
+    this.activeMarker.setTitle('is-active');
   };
 
   p.dispose = function() {
     this.on.loaded.removeAll();
+    this.on.infoWindowClick.removeAll();
     this.on.markerClick.removeAll();
 
     this.markers.length = 0;
@@ -18855,7 +18891,7 @@ define(
         this.overviewMap.initialize();
         // Request user location when map is loaded
         this.overviewMap.on.loaded.addOnce(this.requestUserLocation, this);
-        this.overviewMap.on.markerClick.add(this.markerClick, this);
+        this.overviewMap.on.infoWindowClick.add(this.infoWindowClick, this);
       },
 
       requestUserLocation: function() {
@@ -18883,7 +18919,7 @@ define(
 
         this.userLocationMarker = this.overviewMap.setMarker({
           position: position,
-          animation: gmaps.Animation.BOUNCE
+          optimized: false
         });
       },
 
@@ -18907,7 +18943,8 @@ define(
         this.overviewMap.panTo(this.userLocation);
       },
 
-      markerClick: function(id) {
+      infoWindowClick: function(event, id) {
+        console.log(event);
         this.$dispatch('app:setView', 'station', {id: id});
       },
 
@@ -18918,7 +18955,7 @@ define(
       placeLine: function(stations) {
         console.log('overview :: placeLine()');
 
-        new gmaps.Polyline(mixIn(config.polyLine, {
+        new gmaps.Polyline(mixIn({}, config.polyLine, {
           path: stations,
           strokeColor: color,
           map: this.overviewMap.getMap()
@@ -18930,12 +18967,14 @@ define(
             firstStation,
             lastStation,
             position,
+            marker,
+            markers = {},
+            hasMarkerAlready = false,
             path,
             points = [],
             allPoints = [],
             map = this.overviewMap,
             lineModel = {},
-            lineStations = {},
             stations,
             self = this;
 
@@ -18951,21 +18990,27 @@ define(
 
             position = toLatLng(station.location);
             color = lineModel.color;
+            marker = position.toString();
 
-            // TODO: add a check to only print a marker if there's no marker for that coords
-            map.setMarker({
-              position: position,
-              content: station.title,
-              id: station.id,
-              // TODO: Move icon options to config file
-              // TODO: Change icon symbol
-              icon: {
-                path: gmaps.SymbolPath.CIRCLE,
-                scale: 2,
-                strokeColor: color,
-                strokeWeight: 12
-              }
-            }, true);
+            // Check if there's already a marker for that specific location
+            hasMarkerAlready = markers[marker];
+
+            // If it doesn't, create a marker for that position
+            if(!hasMarkerAlready) {
+              markers[marker] = true;
+
+              map.setMarker({
+                visible: true,
+                position: position,
+                content: station.title,
+                id: station.id,
+                icon: mixIn(
+                  {},
+                  config.stationMarker,
+                  {strokeColor: color}
+                )
+              }, true);
+            }
 
             points.push(position);
 
@@ -19071,8 +19116,7 @@ define(
         this.location = toLatLng(this.station.location);
         this.stationMap = new Map('#station-map', {
           center: this.location,
-          zoom: 17,
-          // mapTypeId: gmaps.MapTypeId.TERRAIN
+          zoom: 15
         });
         this.stationMap.initialize();
         this.stationMap.on.loaded.addOnce(this.setMarker, this);

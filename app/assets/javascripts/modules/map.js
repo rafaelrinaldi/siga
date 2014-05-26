@@ -25,11 +25,13 @@ define(
     this.markers = [];
     this.on = {
       loaded: new Signal(),
-      markerClick: new Signal()
+      markerClick: new Signal(),
+      infoWindowClick: new Signal()
     };
   }
 
   p.initialize = function() {
+    // NOTE: Changed from `clone()` in `defaultMapOptions` to passing an empty object first
     this.options = mixIn(
                     clone(config.defaultMapOptions),
                     this.options || {}
@@ -100,7 +102,7 @@ define(
   p.setMarker = function(options, shouldCache) {
     var self = this,
         marker = new gmaps.Marker(
-          mixIn({map: this.map}, options)
+          mixIn({}, {map: this.map}, options)
         );
 
     if(options.content && options.content.length) {
@@ -110,11 +112,25 @@ define(
       });
     }
 
+    gmaps.event.addListener(marker, 'click', $.proxy(this._markerClick, this));
+
     if(shouldCache) {
       this.markers.push(marker);
     }
 
     return marker;
+  };
+
+  p.getMarkerByCoordinates = function(coordinates) {
+    var match;
+
+    coordinates = coordinates.toString();
+
+    match = $.grep(this.markers, function(marker) {
+      return marker.position.toString() == coordinates;
+    });
+
+    return match[0];
   };
 
   /**
@@ -222,11 +238,21 @@ define(
       this.infoWindow.close();
     }
 
-    this.on.markerClick.dispatch(stationId);
+    this.on.infoWindowClick.dispatch(event, stationId);
+  };
+
+  p._markerClick = function(event) {
+    if(this.activeMarker) {
+      this.activeMarker.setTitle('');
+    }
+
+    this.activeMarker = this.getMarkerByCoordinates(event.latLng);
+    this.activeMarker.setTitle('is-active');
   };
 
   p.dispose = function() {
     this.on.loaded.removeAll();
+    this.on.infoWindowClick.removeAll();
     this.on.markerClick.removeAll();
 
     this.markers.length = 0;

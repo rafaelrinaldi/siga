@@ -52,8 +52,7 @@ define(
         this.location = toLatLng(this.station.location);
         this.stationMap = new Map('#station-map', {
           center: this.location,
-          zoom: 17,
-          // mapTypeId: gmaps.MapTypeId.TERRAIN
+          zoom: 15
         });
         this.stationMap.initialize();
         this.stationMap.on.loaded.addOnce(this.setMarker, this);

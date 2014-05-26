@@ -28,7 +28,6 @@ var gulp = require('gulp'),
 gulp.task('sass', function() {
   var config = {
     sass: {
-      includePaths: ['vendor/assets/bower/']
     },
     autoprefixer: {
       cascade: true

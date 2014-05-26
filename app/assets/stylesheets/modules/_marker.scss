@@ -1,19 +1,47 @@
-.marker {
-  width: 30px;
-  height: 30px;
-  border-radius: 30px;
-  font-family: sans-serif;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 30px;
-  vertical-align: middle;
-  text-align: center;
-  background: seagreen;
-  box-shadow: 0px 0px 0px 3px rgba(seagreen, .65);
+$PULSATE_MARKER_SIZE: 51px !default;
+$PULSATE_MARKER_BORDER: 2.5pt solid #4aa3df !default;
+
+@keyframes pulsate {
+  0% {
+    transform: scale(.25);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: .85;
+  }
+
+  95% {
+    transform: scale(1.3);
+  }
+
+  100% {
+    transform: scale(.3);
+    opacity: 0;
+  }
 }
 
-.marker__label {
-  color: #fff;
-  display: inline-block;
-  // width: 100%;
+div.gmnoprint {
+  z-index: 4;
+}
+
+div.gmnoprint[title="is-active"] {
+  animation: pulsate 1.25s ease-in-out infinite;
+  border: $PULSATE_MARKER_BORDER;
+  border-radius: $PULSATE_MARKER_SIZE;
+  z-index: 2;
+
+  /* set the ring's new dimension and re-center it */
+  margin: -18px 0 0 -18px;
+  height: $PULSATE_MARKER_SIZE !important;
+  width: $PULSATE_MARKER_SIZE !important;
+
+  & img { display: none; }
+}
+
+/* compensate for iPhone and Android devices with high DPI, add iPad media query */
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (device-width: 768px) {
+  div.gmnoprint[title="is-active"] {
+    margin:-10px 0 0 -10px;
+  }
 }

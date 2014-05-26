@@ -60,7 +60,7 @@ define(
         this.overviewMap.initialize();
         // Request user location when map is loaded
         this.overviewMap.on.loaded.addOnce(this.requestUserLocation, this);
-        this.overviewMap.on.markerClick.add(this.markerClick, this);
+        this.overviewMap.on.infoWindowClick.add(this.infoWindowClick, this);
       },
 
       requestUserLocation: function() {
@@ -88,7 +88,7 @@ define(
 
         this.userLocationMarker = this.overviewMap.setMarker({
           position: position,
-          animation: gmaps.Animation.BOUNCE
+          optimized: false
         });
       },
 
@@ -112,7 +112,8 @@ define(
         this.overviewMap.panTo(this.userLocation);
       },
 
-      markerClick: function(id) {
+      infoWindowClick: function(event, id) {
+        console.log(event);
         this.$dispatch('app:setView', 'station', {id: id});
       },
 
@@ -123,7 +124,7 @@ define(
       placeLine: function(stations) {
         console.log('overview :: placeLine()');
 
-        new gmaps.Polyline(mixIn(config.polyLine, {
+        new gmaps.Polyline(mixIn({}, config.polyLine, {
           path: stations,
           strokeColor: color,
           map: this.overviewMap.getMap()
@@ -135,12 +136,14 @@ define(
             firstStation,
             lastStation,
             position,
+            marker,
+            markers = {},
+            hasMarkerAlready = false,
             path,
             points = [],
             allPoints = [],
             map = this.overviewMap,
             lineModel = {},
-            lineStations = {},
             stations,
             self = this;
 
@@ -156,21 +159,27 @@ define(
 
             position = toLatLng(station.location);
             color = lineModel.color;
+            marker = position.toString();
 
-            // TODO: add a check to only print a marker if there's no marker for that coords
-            map.setMarker({
-              position: position,
-              content: station.title,
-              id: station.id,
-              // TODO: Move icon options to config file
-              // TODO: Change icon symbol
-              icon: {
-                path: gmaps.SymbolPath.CIRCLE,
-                scale: 2,
-                strokeColor: color,
-                strokeWeight: 12
-              }
-            }, true);
+            // Check if there's already a marker for that specific location
+            hasMarkerAlready = markers[marker];
+
+            // If it doesn't, create a marker for that position
+            if(!hasMarkerAlready) {
+              markers[marker] = true;
+
+              map.setMarker({
+                visible: true,
+                position: position,
+                content: station.title,
+                id: station.id,
+                icon: mixIn(
+                  {},
+                  config.stationMarker,
+                  {strokeColor: color}
+                )
+              }, true);
+            }
 
             points.push(position);
 

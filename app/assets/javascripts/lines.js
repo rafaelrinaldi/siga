@@ -1,26 +1,26 @@
 define({
   'linha-1-azul': {
     title: 'Linha 1 - Azul',
-    color: '#3a539b'
+    color: '#285083'
   },
 
   'linha-2-verde': {
     title: 'Linha 2 - Verde',
-    color: '#27ae60'
+    color: '#006d58'
   },
 
   'linha-3-vermelha': {
     title: 'Linha 3 - Vermelha',
-    color: '#c0392b'
+    color: '#df3f31'
   },
 
   'linha-4-amarela': {
     title: 'Linha 4 - Amarela',
-    color: '#f1c40f'
+    color: '#ffd400'
   },
 
   'linha-5-lilas': {
     title: 'Linha 5 - Lilás',
-    color: '#9b59b6'
+    color: '#8c3583'
   }
 });

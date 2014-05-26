@@ -16,9 +16,19 @@ define({
     // zoomControl: false
   },
 
+  stationMarker: {
+    // Equivalent of `gmaps.SymbolPath.CIRCLE`
+    path: 0,
+    fillColor: '#fff',
+    fillOpacity: 1,
+    scale: 6,
+    optimize: false,
+    strokeWeight: 4
+  },
+
   polyLine: {
     strokeWeight: 6,
-    strokeOpacity: .5,
+    strokeOpacity: .85,
     geodesic: true
   },
 
