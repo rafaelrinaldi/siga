@@ -80,6 +80,7 @@ define(
             self.setUserLocationMarker(position);
             self.placeStationMarkers();
             self.saveUserNearestStation(position);
+            self.nearestStation();
           });
       },
 

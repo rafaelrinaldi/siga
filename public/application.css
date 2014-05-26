@@ -103,6 +103,10 @@ a, .link {
 .header__control:last-child {
   right: 0; }
 
+.js-info-window-container {
+  -webkit-transition: all 0.15s ease;
+  transition: all 0.15s ease; }
+
 .info-window {
   cursor: pointer;
   padding-right: 0;

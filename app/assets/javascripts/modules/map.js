@@ -4,7 +4,7 @@ define(
   'signals',
   'lib/gmaps',
   'mout/object/mixIn',
-  'mout/lang/clone',
+  'mout/function/timeout',
   'helpers/toLatLng',
   'config'
 ], function(
@@ -12,7 +12,7 @@ define(
   Signal,
   gmaps,
   mixIn,
-  clone,
+  timeout,
   toLatLng,
   config
 ) {
@@ -33,7 +33,8 @@ define(
   p.initialize = function() {
     // NOTE: Changed from `clone()` in `defaultMapOptions` to passing an empty object first
     this.options = mixIn(
-                    clone(config.defaultMapOptions),
+                    {},
+                    config.defaultMapOptions,
                     this.options || {}
                   );
 
@@ -61,7 +62,8 @@ define(
 
   p._setupInfoWindow = function() {
     var self = this,
-        options = config.infoWindow;
+        options = config.infoWindow,
+        infoWindowElement;
 
     this.infoWindow = new gmaps.InfoWindow({
       size: new gmaps.Size(options.width, options.height)
@@ -69,6 +71,8 @@ define(
 
     // Waits for the window to be fully attached to the DOM before watching for a click on it
     gmaps.event.addListener(this.infoWindow, 'domready', function(event) {
+      self.showInfoWindow(self.infoWindow);
+
       // Remove the "x" icon added by default by Google Maps to the info window
       $('.gm-style-iw').next('div').remove();
 
@@ -76,7 +80,46 @@ define(
     });
   };
 
+  /**
+   * Timeout-based animation because #yolo
+   * @param {InfoWindow} infoWindow `InfoWindow` instance
+   */
+  p.showInfoWindow = function(infoWindow) {
+    var infoWindowElement;
+
+    // Disable auto pan and place element a little bit above its marker position
+    this.infoWindow.setOptions({
+      disableAutoPan: true,
+      pixelOffset: new gmaps.Size(0, -50)
+    });
+
+    // Hide window element through `opacity` property
+    infoWindowElement = $('.gm-style-iw').offsetParent();
+    infoWindowElement.css({opacity: 0});
+
+    // Need to wait a little bit to make sure all above properties took effect
+    timeout(function() {
+
+      // Then enable auto pan again and normalize its position
+      infoWindow.setOptions({
+        disableAutoPan: false,
+        pixelOffset: 0
+      });
+
+      // Show window element again and add `js-info-window-container` to add the CSS transition
+      infoWindowElement
+        .css({opacity: 1})
+        .addClass('js-info-window-container');
+
+    }, 150, this);
+  };
+
   p.panTo = function(position) {
+    // Close info window if there's one open already
+    if(this.infoWindow) {
+      this.infoWindow.close();
+    }
+
     switch(position) {
       case 'center' :
         position = this.map.getCenter();

@@ -18458,86 +18458,57 @@ define(
 
 });
 
-define('mout/lang/kindOf',[],function () {
-
-    var _rKind = /^\[object (.*)\]$/,
-        _toString = Object.prototype.toString,
-        UNDEF;
+define('mout/array/slice',[],function () {
 
     /**
-     * Gets the "kind" of value. (e.g. "String", "Number", etc)
+     * Create slice of source array or array-like object
      */
-    function kindOf(val) {
-        if (val === null) {
-            return 'Null';
-        } else if (val === UNDEF) {
-            return 'Undefined';
+    function slice(arr, start, end){
+        var len = arr.length;
+
+        if (start == null) {
+            start = 0;
+        } else if (start < 0) {
+            start = Math.max(len + start, 0);
         } else {
-            return _rKind.exec( _toString.call(val) )[1];
+            start = Math.min(start, len);
         }
+
+        if (end == null) {
+            end = len;
+        } else if (end < 0) {
+            end = Math.max(len + end, 0);
+        } else {
+            end = Math.min(end, len);
+        }
+
+        var result = [];
+        while (start < end) {
+            result.push(arr[start++]);
+        }
+
+        return result;
     }
-    return kindOf;
+
+    return slice;
+
 });
 
-define('mout/lang/isPlainObject',[],function () {
+define('mout/function/timeout',['../array/slice'], function (slice) {
 
     /**
-     * Checks if the value is created by the `Object` constructor.
+     * Delays the call of a function within a given context.
      */
-    function isPlainObject(value) {
-        return (!!value && typeof value === 'object' &&
-            value.constructor === Object);
+    function timeout(fn, millis, context){
+
+        var args = slice(arguments, 3);
+
+        return setTimeout(function() {
+            fn.apply(context, args);
+        }, millis);
     }
 
-    return isPlainObject;
-
-});
-
-define('mout/lang/clone',['./kindOf', './isPlainObject', '../object/mixIn'], function (kindOf, isPlainObject, mixIn) {
-
-    /**
-     * Clone native types.
-     */
-    function clone(val){
-        switch (kindOf(val)) {
-            case 'Object':
-                return cloneObject(val);
-            case 'Array':
-                return cloneArray(val);
-            case 'RegExp':
-                return cloneRegExp(val);
-            case 'Date':
-                return cloneDate(val);
-            default:
-                return val;
-        }
-    }
-
-    function cloneObject(source) {
-        if (isPlainObject(source)) {
-            return mixIn({}, source);
-        } else {
-            return source;
-        }
-    }
-
-    function cloneRegExp(r) {
-        var flags = '';
-        flags += r.multiline ? 'm' : '';
-        flags += r.global ? 'g' : '';
-        flags += r.ignorecase ? 'i' : '';
-        return new RegExp(r.source, flags);
-    }
-
-    function cloneDate(date) {
-        return new Date(+date);
-    }
-
-    function cloneArray(arr) {
-        return arr.slice();
-    }
-
-    return clone;
+    return timeout;
 
 });
 
@@ -18562,7 +18533,7 @@ define(
   'signals',
   'lib/gmaps',
   'mout/object/mixIn',
-  'mout/lang/clone',
+  'mout/function/timeout',
   'helpers/toLatLng',
   'config'
 ], function(
@@ -18570,7 +18541,7 @@ define(
   Signal,
   gmaps,
   mixIn,
-  clone,
+  timeout,
   toLatLng,
   config
 ) {
@@ -18591,7 +18562,8 @@ define(
   p.initialize = function() {
     // NOTE: Changed from `clone()` in `defaultMapOptions` to passing an empty object first
     this.options = mixIn(
-                    clone(config.defaultMapOptions),
+                    {},
+                    config.defaultMapOptions,
                     this.options || {}
                   );
 
@@ -18619,7 +18591,8 @@ define(
 
   p._setupInfoWindow = function() {
     var self = this,
-        options = config.infoWindow;
+        options = config.infoWindow,
+        infoWindowElement;
 
     this.infoWindow = new gmaps.InfoWindow({
       size: new gmaps.Size(options.width, options.height)
@@ -18627,6 +18600,8 @@ define(
 
     // Waits for the window to be fully attached to the DOM before watching for a click on it
     gmaps.event.addListener(this.infoWindow, 'domready', function(event) {
+      self.showInfoWindow(self.infoWindow);
+
       // Remove the "x" icon added by default by Google Maps to the info window
       $('.gm-style-iw').next('div').remove();
 
@@ -18634,7 +18609,46 @@ define(
     });
   };
 
+  /**
+   * Timeout-based animation because #yolo
+   * @param {InfoWindow} infoWindow `InfoWindow` instance
+   */
+  p.showInfoWindow = function(infoWindow) {
+    var infoWindowElement;
+
+    // Disable auto pan and place element a little bit above its marker position
+    this.infoWindow.setOptions({
+      disableAutoPan: true,
+      pixelOffset: new gmaps.Size(0, -50)
+    });
+
+    // Hide window element through `opacity` property
+    infoWindowElement = $('.gm-style-iw').offsetParent();
+    infoWindowElement.css({opacity: 0});
+
+    // Need to wait a little bit to make sure all above properties took effect
+    timeout(function() {
+
+      // Then enable auto pan again and normalize its position
+      infoWindow.setOptions({
+        disableAutoPan: false,
+        pixelOffset: 0
+      });
+
+      // Show window element again and add `js-info-window-container` to add the CSS transition
+      infoWindowElement
+        .css({opacity: 1})
+        .addClass('js-info-window-container');
+
+    }, 150, this);
+  };
+
   p.panTo = function(position) {
+    // Close info window if there's one open already
+    if(this.infoWindow) {
+      this.infoWindow.close();
+    }
+
     switch(position) {
       case 'center' :
         position = this.map.getCenter();
@@ -18928,6 +18942,7 @@ define(
             self.setUserLocationMarker(position);
             self.placeStationMarkers();
             self.saveUserNearestStation(position);
+            self.nearestStation();
           });
       },
 
