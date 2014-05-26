@@ -18800,12 +18800,25 @@ define(
   };
 
   p._markerClick = function(event) {
+    var marker = this.getMarkerByCoordinates(event.latLng);
+    this.setActiveMarker(marker);
+  };
+
+  p.setActiveMarker = function(marker) {
+    if(!marker) {
+      console.warn('Map :: setActiveMarker() :: Invalid marker');
+      return;
+    }
+
+    console.log('Map :: setActiveMarker()', marker);
+
     if(this.activeMarker) {
       this.activeMarker.setTitle('');
     }
 
-    this.activeMarker = this.getMarkerByCoordinates(event.latLng);
-    this.activeMarker.setTitle('is-active');
+    marker.setTitle('is-active');
+
+    this.activeMarker = marker;
   };
 
   p.dispose = function() {
@@ -18827,7 +18840,7 @@ define(
 });
 
 
-define('text!partials/sections/overview.html',[],function () { return '<button class="my-location-button" v-on="click: moveToCenter()">My location</button>\n<div id="overview-map">here</div>\n';});
+define('text!partials/sections/overview.html',[],function () { return '<button class="my-location-button" v-on="click: moveToCenter">My location</button>\n<button class="my-location-button" v-on="click: nearestStation" style="display: inline-block;">Nearest station</button>\n<div id="overview-map">here</div>\n';});
 
 define(
 'sections/overview',[
@@ -18928,19 +18941,25 @@ define(
               latitude: position.lat(),
               longitude: position.lng()
             },
-            // User nearest station marker
-            userNearestStation = this.overviewMap.getNearestMarker(coordinates),
-            userNearestStationName = userNearestStation.content,
+            userNearestStationMarker = this.overviewMap.getNearestMarker(coordinates),
+            userNearestStationName = userNearestStationMarker.content,
             userNearestStationModel = getStationByName(userNearestStationName);
 
         console.log('overview :: saveUserNearestStation() :: Saving the model of user\'s nearest station');
         console.dir(userNearestStationModel);
+
+        // User nearest station marker
+        this.userNearestStationMarker = userNearestStationMarker;
 
         this.$root.nearestStation = userNearestStationModel;
       },
 
       moveToCenter: function() {
         this.overviewMap.panTo(this.userLocation);
+      },
+
+      nearestStation: function() {
+        this.overviewMap.setActiveMarker(this.userNearestStationMarker);
       },
 
       infoWindowClick: function(event, id) {

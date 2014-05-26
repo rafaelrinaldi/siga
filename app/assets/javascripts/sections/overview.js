@@ -97,19 +97,25 @@ define(
               latitude: position.lat(),
               longitude: position.lng()
             },
-            // User nearest station marker
-            userNearestStation = this.overviewMap.getNearestMarker(coordinates),
-            userNearestStationName = userNearestStation.content,
+            userNearestStationMarker = this.overviewMap.getNearestMarker(coordinates),
+            userNearestStationName = userNearestStationMarker.content,
             userNearestStationModel = getStationByName(userNearestStationName);
 
         console.log('overview :: saveUserNearestStation() :: Saving the model of user\'s nearest station');
         console.dir(userNearestStationModel);
+
+        // User nearest station marker
+        this.userNearestStationMarker = userNearestStationMarker;
 
         this.$root.nearestStation = userNearestStationModel;
       },
 
       moveToCenter: function() {
         this.overviewMap.panTo(this.userLocation);
+      },
+
+      nearestStation: function() {
+        this.overviewMap.setActiveMarker(this.userNearestStationMarker);
       },
 
       infoWindowClick: function(event, id) {

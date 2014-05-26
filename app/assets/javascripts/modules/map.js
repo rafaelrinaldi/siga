@@ -242,12 +242,25 @@ define(
   };
 
   p._markerClick = function(event) {
+    var marker = this.getMarkerByCoordinates(event.latLng);
+    this.setActiveMarker(marker);
+  };
+
+  p.setActiveMarker = function(marker) {
+    if(!marker) {
+      console.warn('Map :: setActiveMarker() :: Invalid marker');
+      return;
+    }
+
+    console.log('Map :: setActiveMarker()', marker);
+
     if(this.activeMarker) {
       this.activeMarker.setTitle('');
     }
 
-    this.activeMarker = this.getMarkerByCoordinates(event.latLng);
-    this.activeMarker.setTitle('is-active');
+    marker.setTitle('is-active');
+
+    this.activeMarker = marker;
   };
 
   p.dispose = function() {
