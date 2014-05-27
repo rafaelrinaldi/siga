@@ -35,6 +35,13 @@ define(
         this.destination = getStationByName(this.$options.destination);
         this.setupMap();
         this.requestDestination();
+        this.$root.$broadcast('header:setTitle', 'Direção');
+        this.$root.$broadcast('header:setControls', [
+          {klass: 'ion-ios7-arrow-back'},
+          {klass: 'ion-navicon'}
+        ]);
+        this.$root.$broadcast('header:show');
+        this.$root.$broadcast('footer:hide');
       },
 
       setupMap: function() {

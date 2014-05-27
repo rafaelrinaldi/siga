@@ -141,7 +141,20 @@ input[type="text"], textarea {
   background: #27ae60; }
 
 .footer {
-  z-index: 999; }
+  z-index: 99; }
+  .footer .tabs:before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: rgba(0, 0, 0, 0.15);
+    top: -2px; }
+  .footer.is-hidden .tabs {
+    bottom: -50px; }
+  .footer .tabs {
+    -webkit-transition: bottom 0.5s ease;
+    transition: bottom 0.5s ease; }
 
 a, .link {
   color: gray;
@@ -178,7 +191,8 @@ a, .link {
   transform: translateX(220px); }
 
 .header {
-  position: relative; }
+  position: relative;
+  z-index: 95; }
   .header.is-hidden .bar-header {
     -webkit-transform: translateX(100%);
     -ms-transform: translateX(100%);

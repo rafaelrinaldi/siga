@@ -16000,11 +16000,19 @@ define(
       },
 
       ready: function() {
-        this.$on('footer:setControls', this.setControls);
+        this.context = $(this.$el);
+        this.$on('footer:show', $.proxy(this.show, this));
+        this.$on('footer:hide', $.proxy(this.hide, this));
+        this.$on('footer:setControls', $.proxy(this.setControls, this));
       },
 
       methods: {
-        setTitle: function(newTitle) {
+        show: function() {
+          this.context.removeClass('is-hidden');
+        },
+
+        hide: function() {
+          this.context.addClass('is-hidden');
         },
 
         setControls: function(newControls) {
@@ -19588,7 +19596,7 @@ define(
       lastInput: ''
     },
 
-    attached: function() {
+    ready: function() {
       this.$dispatch('app:sectionReady', this);
       this.$root.$broadcast('header:hide');
       this.$root.$broadcast('footer:setControls', [
@@ -19740,6 +19748,13 @@ define(
         this.destination = getStationByName(this.$options.destination);
         this.setupMap();
         this.requestDestination();
+        this.$root.$broadcast('header:setTitle', 'Direção');
+        this.$root.$broadcast('header:setControls', [
+          {klass: 'ion-ios7-arrow-back'},
+          {klass: 'ion-navicon'}
+        ]);
+        this.$root.$broadcast('header:show');
+        this.$root.$broadcast('footer:hide');
       },
 
       setupMap: function() {

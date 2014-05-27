@@ -1,3 +1,23 @@
 .footer {
-  z-index: 999;
+  z-index: 99;
+
+  .tabs:before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: rgba(#000, .15);
+    top: -2px;
+  }
+
+  &.is-hidden {
+    .tabs {
+      bottom: -50px;
+    }
+  }
+
+  .tabs {
+    transition: bottom .5s ease;
+  }
 }

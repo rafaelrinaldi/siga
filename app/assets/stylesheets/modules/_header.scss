@@ -1,5 +1,6 @@
 .header {
   position: relative;
+  z-index: 95;
 
   &.is-hidden {
     .bar-header {

@@ -1,19 +1,4 @@
 .section.directions {
-  // padding-top: 50px;
-
-  .user-input {
-    // transition: all .3s ease;
-    // z-index: 99;
-  }
-
-  // .user-input.is-focused {
-    // transform: translateY(-50px);
-    // position: fixed;
-    // top: 0;
-    // left: 0;
-    // width: 100%;
-
-  // }
 }
 
 .directions-suggestions .item {
@@ -34,7 +19,5 @@
   border-radius: 4px;
   margin-left: 10px;
 
-  &:last-child {
-    margin-left: 0;
-  }
+  &:last-child { margin-left: 0; }
 }

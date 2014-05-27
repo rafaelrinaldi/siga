@@ -17,11 +17,19 @@ define(
       },
 
       ready: function() {
-        this.$on('footer:setControls', this.setControls);
+        this.context = $(this.$el);
+        this.$on('footer:show', $.proxy(this.show, this));
+        this.$on('footer:hide', $.proxy(this.hide, this));
+        this.$on('footer:setControls', $.proxy(this.setControls, this));
       },
 
       methods: {
-        setTitle: function(newTitle) {
+        show: function() {
+          this.context.removeClass('is-hidden');
+        },
+
+        hide: function() {
+          this.context.addClass('is-hidden');
         },
 
         setControls: function(newControls) {

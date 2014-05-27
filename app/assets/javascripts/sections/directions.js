@@ -27,7 +27,7 @@ define(
       lastInput: ''
     },
 
-    attached: function() {
+    ready: function() {
       this.$dispatch('app:sectionReady', this);
       this.$root.$broadcast('header:hide');
       this.$root.$broadcast('footer:setControls', [
