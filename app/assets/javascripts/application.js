@@ -153,9 +153,9 @@ requirejs(
 
     function _fixKnownIssues() {
       $(function() {
-        MBP.scaleFix();
-        MBP.gestureStart();
-        MBP.hideUrlBarOnLoad();
+        setTimeout(MBP.scaleFix, 0);
+        setTimeout(MBP.gestureStart, 100);
+        setTimeout(MBP.hideUrlBarOnLoad, 250);
       });
     }
 
