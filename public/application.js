@@ -18928,7 +18928,7 @@ define(
 });
 
 
-define('text!partials/sections/overview.html',[],function () { return '<button\n  class="nearest-station-button button icon ion-navigate"\n  v-on="click: nearestStation">\n</button>\n<div id="overview-map">here</div>\n';});
+define('text!partials/sections/overview.html',[],function () { return '<div id="overview-map">here</div>\n';});
 
 define(
 'sections/overview',[
@@ -18975,6 +18975,20 @@ define(
     methods: {
       initialize: function() {
         this.$dispatch('app:sectionReady', this);
+
+        this.$root.$broadcast('header:setControls', [
+          {
+            channel: 'navigation:toggleNavigation',
+            klass: 'ion-navicon'
+          },
+          {
+            channel: 'navigation:nearestStation',
+            klass: 'ion-ios7-navigate-outline'
+          }
+        ]);
+
+        this.$root.$on('navigation:nearestStation', $.proxy(this.nearestStation, this));
+
         this.setupMap();
       },
 

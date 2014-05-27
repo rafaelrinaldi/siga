@@ -43,6 +43,20 @@ define(
     methods: {
       initialize: function() {
         this.$dispatch('app:sectionReady', this);
+
+        this.$root.$broadcast('header:setControls', [
+          {
+            channel: 'navigation:toggleNavigation',
+            klass: 'ion-navicon'
+          },
+          {
+            channel: 'navigation:nearestStation',
+            klass: 'ion-ios7-navigate-outline'
+          }
+        ]);
+
+        this.$root.$on('navigation:nearestStation', $.proxy(this.nearestStation, this));
+
         this.setupMap();
       },
 
