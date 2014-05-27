@@ -44,6 +44,7 @@
     "hasher": "~1.2.0",
     "google-maps-utility-library-v3": "*",
     "normalize-scss": "~3.0.1",
-    "ionic": "~0.9.27"
+    "ionic": "~0.9.27",
+    "hammerjs": "~1.1.3"
   }
 }

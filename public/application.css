@@ -269,8 +269,8 @@ div.gmnoprint[title="is-active"] {
     bottom: 1.5em; }
 
 .section.station .station-map-container {
-  -webkit-transition: all 1s ease;
-  transition: all 1s ease;
+  -webkit-transition: all 0.75s ease;
+  transition: all 0.75s ease;
   width: 100%;
   height: 100%;
   position: relative; }
@@ -298,8 +298,8 @@ div.gmnoprint[title="is-active"] {
   right: 1.5em;
   bottom: 1.5em; }
 .section.station .station-info-container {
-  -webkit-transition: all 1s ease 0.025s;
-  transition: all 1s ease 0.025s; }
+  -webkit-transition: all 0.75s ease 0.025s;
+  transition: all 0.75s ease 0.025s; }
   .section.station .station-info-container.is-expanded {
     -webkit-transition-delay: 0;
     transition-delay: 0;

@@ -12,6 +12,7 @@ require.config({
     'signals': '../../../vendor/assets/bower/js-signals/dist/signals',
     'hasher': '../../../vendor/assets/bower/hasher/dist/js/hasher',
     'crossroads': '../../../vendor/assets/bower/crossroads.js/dist/crossroads',
+    'hammerjs': '../../../vendor/assets/bower/hammerjs/hammer',
 
     // Google Maps Helpers
     'richmarker': '../../../vendor/assets/bower/google-maps-utility-library-v3/richmarker/src/richmarker',
@@ -55,8 +56,8 @@ requirejs(
     'modules/footer',
     'modules/directions',
     'modules/directionsDetail',
-    // 'modules/map',
     './sections',
+    'lib/vueTouch',
     'lib/h5bpHelpers'
   ],
   function(
@@ -72,8 +73,8 @@ requirejs(
     Footer,
     Directions,
     DirectionsDetail,
-    // Map,
-    Sections
+    Sections,
+    vueTouch
   ) {
 
     var app;
@@ -89,6 +90,9 @@ requirejs(
 
     function _setupApp() {
       console.log('application :: _setupApp() :: Setting up app');
+
+      // Setup touch plugin
+      Vue.use(vueTouch);
 
       app = new Vue({
         el: '#app',
