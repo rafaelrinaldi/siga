@@ -15715,7 +15715,7 @@ define(
 
 define('text',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
 
-define('text!partials/header.html',[],function () { return '<div class="bar bar-header">\n  <div class="h1 title">{{title}}</div>\n  <button\n  class="button button-icon button-clear button-positive icon {{control.klass}}"\n    title="{{control.title}}"\n    v-repeat="control: controls"\n    v-on="click: onClick(control.channel)"\n    >\n    {{control.title}}\n  </button>\n</div>\n';});
+define('text!partials/header.html',[],function () { return '<div class="bar bar-header">\n  <div class="h1 title">{{title}}</div>\n  <button\n  class="button button-icon button-clear button-positive icon {{control.klass}}"\n    title="{{control.title}}"\n    v-repeat="control: controls"\n    v-touch="tap: onClick(control.channel)"\n    >\n    {{control.title}}\n  </button>\n</div>\n';});
 
 define(
   'modules/header',[
@@ -15772,7 +15772,6 @@ define(
 
         // will broadcast the clicked item channel to the app instance
         onClick: function(channel) {
-          console.log('broadcasting',channel);
           this.$dispatch(channel);
         }
       }
@@ -18183,7 +18182,7 @@ define(
       this.$dispatch('app:sectionReady', this);
       var self = this;
       setTimeout(function() {
-        self.$dispatch('app:setView', 'station');
+        self.$dispatch('app:setView', 'overview');
       }, 250);
     },
 

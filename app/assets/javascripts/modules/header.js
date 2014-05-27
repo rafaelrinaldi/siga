@@ -53,7 +53,6 @@ define(
 
         // will broadcast the clicked item channel to the app instance
         onClick: function(channel) {
-          console.log('broadcasting',channel);
           this.$dispatch(channel);
         }
       }

@@ -277,9 +277,9 @@ div.gmnoprint[title="is-active"] {
   .section.station .station-map-container.is-expanded {
     -webkit-transition-delay: 0.025s;
     transition-delay: 0.025s;
-    -webkit-transform: translateY(-80%);
-    -ms-transform: translateY(-80%);
-    transform: translateY(-80%); }
+    -webkit-transform: translateY(-480px);
+    -ms-transform: translateY(-480px);
+    transform: translateY(-480px); }
 .section.station .station-map-container:after {
   content: "";
   display: block;
@@ -303,9 +303,9 @@ div.gmnoprint[title="is-active"] {
   .section.station .station-info-container.is-expanded {
     -webkit-transition-delay: 0;
     transition-delay: 0;
-    -webkit-transform: translateY(-135%);
-    -ms-transform: translateY(-135%);
-    transform: translateY(-135%); }
+    -webkit-transform: translateY(-480px);
+    -ms-transform: translateY(-480px);
+    transform: translateY(-480px); }
 
 .section.directions {
   padding-top: 50px; }

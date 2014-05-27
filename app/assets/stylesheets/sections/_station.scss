@@ -7,7 +7,8 @@
 
     &.is-expanded {
       transition-delay: .025s;
-      transform: translateY(-80%);
+      // transform: translateY(-80%);
+      transform: translateY(-480px);
     }
   }
 
@@ -40,7 +41,7 @@
 
     &.is-expanded {
       transition-delay: 0;
-      transform: translateY(-135%);
+      transform: translateY(-480px);
     }
   }
 }
