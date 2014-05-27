@@ -149,13 +149,13 @@ define(
         );
 
     if(options.content && options.content.length) {
-      gmaps.event.addListener(marker, 'click', function() {
+      gmaps.event.addListener(marker, 'mousedown', function() {
         self.infoWindow.setContent(self.formatInfoWindowContent(options));
         self.infoWindow.open(self.map, marker);
       });
     }
 
-    gmaps.event.addListener(marker, 'click', $.proxy(this._markerClick, this));
+    gmaps.event.addListener(marker, 'mousedown', $.proxy(this._markerClick, this));
 
     if(shouldCache) {
       this.markers.push(marker);
