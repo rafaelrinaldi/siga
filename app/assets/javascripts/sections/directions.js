@@ -22,13 +22,38 @@ define(
 
     data: {
       suggestions: [],
-      origin: 'Brigadeiro',
-      destination: 'Anhangabaú',
+      // origin: 'Brigadeiro',
+      // destination: 'Anhangabaú',
       lastInput: ''
     },
 
     attached: function() {
       this.$dispatch('app:sectionReady', this);
+      this.$root.$broadcast('header:hide');
+      this.$root.$broadcast('footer:setControls', [
+        {
+          klass: 'ion-navigate',
+          title: 'Mais próxima',
+          channel: 'directions:getNearbyStation'
+        },
+
+        {
+          klass: 'ion-shuffle',
+          title: 'Inverter ordem',
+          channel: 'directions:swapUserInput'
+        },
+
+        {
+          klass: 'ion-ios7-location',
+          title: 'Direção',
+          channel: 'directions:submit'
+        }
+      ]);
+
+      this.$root.$on('directions:getNearbyStation', $.proxy(this.getNearbyStation, this));
+      this.$root.$on('directions:swapUserInput', $.proxy(this.swapUserInput, this));
+      this.$root.$on('directions:submit', $.proxy(this.submit, this));
+
       this.initialize();
     },
 
@@ -82,21 +107,15 @@ define(
         this.origin = userInput.destination;
       },
 
-      setFocus: function() {
-      },
-
       userInputFocus: function(event) {
         var target = $(event.currentTarget),
             id = target.attr('id');
-
-        this.userInputGroup.addClass('is-focused');
 
         this.lastInput = id;
       },
 
       userInputFocusOut: function() {
-        this.userInputGroup.removeClass('is-focused');
-        // MBP.hideUrlBarOnLoad();
+        this.cleanupSuggestions();
       },
 
       getNearbyStation: function(location) {
@@ -105,7 +124,9 @@ define(
 
       dispose: function() {
         if(this.userInput) {
-          this.userInput.off('focusin');
+          this.userInput
+            .off('focusin')
+            .off('focusout');
         }
 
         if(this.suggestions) {

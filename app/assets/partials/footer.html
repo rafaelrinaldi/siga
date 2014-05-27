@@ -1,11 +1,12 @@
 <div class="tabs tabs-icon-top" v-show="controls">
   <a
     class="tab-item"
+    style="color: #4a87ee;"
     v-repeat="control: controls"
     v-on="click: onClick(control.channel)"
   >
     <i
-      class="{{control.klass}}"
+      class="icon {{control.klass}}"
     ></i>
     {{control.title}}
   </a>

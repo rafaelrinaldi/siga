@@ -2,15 +2,12 @@
 
   <div class="list user-input js-user-input-group">
 
+    <!--
     <label class="item item-input">
       <i class="icon ion-android-arrow-up-right placeholder-icon"></i>
       <input
         type="text"
-        id="origin"
-        name="origin"
-        class="js-user-input"
-        v-model="origin"
-        v-on="keyup: suggestStations('origin')"
+
         placeholder="Origem"
       >
     </label>
@@ -27,13 +24,44 @@
         placeholder="Destino"
       >
     </label>
+    -->
+
+
+  <label class="item item-input item-icon-right">
+    <i class="icon ion-ios7-arrow-thin-right"></i>
+    <input
+      type="text"
+      id="origin"
+      name="origin"
+      class="js-user-input"
+      placeholder="Origem"
+      v-model="origin"
+      v-on="keyup: suggestStations('origin')"
+    >
+  </label>
+
+  <label class="item item-input item-icon-right">
+    <i class="icon ion-ios7-arrow-thin-left"></i>
+    <input
+      type="text"
+      id="destination"
+      name="destination"
+      class="js-user-input"
+      v-model="destination"
+      v-on="keyup: suggestStations('destination')"
+      placeholder="Destino"
+    >
+  </label>
 
   </div>
 
 </div>
 
-<ul class="list directions-suggestions">
-  <li
+<div class="list directions-suggestions">
+  <div class="item item-divider" v-show="suggestions.length">
+    Estações
+  </div>
+  <div
     class="item"
     v-repeat="suggestion: suggestions"
     v-on="click: selectSuggestion(suggestion.title), click: cleanupSuggestions"
@@ -45,10 +73,10 @@
         v-repeat="line: suggestion.lines"
       />
     </a>
-  </li>
-</ul>
+  </div>
+</div>
 
-<div class="tabs tabs-icon-top">
+<!-- <div class="tabs tabs-icon-top">
   <a class="tab-item" v-on="click: getNearbyStation(this.origin)">
     <i class="icon ion-navigate"></i>
     Mais próxima
@@ -62,3 +90,4 @@
     Direção
   </a>
 </div>
+ -->

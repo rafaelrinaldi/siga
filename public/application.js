@@ -15741,11 +15741,22 @@ define(
       },
 
       ready: function() {
+        this.context = $(this.$el);
         this.$on('header:setTitle', this.setTitle);
         this.$on('header:setControls', this.setControls);
+        this.$on('header:show', $.proxy(this.show, this));
+        this.$on('header:hide', $.proxy(this.hide, this));
       },
 
       methods: {
+        show: function() {
+          this.context.removeClass('is-hidden');
+        },
+
+        hide: function() {
+          this.context.addClass('is-hidden');
+        },
+
         setTitle: function(newTitle) {
           console.log('header :: setTitle() ::', newTitle);
           this.title = newTitle;
@@ -15893,7 +15904,7 @@ define('mout/random/choice',['./randInt', '../lang/isArray'], function (randInt,
 });
 
 
-define('text!partials/navigation.html',[],function () { return '<div class="bar bar-header">\n  <button\n    class="button button-icon button-clear icon ion-ios7-close-empty"\n    style="color: #fff;"\n    v-touch="tap: toggle"\n    >\n  </button>\n</div>\n\n<h1 class="siga-logo"></h1>\n\n<div class="content">\n\n  <div class="list" >\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-map"></i>\n      <h2>Mapa</h2>\n      <p>Mapa geral das estações</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-ios7-location-outline"></i>\n      <h2>Trajeto</h2>\n      <p>Planeje sua viagem</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-radio-waves"></i>\n      <h2>Status Operacional</h2>\n      <p>Confira o funcionamento das linhas</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-ios7-search-strong"></i>\n      <h2>Busca</h2>\n      <p>Procurar por linha ou estação</p>\n    </a>\n\n  </div>\n</div>\n';});
+define('text!partials/navigation.html',[],function () { return '<div class="bar bar-header">\n  <button\n    class="button button-icon button-clear icon ion-ios7-close-empty"\n    style="color: #fff;"\n    v-touch="tap: toggle"\n    >\n  </button>\n</div>\n\n<h1 class="ir has-transform-animation siga-logo">Siga</h1>\n\n<div class="content">\n\n  <div class="list" >\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-map"></i>\n      <h2>Mapa</h2>\n      <p>Mapa geral das estações</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-ios7-location-outline"></i>\n      <h2>Trajeto</h2>\n      <p>Planeje sua viagem</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-radio-waves"></i>\n      <h2>Status Operacional</h2>\n      <p>Confira o funcionamento das linhas</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-ios7-search-strong"></i>\n      <h2>Busca</h2>\n      <p>Procurar por linha ou estação</p>\n    </a>\n\n  </div>\n</div>\n';});
 
 define(
   'modules/navigation',[
@@ -15968,7 +15979,7 @@ define(
 });
 
 
-define('text!partials/footer.html',[],function () { return '<div class="tabs tabs-icon-top" v-show="controls">\n  <a\n    class="tab-item"\n    v-repeat="control: controls"\n    v-on="click: onClick(control.channel)"\n  >\n    <i\n      class="{{control.klass}}"\n    ></i>\n    {{control.title}}\n  </a>\n</div>\n';});
+define('text!partials/footer.html',[],function () { return '<div class="tabs tabs-icon-top" v-show="controls">\n  <a\n    class="tab-item"\n    style="color: #4a87ee;"\n    v-repeat="control: controls"\n    v-on="click: onClick(control.channel)"\n  >\n    <i\n      class="icon {{control.klass}}"\n    ></i>\n    {{control.title}}\n  </a>\n</div>\n';});
 
 define(
   'modules/footer',[
@@ -16005,7 +16016,7 @@ define(
 
         // will broadcast the clicked item channel to the app instance
         onClick: function(channel) {
-          console.log('onClick', channel);
+          this.$dispatch(channel);
         }
       }
 
@@ -18309,7 +18320,7 @@ define(
       this.$dispatch('app:sectionReady', this);
       var self = this;
       setTimeout(function() {
-        self.$dispatch('app:setView', 'overview');
+        self.$dispatch('app:setView', 'directions');
       }, 250);
     },
 
@@ -19546,7 +19557,7 @@ define(
 });
 
 
-define('text!partials/sections/directions.html',[],function () { return '<div class="directions-input">\n\n  <div class="list user-input js-user-input-group">\n\n    <label class="item item-input">\n      <i class="icon ion-android-arrow-up-right placeholder-icon"></i>\n      <input\n        type="text"\n        id="origin"\n        name="origin"\n        class="js-user-input"\n        v-model="origin"\n        v-on="keyup: suggestStations(\'origin\')"\n        placeholder="Origem"\n      >\n    </label>\n\n    <label class="item item-input">\n      <i class="icon ion-android-arrow-down-left placeholder-icon"></i>\n      <input\n        type="text"\n        id="destination"\n        name="destination"\n        class="js-user-input"\n        v-model="destination"\n        v-on="keyup: suggestStations(\'destination\')"\n        placeholder="Destino"\n      >\n    </label>\n\n  </div>\n\n</div>\n\n<ul class="list directions-suggestions">\n  <li\n    class="item"\n    v-repeat="suggestion: suggestions"\n    v-on="click: selectSuggestion(suggestion.title), click: cleanupSuggestions"\n  >\n    <a href="#">\n      {{suggestion.title}}\n      <span\n        style="background: {{line.color}}; border-color: {{line.color}};"\n        v-repeat="line: suggestion.lines"\n      />\n    </a>\n  </li>\n</ul>\n\n<div class="tabs tabs-icon-top">\n  <a class="tab-item" v-on="click: getNearbyStation(this.origin)">\n    <i class="icon ion-navigate"></i>\n    Mais próxima\n  </a>\n  <a class="tab-item" v-on="click: swapUserInput">\n    <i class="icon ion-shuffle"></i>\n    Inverter\n  </a>\n  <a class="tab-item" v-on="click: submit($event)">\n    <i class="icon ion-android-locate"></i>\n    Direção\n  </a>\n</div>\n';});
+define('text!partials/sections/directions.html',[],function () { return '<div class="directions-input">\n\n  <div class="list user-input js-user-input-group">\n\n    <!--\n    <label class="item item-input">\n      <i class="icon ion-android-arrow-up-right placeholder-icon"></i>\n      <input\n        type="text"\n\n        placeholder="Origem"\n      >\n    </label>\n\n    <label class="item item-input">\n      <i class="icon ion-android-arrow-down-left placeholder-icon"></i>\n      <input\n        type="text"\n        id="destination"\n        name="destination"\n        class="js-user-input"\n        v-model="destination"\n        v-on="keyup: suggestStations(\'destination\')"\n        placeholder="Destino"\n      >\n    </label>\n    -->\n\n\n  <label class="item item-input item-icon-right">\n    <i class="icon ion-ios7-arrow-thin-right"></i>\n    <input\n      type="text"\n      id="origin"\n      name="origin"\n      class="js-user-input"\n      placeholder="Origem"\n      v-model="origin"\n      v-on="keyup: suggestStations(\'origin\')"\n    >\n  </label>\n\n  <label class="item item-input item-icon-right">\n    <i class="icon ion-ios7-arrow-thin-left"></i>\n    <input\n      type="text"\n      id="destination"\n      name="destination"\n      class="js-user-input"\n      v-model="destination"\n      v-on="keyup: suggestStations(\'destination\')"\n      placeholder="Destino"\n    >\n  </label>\n\n  </div>\n\n</div>\n\n<div class="list directions-suggestions">\n  <div class="item item-divider" v-show="suggestions.length">\n    Estações\n  </div>\n  <div\n    class="item"\n    v-repeat="suggestion: suggestions"\n    v-on="click: selectSuggestion(suggestion.title), click: cleanupSuggestions"\n  >\n    <a href="#">\n      {{suggestion.title}}\n      <span\n        style="background: {{line.color}}; border-color: {{line.color}};"\n        v-repeat="line: suggestion.lines"\n      />\n    </a>\n  </div>\n</div>\n\n<!-- <div class="tabs tabs-icon-top">\n  <a class="tab-item" v-on="click: getNearbyStation(this.origin)">\n    <i class="icon ion-navigate"></i>\n    Mais próxima\n  </a>\n  <a class="tab-item" v-on="click: swapUserInput">\n    <i class="icon ion-shuffle"></i>\n    Inverter\n  </a>\n  <a class="tab-item" v-on="click: submit($event)">\n    <i class="icon ion-android-locate"></i>\n    Direção\n  </a>\n</div>\n -->\n';});
 
 define(
 'sections/directions',[
@@ -19572,13 +19583,38 @@ define(
 
     data: {
       suggestions: [],
-      origin: 'Brigadeiro',
-      destination: 'Anhangabaú',
+      // origin: 'Brigadeiro',
+      // destination: 'Anhangabaú',
       lastInput: ''
     },
 
     attached: function() {
       this.$dispatch('app:sectionReady', this);
+      this.$root.$broadcast('header:hide');
+      this.$root.$broadcast('footer:setControls', [
+        {
+          klass: 'ion-navigate',
+          title: 'Mais próxima',
+          channel: 'directions:getNearbyStation'
+        },
+
+        {
+          klass: 'ion-shuffle',
+          title: 'Inverter ordem',
+          channel: 'directions:swapUserInput'
+        },
+
+        {
+          klass: 'ion-ios7-location',
+          title: 'Direção',
+          channel: 'directions:submit'
+        }
+      ]);
+
+      this.$root.$on('directions:getNearbyStation', $.proxy(this.getNearbyStation, this));
+      this.$root.$on('directions:swapUserInput', $.proxy(this.swapUserInput, this));
+      this.$root.$on('directions:submit', $.proxy(this.submit, this));
+
       this.initialize();
     },
 
@@ -19632,21 +19668,15 @@ define(
         this.origin = userInput.destination;
       },
 
-      setFocus: function() {
-      },
-
       userInputFocus: function(event) {
         var target = $(event.currentTarget),
             id = target.attr('id');
-
-        this.userInputGroup.addClass('is-focused');
 
         this.lastInput = id;
       },
 
       userInputFocusOut: function() {
-        this.userInputGroup.removeClass('is-focused');
-        // MBP.hideUrlBarOnLoad();
+        this.cleanupSuggestions();
       },
 
       getNearbyStation: function(location) {
@@ -19655,7 +19685,9 @@ define(
 
       dispose: function() {
         if(this.userInput) {
-          this.userInput.off('focusin');
+          this.userInput
+            .off('focusin')
+            .off('focusout');
         }
 
         if(this.suggestions) {

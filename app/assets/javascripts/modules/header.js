@@ -22,11 +22,22 @@ define(
       },
 
       ready: function() {
+        this.context = $(this.$el);
         this.$on('header:setTitle', this.setTitle);
         this.$on('header:setControls', this.setControls);
+        this.$on('header:show', $.proxy(this.show, this));
+        this.$on('header:hide', $.proxy(this.hide, this));
       },
 
       methods: {
+        show: function() {
+          this.context.removeClass('is-hidden');
+        },
+
+        hide: function() {
+          this.context.addClass('is-hidden');
+        },
+
         setTitle: function(newTitle) {
           console.log('header :: setTitle() ::', newTitle);
           this.title = newTitle;
