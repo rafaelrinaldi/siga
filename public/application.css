@@ -325,3 +325,6 @@ div.gmnoprint[title="is-active"] {
 
 .section.line .stations-list {
   margin-left: 50px; }
+  .section.line .stations-list h4 {
+    padding: 0;
+    margin: 0; }

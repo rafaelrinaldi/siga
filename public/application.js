@@ -19194,7 +19194,7 @@ define(
 });
 
 
-define('text!partials/sections/line.html',[],function () { return '<div class="no-header-container">\n  <ul class="stations-list l1">\n    <li>Capão Redondo</li>\n    <li>Campo Limpo</li>\n    <li>Vila das Belezas</li>\n    <li>Giovani Gronchi</li>\n    <li>Santo Amaro</li>\n    <li>Largo Treze</li>\n    <li>Capão Redondo</li>\n    <li>Campo Limpo</li>\n    <li>Vila das Belezas</li>\n    <li>Giovani Gronchi</li>\n    <li>Santo Amaro</li>\n    <li>Largo Treze</li>\n  </ul>\n</div>\n';});
+define('text!partials/sections/line.html',[],function () { return '<div class="content has-header padding">\n  <ul class="stations-list l1">\n    <li><h4>Capão Redondo</h4></li>\n    <li><h4>Campo Limpo</h4></li>\n    <li><h4>Vila das Belezas</h4></li>\n    <li><h4>Giovani Gronchi</h4></li>\n    <li><h4>Santo Amaro</h4></li>\n    <li><h4>Largo Treze</h4></li>\n    <li><h4>Capão Redondo</h4></li>\n    <li><h4>Campo Limpo</h4></li>\n    <li><h4>Vila das Belezas</h4></li>\n    <li><h4>Giovani Gronchi</h4></li>\n    <li><h4>Santo Amaro</h4></li>\n    <li><h4>Largo Treze</h4></li>\n  </ul>\n</div>\n';});
 
 define(
 'sections/line',[
