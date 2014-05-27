@@ -1,40 +1,70 @@
+$LINE_THICKNESS: 10px !default;
+$STATION_MARKER_SIZE: 24px !default;
+$STATION_MARKER_FILL_COLOR: #fff !default;
+$STATION_MARKER_BORDER: 4px solid !default;
+$STATION_DISTANCE: 80px !default;
+$LINE_PADDING: 80px !default;
+$LINE_MARGIN: 8px !default;
+
 .stations-list {
-  padding: 0 0 0 0;
-  list-style-type: none;
   position: relative;
+  list-style-type: none;
+  padding: 0;
 }
 
 .stations-list:before {
   content: "";
   display: block;
   position: absolute;
-  width: 20px;
-  height: 100%;
-  background: #8c3583;
-  border-radius: 20px;
+  width: $LINE_THICKNESS;
+  top: -$LINE_PADDING;
+  left: $LINE_MARGIN;
+  height: $LINE_PADDING;
 }
 
-.stations-list__station {
-  margin-left: 30px;
-  margin-top: 30px;
-}
-
-.stations-list__station:first-child {
-  padding-top: 40px;
-}
-
-.stations-list__station:last-child {
-  padding-bottom: 40px;
-}
-
-.stations-list__station:before {
+.stations-list:after {
   content: "";
   display: block;
-  width: 15px;
-  height: 15px;
-  margin-top: 2px;
-  left: 2px;
-  background: #fff;
   position: absolute;
-  border-radius: 10px;
+  width: $LINE_THICKNESS;
+  left: $LINE_MARGIN;
+  height: $LINE_PADDING;
+}
+
+.stations-list li {
+  margin-left: 40px;
+  margin-top: $STATION_DISTANCE;
+}
+
+.stations-list li:not(:last-child):after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: $LINE_THICKNESS;
+  height: $STATION_DISTANCE;
+  left: $LINE_MARGIN;
+}
+
+.stations-list li:before {
+  content: "";
+  display: block;
+  width: $STATION_MARKER_SIZE;
+  height: $STATION_MARKER_SIZE;
+  left: 1px;
+  margin-top: -1px;
+  background: $STATION_MARKER_FILL_COLOR;
+  position: absolute;
+  border-radius: $STATION_MARKER_SIZE;
+  border: $STATION_MARKER_BORDER;
+}
+
+.stations-list.l1 {
+  $color: green;
+
+  &:before,
+  &:after,
+  li:after { background: $color; }
+
+  li:before { border-color: $color; }
+
 }

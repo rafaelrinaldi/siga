@@ -6,6 +6,9 @@ body {
 
 body {
   background: #fff;
+
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 
 .button {
