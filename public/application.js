@@ -15773,6 +15773,125 @@ define(
   }
 );
 
+/**
+ * @constant Minimum 32-bit signed integer value (-2^31).
+ */
+define('mout/number/MIN_INT',[],function(){
+    return -2147483648;
+});
+
+/**
+ * @constant Maximum 32-bit signed integer value. (2^31 - 1)
+ */
+define('mout/number/MAX_INT',[],function(){
+    return 2147483647;
+});
+
+define('mout/random/random',[],function () {
+
+    /**
+     * Just a wrapper to Math.random. No methods inside mout/random should call
+     * Math.random() directly so we can inject the pseudo-random number
+     * generator if needed (ie. in case we need a seeded random or a better
+     * algorithm than the native one)
+     */
+    function random(){
+        return random.get();
+    }
+
+    // we expose the method so it can be swapped if needed
+    random.get = Math.random;
+
+    return random;
+
+});
+
+define('mout/random/rand',['./random', '../number/MIN_INT', '../number/MAX_INT'], function(random, MIN_INT, MAX_INT){
+
+    /**
+     * Returns random number inside range
+     */
+    function rand(min, max){
+        min = min == null? MIN_INT : min;
+        max = max == null? MAX_INT : max;
+        return min + (max - min) * random();
+    }
+
+    return rand;
+});
+
+define('mout/random/randInt',['../number/MIN_INT', '../number/MAX_INT', './rand'], function(MIN_INT, MAX_INT, rand){
+
+    /**
+     * Gets random integer inside range or snap to min/max values.
+     */
+    function randInt(min, max){
+        min = min == null? MIN_INT : ~~min;
+        max = max == null? MAX_INT : ~~max;
+        // can't be max + 0.5 otherwise it will round up if `rand`
+        // returns `max` causing it to overflow range.
+        // -0.5 and + 0.49 are required to avoid bias caused by rounding
+        return Math.round( rand(min - 0.5, max + 0.499999999999) );
+    }
+
+    return randInt;
+});
+
+define('mout/lang/kindOf',[],function () {
+
+    var _rKind = /^\[object (.*)\]$/,
+        _toString = Object.prototype.toString,
+        UNDEF;
+
+    /**
+     * Gets the "kind" of value. (e.g. "String", "Number", etc)
+     */
+    function kindOf(val) {
+        if (val === null) {
+            return 'Null';
+        } else if (val === UNDEF) {
+            return 'Undefined';
+        } else {
+            return _rKind.exec( _toString.call(val) )[1];
+        }
+    }
+    return kindOf;
+});
+
+define('mout/lang/isKind',['./kindOf'], function (kindOf) {
+    /**
+     * Check if value is from a specific "kind".
+     */
+    function isKind(val, kind){
+        return kindOf(val) === kind;
+    }
+    return isKind;
+});
+
+define('mout/lang/isArray',['./isKind'], function (isKind) {
+    /**
+     */
+    var isArray = Array.isArray || function (val) {
+        return isKind(val, 'Array');
+    };
+    return isArray;
+});
+
+define('mout/random/choice',['./randInt', '../lang/isArray'], function (randInt, isArray) {
+
+    /**
+     * Returns a random element from the supplied arguments
+     * or from the array (if single argument is an array).
+     */
+    function choice(items) {
+        var target = (arguments.length === 1 && isArray(items))? items : arguments;
+        return target[ randInt(0, target.length - 1) ];
+    }
+
+    return choice;
+
+});
+
 
 define('text!partials/navigation.html',[],function () { return '<div class="bar bar-header">\n  <button\n    class="button button-icon button-clear icon ion-ios7-close-empty"\n    style="color: #fff;"\n    v-touch="tap: toggle"\n    >\n  </button>\n</div>\n\n<h1 class="siga-logo"></h1>\n\n<div class="content">\n\n  <div class="list" >\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-map"></i>\n      <h2>Mapa</h2>\n      <p>Mapa geral das estações</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-ios7-location-outline"></i>\n      <h2>Trajeto</h2>\n      <p>Planeje sua viagem</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-radio-waves"></i>\n      <h2>Status Operacional</h2>\n      <p>Confira o funcionamento das linhas</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-ios7-search-strong"></i>\n      <h2>Busca</h2>\n      <p>Procurar por linha ou estação</p>\n    </a>\n\n  </div>\n</div>\n';});
 
@@ -15780,11 +15899,13 @@ define(
   'modules/navigation',[
     'jquery',
     'vue',
+    'mout/random/choice',
     'text!partials/navigation.html'
   ],
   function(
     $,
     Vue,
+    choice,
     template
   ) {
 
@@ -15793,6 +15914,7 @@ define(
 
     data: {
       isOpen: false,
+      colors: ['blue', 'yellow', 'red', 'purple', 'green'],
       items: [
         {id: 'overview', title: 'Mapa'},
         {id: 'station', title: 'Detalhe estação'}
@@ -15806,9 +15928,16 @@ define(
 
       this.$root.$on('navigation:toggleNavigation', $.proxy(this.toggle, this));
       this.$root.$on('navigation:gotoHome', $.proxy(this.gotoHome, this));
+
+      this.setRandomColor();
     },
 
     methods: {
+      setRandomColor: function() {
+        var color = choice(this.colors);
+        this.context.addClass(color);
+      },
+
       getCurrentSection: function() {
         return $('#js-section');
       },

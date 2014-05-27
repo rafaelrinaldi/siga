@@ -2,11 +2,13 @@ define(
   [
     'jquery',
     'vue',
+    'mout/random/choice',
     'text!partials/navigation.html'
   ],
   function(
     $,
     Vue,
+    choice,
     template
   ) {
 
@@ -15,6 +17,7 @@ define(
 
     data: {
       isOpen: false,
+      colors: ['blue', 'yellow', 'red', 'purple', 'green'],
       items: [
         {id: 'overview', title: 'Mapa'},
         {id: 'station', title: 'Detalhe estação'}
@@ -28,9 +31,16 @@ define(
 
       this.$root.$on('navigation:toggleNavigation', $.proxy(this.toggle, this));
       this.$root.$on('navigation:gotoHome', $.proxy(this.gotoHome, this));
+
+      this.setRandomColor();
     },
 
     methods: {
+      setRandomColor: function() {
+        var color = choice(this.colors);
+        this.context.addClass(color);
+      },
+
       getCurrentSection: function() {
         return $('#js-section');
       },
