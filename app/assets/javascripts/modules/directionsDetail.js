@@ -6,7 +6,7 @@ define(
     'lib/gmaps',
     'mout/string/replaceAccents',
     'services/getDestination',
-    'text!stations.json',
+    'data/stations',
     'text!partials/directions_detail.html'
   ],
   function(
@@ -31,7 +31,7 @@ define(
       },
 
       ready: function() {
-        this.stations = JSON.parse(stations);
+        this.stations = stations;
         this.options = this.$root.currentViewOptions;
         this.parseCoordinates();
         this.parseDestination();

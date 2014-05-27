@@ -1,13 +1,13 @@
 define(
 [
-  'text!stations.json'
+  'exports',
+  'data/stations'
 ], function(
+  exports,
   stations
 ) {
 
-  function getStations() {
-    return JSON.parse(stations);
-  }
+  function getStations() { return stations; }
 
   return getStations;
 

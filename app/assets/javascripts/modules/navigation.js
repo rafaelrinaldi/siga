@@ -24,6 +24,7 @@ define(
     ready: function() {
       this.mainSection = $('#js-section');
       this.mainHeader = $('#js-header');
+      this.context = $(this.$el);
 
       this.$root.$on('navigation:toggleNavigation', $.proxy(this.toggle, this));
       this.$root.$on('navigation:gotoHome', $.proxy(this.gotoHome, this));
@@ -35,11 +36,13 @@ define(
       },
 
       open: function() {
+        this.context.removeClass('is-hidden');
         this.mainHeader.addClass('is-hidden');
         this.getCurrentSection().addClass('is-hidden');
       },
 
       close: function() {
+        this.context.addClass('is-hidden');
         this.mainHeader.removeClass('is-hidden');
         this.getCurrentSection().removeClass('is-hidden');
       },

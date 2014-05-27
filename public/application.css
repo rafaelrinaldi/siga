@@ -56,11 +56,17 @@ input[type="text"], textarea {
   margin-top: 230px; }
 
 .navigation {
+  -webkit-transition: all 0.5s ease;
+  transition: all 0.5s ease;
   position: absolute;
   width: 100%;
   height: 100%;
   background: #4a87ee;
   z-index: 2; }
+  .navigation.is-hidden {
+    -webkit-transform: translateX(-20%);
+    -ms-transform: translateX(-20%);
+    transform: translateX(-20%); }
   .navigation .bar-header {
     background: transparent; }
   .navigation .siga-logo {
@@ -73,7 +79,9 @@ input[type="text"], textarea {
     margin-top: 270px; }
   .navigation .item {
     background: #4a87ee;
-    border-color: rgba(0, 0, 0, 0.25); }
+    border-color: rgba(0, 0, 0, 0.25);
+    border-left-width: 0;
+    border-right-width: 0; }
     .navigation .item:last-child {
       border-bottom-color: transparent; }
     .navigation .item:after, .navigation .item .icon {
@@ -94,14 +102,18 @@ a, .link {
   background: #fff;
   position: absolute;
   opacity: 1;
-  -webkit-transition: all 0.35s ease;
-  transition: all 0.35s ease;
+  -webkit-transition: all 0.45s ease;
+  transition: all 0.45s ease;
+  -webkit-transition-delay: 0;
+  transition-delay: 0;
   width: 100%;
   height: 100%;
   z-index: 3;
   overflow-y: scroll; }
 
 .section.is-hidden {
+  -webkit-transition-delay: 0.1s;
+  transition-delay: 0.1s;
   -webkit-transform: translateX(100%);
   -ms-transform: translateX(100%);
   transform: translateX(100%); }
@@ -121,15 +133,19 @@ a, .link {
   transform: translateX(220px); }
 
 .header {
-  position: relative; }
+  position: relative;
+  -webkit-transition-delay: 0;
+  transition-delay: 0; }
   .header.is-hidden .bar-header {
+    -webkit-transition-delay: 0.1s;
+    transition-delay: 0.1s;
     -webkit-transform: translateX(100%);
     -ms-transform: translateX(100%);
     transform: translateX(100%);
     opacity: 0; }
   .header .bar-header {
-    -webkit-transition: all 0.35s ease;
-    transition: all 0.35s ease;
+    -webkit-transition: all 0.45s ease;
+    transition: all 0.45s ease;
     background: rgba(255, 255, 255, 0.65); }
   .header .bar-header:after {
     content: "";
@@ -137,13 +153,14 @@ a, .link {
     width: 100%;
     height: 2px;
     position: absolute;
-    background: rgba(0, 0, 0, 0.25);
+    background: rgba(0, 0, 0, 0.15);
     left: 0;
     bottom: 0; }
 
 .js-info-window-container {
   -webkit-transition: all 0.15s ease;
-  transition: all 0.15s ease; }
+  transition: all 0.15s ease;
+  z-index: 55; }
 
 .info-window {
   cursor: pointer;
