@@ -2,10 +2,15 @@
   background: #fff;
   position: absolute;
   opacity: 1;
-  transition: all .2s ease;
+  transition: all .35s ease;
   width: 100%;
   height: 100%;
+  z-index: 3;
   // overflow-y: scroll;
+}
+
+.section.is-hidden {
+  transform: translateX(100%);
 }
 
 .section.v-enter {

@@ -16,16 +16,8 @@ define(
       template: template,
 
       data: {
-        title: 'Status',
+        title: '',
         controls: [
-          {
-            channel: 'navigation:toggleNavigation',
-            klass: 'ion-ios7-arrow-back'
-          },
-          {
-            channel: 'navigation:goToSearch',
-            klass: 'ion-ios7-search-strong'
-          }
         ]
       },
 

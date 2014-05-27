@@ -22,14 +22,6 @@ define(
 
     data: {
       id: 'estacao-barra-funda',
-      toggleIcon: {
-        klass: '',
-        label: '',
-        labels: {
-          up: 'Mostrar informações',
-          down: 'Esconder informações'
-        }
-      },
       isInfoExpanded: false
     },
 
@@ -56,13 +48,11 @@ define(
           }
         ]);
 
+        this.$root.$once('navigation:historyBack', $.proxy(this.historyBack, this));
         this.$root.$on('navigation:toggleStationInfo', $.proxy(this.toggleStationInfo, this));
 
         this.stationMapContainer = $('#js-station-map-container');
         this.stationInfoContainer = $('#js-station-info-container');
-
-        this.toggleIcon.klass = 'up';
-        this.toggleIcon.label = this.toggleIcon.labels['up'];
       },
 
       dispose: function() {
@@ -87,6 +77,10 @@ define(
         this.stationMap.on.loaded.addOnce(this.setMarker, this);
 
         console.log('station :: setupMap() :: Creating map for "%s" station', id);
+      },
+
+      historyBack: function() {
+        this.$dispatch('app:setView', 'overview');
       },
 
       toggleStationInfo: function() {

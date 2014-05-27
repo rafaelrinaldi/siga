@@ -2,18 +2,14 @@
   position: relative;
 
   .bar-header {
+    transition: all .35s ease;
     background: rgba(#fff, .65);
   }
 
-  &:after {
-    width: 100%;
-    height: 2px;
-    position: absolute;
-    content: "";
-    display: block;
-    background: rgba(#000, .15);
-    left: 0;
-    bottom: -46px;
-    z-index: 3;
+  &.is-hidden {
+    .bar-header {
+      transform: translateX(100%);
+      opacity: 0;
+    }
   }
 }

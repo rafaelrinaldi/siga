@@ -34,8 +34,6 @@ define(
   return Vue.extend({
     template: template,
 
-    replace: true,
-
     attached: function() {
       this.initialize();
     },
@@ -44,6 +42,7 @@ define(
       initialize: function() {
         this.$dispatch('app:sectionReady', this);
 
+        this.$root.$broadcast('header:setTitle', 'Mapa');
         this.$root.$broadcast('header:setControls', [
           {
             channel: 'navigation:toggleNavigation',

@@ -22,21 +22,26 @@ define(
     },
 
     ready: function() {
+      this.mainSection = $('#js-section');
+      this.mainHeader = $('#js-header');
+
       this.$root.$on('navigation:toggleNavigation', $.proxy(this.toggle, this));
       this.$root.$on('navigation:gotoHome', $.proxy(this.gotoHome, this));
     },
 
     methods: {
       getCurrentSection: function() {
-        return $('.section');
+        return $('#js-section');
       },
 
       open: function() {
-        this.getCurrentSection().toggleClass('retreat');
+        this.mainHeader.addClass('is-hidden');
+        this.getCurrentSection().addClass('is-hidden');
       },
 
       close: function() {
-        this.getCurrentSection().removeClass('retreat');
+        this.mainHeader.removeClass('is-hidden');
+        this.getCurrentSection().removeClass('is-hidden');
       },
 
       gotoHome: function() {
@@ -44,8 +49,6 @@ define(
       },
 
       toggle: function() {
-        console.log('toggleNavigation');
-        return;
         this.isOpen ? this.close() : this.open();
         this.isOpen = !this.isOpen;
       }

@@ -15735,16 +15735,8 @@ define(
       template: template,
 
       data: {
-        title: 'Status',
+        title: '',
         controls: [
-          {
-            channel: 'navigation:toggleNavigation',
-            klass: 'ion-ios7-arrow-back'
-          },
-          {
-            channel: 'navigation:goToSearch',
-            klass: 'ion-ios7-search-strong'
-          }
         ]
       },
 
@@ -15782,7 +15774,7 @@ define(
 );
 
 
-define('text!partials/navigation.html',[],function () { return '<h1 class="siga-logo"></h1>\n\n<div class="content">\n\n  <div class="list" >\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-map"></i>\n      <h2>Mapa</h2>\n      <p>Mapa geral das estações</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-ios7-location-outline"></i>\n      <h2>Trajeto</h2>\n      <p>Planeje sua viagem</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-radio-waves"></i>\n      <h2>Status Operacional</h2>\n      <p>Confira o funcionamento das linhas</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-ios7-search-strong"></i>\n      <h2>Busca</h2>\n      <p>Procurar por linha ou estação</p>\n    </a>\n\n  </div>\n</div>\n<!-- <ul class="navigation-menu" v-on="click: toggle()">\n  <li class="navigation-menu__item" v-repeat="items">\n    <a href="#!/{{id}}">{{title}}</a>\n  </li>\n</ul>\n -->\n';});
+define('text!partials/navigation.html',[],function () { return '<div class="bar bar-header">\n  <button\n    class="button button-icon button-clear icon ion-navicon"\n    style="color: #fff;"\n    v-touch="tap: toggle"\n    >\n  </button>\n</div>\n\n<h1 class="siga-logo"></h1>\n\n<div class="content">\n\n  <div class="list" >\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-map"></i>\n      <h2>Mapa</h2>\n      <p>Mapa geral das estações</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-ios7-location-outline"></i>\n      <h2>Trajeto</h2>\n      <p>Planeje sua viagem</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-radio-waves"></i>\n      <h2>Status Operacional</h2>\n      <p>Confira o funcionamento das linhas</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-ios7-search-strong"></i>\n      <h2>Busca</h2>\n      <p>Procurar por linha ou estação</p>\n    </a>\n\n  </div>\n</div>\n';});
 
 define(
   'modules/navigation',[
@@ -15808,21 +15800,26 @@ define(
     },
 
     ready: function() {
+      this.mainSection = $('#js-section');
+      this.mainHeader = $('#js-header');
+
       this.$root.$on('navigation:toggleNavigation', $.proxy(this.toggle, this));
       this.$root.$on('navigation:gotoHome', $.proxy(this.gotoHome, this));
     },
 
     methods: {
       getCurrentSection: function() {
-        return $('.section');
+        return $('#js-section');
       },
 
       open: function() {
-        this.getCurrentSection().toggleClass('retreat');
+        this.mainHeader.addClass('is-hidden');
+        this.getCurrentSection().addClass('is-hidden');
       },
 
       close: function() {
-        this.getCurrentSection().removeClass('retreat');
+        this.mainHeader.removeClass('is-hidden');
+        this.getCurrentSection().removeClass('is-hidden');
       },
 
       gotoHome: function() {
@@ -15830,8 +15827,6 @@ define(
       },
 
       toggle: function() {
-        console.log('toggleNavigation');
-        return;
         this.isOpen ? this.close() : this.open();
         this.isOpen = !this.isOpen;
       }
@@ -18930,7 +18925,7 @@ define(
 });
 
 
-define('text!partials/sections/overview.html',[],function () { return '<div id="overview-map">here</div>\n';});
+define('text!partials/sections/overview.html',[],function () { return '<div id="overview-map"></div>\n';});
 
 define(
 'sections/overview',[
@@ -18968,8 +18963,6 @@ define(
   return Vue.extend({
     template: template,
 
-    replace: true,
-
     attached: function() {
       this.initialize();
     },
@@ -18978,6 +18971,7 @@ define(
       initialize: function() {
         this.$dispatch('app:sectionReady', this);
 
+        this.$root.$broadcast('header:setTitle', 'Mapa');
         this.$root.$broadcast('header:setControls', [
           {
             channel: 'navigation:toggleNavigation',
@@ -19209,14 +19203,6 @@ define(
 
     data: {
       id: 'estacao-barra-funda',
-      toggleIcon: {
-        klass: '',
-        label: '',
-        labels: {
-          up: 'Mostrar informações',
-          down: 'Esconder informações'
-        }
-      },
       isInfoExpanded: false
     },
 
@@ -19243,13 +19229,11 @@ define(
           }
         ]);
 
+        this.$root.$once('navigation:historyBack', $.proxy(this.historyBack, this));
         this.$root.$on('navigation:toggleStationInfo', $.proxy(this.toggleStationInfo, this));
 
         this.stationMapContainer = $('#js-station-map-container');
         this.stationInfoContainer = $('#js-station-info-container');
-
-        this.toggleIcon.klass = 'up';
-        this.toggleIcon.label = this.toggleIcon.labels['up'];
       },
 
       dispose: function() {
@@ -19274,6 +19258,10 @@ define(
         this.stationMap.on.loaded.addOnce(this.setMarker, this);
 
         console.log('station :: setupMap() :: Creating map for "%s" station', id);
+      },
+
+      historyBack: function() {
+        this.$dispatch('app:setView', 'overview');
       },
 
       toggleStationInfo: function() {
@@ -22458,7 +22446,7 @@ requirejs(
         },
 
         data: {
-          // currentView: 'splash'
+          currentView: 'splash'
         },
 
         methods: {

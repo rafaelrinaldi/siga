@@ -55,11 +55,14 @@ input[type="text"], textarea {
   position: absolute;
   width: 100%;
   height: 100%;
-  background: #4a87ee; }
+  background: #4a87ee;
+  z-index: 2; }
+  .navigation .bar-header {
+    background: transparent; }
   .navigation .siga-logo {
     z-index: 3;
     position: absolute;
-    top: 15%;
+    top: 10%;
     left: 50%;
     margin-left: -100px; }
   .navigation .content {
@@ -87,10 +90,16 @@ a, .link {
   background: #fff;
   position: absolute;
   opacity: 1;
-  -webkit-transition: all 0.2s ease;
-  transition: all 0.2s ease;
+  -webkit-transition: all 0.35s ease;
+  transition: all 0.35s ease;
   width: 100%;
-  height: 100%; }
+  height: 100%;
+  z-index: 3; }
+
+.section.is-hidden {
+  -webkit-transform: translateX(100%);
+  -ms-transform: translateX(100%);
+  transform: translateX(100%); }
 
 .section.v-enter {
   opacity: 0;
@@ -109,17 +118,14 @@ a, .link {
 .header {
   position: relative; }
   .header .bar-header {
+    -webkit-transition: all 0.35s ease;
+    transition: all 0.35s ease;
     background: rgba(255, 255, 255, 0.65); }
-  .header:after {
-    width: 100%;
-    height: 2px;
-    position: absolute;
-    content: "";
-    display: block;
-    background: rgba(0, 0, 0, 0.15);
-    left: 0;
-    bottom: -46px;
-    z-index: 3; }
+  .header.is-hidden .bar-header {
+    -webkit-transform: translateX(100%);
+    -ms-transform: translateX(100%);
+    transform: translateX(100%);
+    opacity: 0; }
 
 .js-info-window-container {
   -webkit-transition: all 0.15s ease;
@@ -288,8 +294,8 @@ div.gmnoprint[title="is-active"] {
     bottom: 1.5em; }
 
 .section.station .station-map-container {
-  -webkit-transition: all 0.75s ease;
-  transition: all 0.75s ease;
+  -webkit-transition: all 0.55s ease;
+  transition: all 0.55s ease;
   width: 100%;
   height: 100%;
   position: relative; }
@@ -317,8 +323,8 @@ div.gmnoprint[title="is-active"] {
   right: 1.5em;
   bottom: 1.5em; }
 .section.station .station-info-container {
-  -webkit-transition: all 0.75s ease 0.025s;
-  transition: all 0.75s ease 0.025s; }
+  -webkit-transition: all 0.55s ease 0.025s;
+  transition: all 0.55s ease 0.025s; }
   .section.station .station-info-container.is-expanded {
     -webkit-transition-delay: 0;
     transition-delay: 0;

@@ -16,10 +16,31 @@
 </head>
 <body>
   <main id="app">
-    <header class="header" v-component="header"></header>
-    <nav class="navigation" v-component="navigation"></nav>
-    <!-- <section class="section {{currentView}}" v-ref="currentView" v-view="currentView" v-transition></section> -->
-    <footer class="footer" v-component="footer"></footer>
+    <nav
+      id="js-navigation"
+      class="navigation"
+      v-component="navigation"
+    ></nav>
+
+    <header
+      id="js-header"
+      class="header"
+      v-component="header"
+    ></header>
+
+    <section
+      id="js-section"
+      class="has-transform-animation section {{currentView}}"
+      v-ref="currentView"
+      v-view="currentView"
+      v-transition
+    ></section>
+
+    <footer
+      id="js-footer"
+      class="footer"
+      v-component="footer"
+    ></footer>
   </main>
 
   <script>
