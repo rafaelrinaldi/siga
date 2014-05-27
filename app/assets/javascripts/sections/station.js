@@ -20,9 +20,9 @@ define(
   return Vue.extend({
     template: template,
 
-    id: 'estacao-barra-funda',
-
-    replace: true,
+    data: {
+      id: 'estacao-barra-funda'
+    },
 
     attached: function() {
       this.initialize();
@@ -46,7 +46,7 @@ define(
       },
 
       setupMap: function() {
-        var id = this.$options ? this.$options.id : 'estacao-barra-funda';
+        var id = this.$options.id ? this.$options.id : this.id;
 
         this.station = getStationById(id);
         this.location = toLatLng(this.station.location);

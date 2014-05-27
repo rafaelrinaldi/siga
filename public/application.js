@@ -18125,7 +18125,7 @@ define(
       this.$dispatch('app:sectionReady', this);
       var self = this;
       setTimeout(function() {
-        self.$dispatch('app:setView', 'line');
+        self.$dispatch('app:setView', 'overview');
       }, 250);
     },
 
@@ -19133,9 +19133,9 @@ define(
   return Vue.extend({
     template: template,
 
-    id: 'estacao-barra-funda',
-
-    replace: true,
+    data: {
+      id: 'estacao-barra-funda'
+    },
 
     attached: function() {
       this.initialize();
@@ -19159,7 +19159,7 @@ define(
       },
 
       setupMap: function() {
-        var id = this.$options ? this.$options.id : 'estacao-barra-funda';
+        var id = this.$options.id ? this.$options.id : this.id;
 
         this.station = getStationById(id);
         this.location = toLatLng(this.station.location);
