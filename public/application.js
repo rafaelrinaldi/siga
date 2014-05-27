@@ -15782,7 +15782,7 @@ define(
 );
 
 
-define('text!partials/navigation.html',[],function () { return '<ul class="navigation-menu" v-on="click: toggle()">\n  <li class="navigation-menu__item" v-repeat="items">\n    <a href="#!/{{id}}">{{title}}</a>\n  </li>\n</ul>\n';});
+define('text!partials/navigation.html',[],function () { return '<h1 class="siga-logo"></h1>\n\n<div class="content">\n\n  <div class="list" >\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-map"></i>\n      <h2>Mapa</h2>\n      <p>Mapa geral das estações</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-ios7-location-outline"></i>\n      <h2>Trajeto</h2>\n      <p>Planeje sua viagem</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-radio-waves"></i>\n      <h2>Status Operacional</h2>\n      <p>Confira o funcionamento das linhas</p>\n    </a>\n\n    <a class="item item-icon-left" href="#">\n      <i class="icon ion-ios7-search-strong"></i>\n      <h2>Busca</h2>\n      <p>Procurar por linha ou estação</p>\n    </a>\n\n  </div>\n</div>\n<!-- <ul class="navigation-menu" v-on="click: toggle()">\n  <li class="navigation-menu__item" v-repeat="items">\n    <a href="#!/{{id}}">{{title}}</a>\n  </li>\n</ul>\n -->\n';});
 
 define(
   'modules/navigation',[
@@ -15808,7 +15808,7 @@ define(
     },
 
     ready: function() {
-      this.$root.$on('navigation:toggle', $.proxy(this.toggle, this));
+      this.$root.$on('navigation:toggleNavigation', $.proxy(this.toggle, this));
       this.$root.$on('navigation:gotoHome', $.proxy(this.gotoHome, this));
     },
 
@@ -15830,6 +15830,8 @@ define(
       },
 
       toggle: function() {
+        console.log('toggleNavigation');
+        return;
         this.isOpen ? this.close() : this.open();
         this.isOpen = !this.isOpen;
       }
@@ -22418,6 +22420,14 @@ requirejs(
       });
     }
 
+    function _checkForIOS() {
+      var isIOS = /(ipod|iphone|ipad)/i.test(navigator.userAgent);
+
+      if(isIOS) {
+        $('body').addClass('is-ios');
+      }
+    }
+
     function _setupApp() {
       console.log('application :: _setupApp() :: Setting up app');
 
@@ -22448,7 +22458,7 @@ requirejs(
         },
 
         data: {
-          currentView: 'splash'
+          // currentView: 'splash'
         },
 
         methods: {
@@ -22497,6 +22507,7 @@ requirejs(
       Vue.config('debug', config.debug);
 
       _fixKnownIssues();
+      _checkForIOS();
       _setupApp();
     }
 

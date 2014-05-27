@@ -22,7 +22,7 @@ define(
     },
 
     ready: function() {
-      this.$root.$on('navigation:toggle', $.proxy(this.toggle, this));
+      this.$root.$on('navigation:toggleNavigation', $.proxy(this.toggle, this));
       this.$root.$on('navigation:gotoHome', $.proxy(this.gotoHome, this));
     },
 
@@ -44,6 +44,8 @@ define(
       },
 
       toggle: function() {
+        console.log('toggleNavigation');
+        return;
         this.isOpen ? this.close() : this.open();
         this.isOpen = !this.isOpen;
       }

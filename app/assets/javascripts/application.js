@@ -88,6 +88,14 @@ requirejs(
       });
     }
 
+    function _checkForIOS() {
+      var isIOS = /(ipod|iphone|ipad)/i.test(navigator.userAgent);
+
+      if(isIOS) {
+        $('body').addClass('is-ios');
+      }
+    }
+
     function _setupApp() {
       console.log('application :: _setupApp() :: Setting up app');
 
@@ -118,7 +126,7 @@ requirejs(
         },
 
         data: {
-          currentView: 'splash'
+          // currentView: 'splash'
         },
 
         methods: {
@@ -167,6 +175,7 @@ requirejs(
       Vue.config('debug', config.debug);
 
       _fixKnownIssues();
+      _checkForIOS();
       _setupApp();
     }
 
