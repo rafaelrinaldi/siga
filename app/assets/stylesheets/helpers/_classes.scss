@@ -11,3 +11,25 @@
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
 }
+
+/*
+ * Image replacement
+ *
+ * Borrowed from H5MBP
+ * https://github.com/h5bp/mobile-boilerplate/blob/master/css/main.css#L113-L130
+ */
+
+.ir {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: 0;
+  direction: ltr;
+  display: block;
+  overflow: hidden;
+  text-align: left;
+  text-indent: -999em;
+}
+
+.ir br {
+  display: none;
+}

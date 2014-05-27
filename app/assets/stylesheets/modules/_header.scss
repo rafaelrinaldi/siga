@@ -1,17 +1,15 @@
 .header {
   position: relative;
-  transition-delay: 0;
 
   &.is-hidden {
     .bar-header {
-      transition-delay: .1s;
       transform: translateX(100%);
       opacity: 0;
     }
   }
 
   .bar-header {
-    transition: all .45s ease;
+    transition: all .5s ease;
     background: rgba(#fff, .65);
   }
 
