@@ -2,11 +2,13 @@ define(
   [
     'jquery',
     'vue',
+    'mout/object/mixIn',
     'text!partials/header.html'
   ],
   function(
     $,
     Vue,
+    mixIn,
     template
   ) {
 
@@ -18,11 +20,11 @@ define(
         controls: [
           {
             channel: 'navigation:toggleNavigation',
-            klass: 'button button-icon icon ion-ios7-arrow-back'
+            klass: 'ion-ios7-arrow-back'
           },
           {
             channel: 'navigation:goToSearch',
-            klass: 'button button-icon icon ion-ios7-search-strong'
+            klass: 'ion-ios7-search-strong'
           }
         ]
       },
@@ -38,17 +40,21 @@ define(
           this.title = newTitle;
         },
 
-        setControls: function(newControls) {
+        setControls: function(newControls, shouldExtend) {
           console.log('header :: setControls()');
           console.dir(newControls);
+
+          if(shouldExtend) {
+            newControls = mixIn(this.controls, newControls);
+          }
 
           this.controls = newControls;
         },
 
         // will broadcast the clicked item channel to the app instance
         onClick: function(channel) {
-          console.log('onClick', channel);
-          // this.$dispatch(channel);
+          console.log('broadcasting',channel);
+          this.$dispatch(channel);
         }
       }
 

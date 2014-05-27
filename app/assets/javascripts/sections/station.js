@@ -45,6 +45,18 @@ define(
         this.setupMap();
 
         this.$root.$broadcast('header:setTitle', this.station.title);
+        this.$root.$broadcast('header:setControls', [
+          {
+            channel: 'navigation:historyBack',
+            klass: 'ion-ios7-arrow-back'
+          },
+          {
+            channel: 'navigation:toggleStationInfo',
+            klass: 'ion-ios7-information-outline'
+          }
+        ]);
+
+        this.$root.$on('navigation:toggleStationInfo', $.proxy(this.toggleStationInfo, this));
 
         this.stationMapContainer = $('#js-station-map-container');
         this.stationInfoContainer = $('#js-station-info-container');
@@ -79,20 +91,20 @@ define(
 
       toggleStationInfo: function() {
         var direction,
-            margin;
+            EXPANDED_KLASS = 'is-expanded';
 
         this.isInfoExpanded = !this.isInfoExpanded;
 
         direction = this.isInfoExpanded ? 'down' : 'up';
-        margin = !this.isInfoExpanded ? 0 : '-520px';
 
-        this.stationMapContainer.css({'-webkit-transform': 'translateY(-80%)'});
-        this.stationInfoContainer.css({'-webkit-transform': 'translateY(-135%)'});
-
-        // this.stationMapContainer.css({marginTop: margin});
-
-        this.toggleIcon.klass = direction;
-        this.toggleIcon.label = this.toggleIcon.labels[direction];
+        // #yolo
+        if(this.isInfoExpanded) {
+          this.stationMapContainer.addClass(EXPANDED_KLASS);
+          this.stationInfoContainer.addClass(EXPANDED_KLASS);
+        } else {
+          this.stationMapContainer.removeClass(EXPANDED_KLASS);
+          this.stationInfoContainer.removeClass(EXPANDED_KLASS);
+        }
       },
 
       setMarker: function() {

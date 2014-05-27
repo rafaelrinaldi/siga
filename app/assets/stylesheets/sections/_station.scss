@@ -1,9 +1,14 @@
 .section.station {
   .station-map-container {
-    transition: all 1s ease .05s;
+    transition: all 1s ease;
     width: 100%;
     height: 100%;
     position: relative;
+
+    &.is-expanded {
+      transition-delay: .025s;
+      transform: translateY(-80%);
+    }
   }
 
   .station-map-container:after {
@@ -31,6 +36,11 @@
   }
 
   .station-info-container {
-    transition: all 1s ease;
+    transition: all 1s ease .025s;
+
+    &.is-expanded {
+      transition-delay: 0;
+      transform: translateY(-135%);
+    }
   }
 }

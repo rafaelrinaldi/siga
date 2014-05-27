@@ -15715,17 +15715,19 @@ define(
 
 define('text',{load: function(id){throw new Error("Dynamic load not allowed: " + id);}});
 
-define('text!partials/header.html',[],function () { return '<div class="bar bar-header">\n  <div class="h1 title">{{title}}</div>\n  <button\n    class="{{control.klass}}"\n    title="{{control.title}}"\n    v-repeat="control: controls"\n    v-on="click: onClick(control.channel)"\n    >\n    {{control.title}}\n  </button>\n</div>\n';});
+define('text!partials/header.html',[],function () { return '<div class="bar bar-header">\n  <div class="h1 title">{{title}}</div>\n  <button\n  class="button button-icon button-clear button-positive icon {{control.klass}}"\n    title="{{control.title}}"\n    v-repeat="control: controls"\n    v-on="click: onClick(control.channel)"\n    >\n    {{control.title}}\n  </button>\n</div>\n';});
 
 define(
   'modules/header',[
     'jquery',
     'vue',
+    'mout/object/mixIn',
     'text!partials/header.html'
   ],
   function(
     $,
     Vue,
+    mixIn,
     template
   ) {
 
@@ -15737,11 +15739,11 @@ define(
         controls: [
           {
             channel: 'navigation:toggleNavigation',
-            klass: 'button button-icon icon ion-ios7-arrow-back'
+            klass: 'ion-ios7-arrow-back'
           },
           {
             channel: 'navigation:goToSearch',
-            klass: 'button button-icon icon ion-ios7-search-strong'
+            klass: 'ion-ios7-search-strong'
           }
         ]
       },
@@ -15757,17 +15759,21 @@ define(
           this.title = newTitle;
         },
 
-        setControls: function(newControls) {
+        setControls: function(newControls, shouldExtend) {
           console.log('header :: setControls()');
           console.dir(newControls);
+
+          if(shouldExtend) {
+            newControls = mixIn(this.controls, newControls);
+          }
 
           this.controls = newControls;
         },
 
         // will broadcast the clicked item channel to the app instance
         onClick: function(channel) {
-          console.log('onClick', channel);
-          // this.$dispatch(channel);
+          console.log('broadcasting',channel);
+          this.$dispatch(channel);
         }
       }
 
@@ -15872,7 +15878,6 @@ define(
         // will broadcast the clicked item channel to the app instance
         onClick: function(channel) {
           console.log('onClick', channel);
-          // this.$dispatch(channel);
         }
       }
 
@@ -19212,6 +19217,18 @@ define(
         this.setupMap();
 
         this.$root.$broadcast('header:setTitle', this.station.title);
+        this.$root.$broadcast('header:setControls', [
+          {
+            channel: 'navigation:historyBack',
+            klass: 'ion-ios7-arrow-back'
+          },
+          {
+            channel: 'navigation:toggleStationInfo',
+            klass: 'ion-ios7-information-outline'
+          }
+        ]);
+
+        this.$root.$on('navigation:toggleStationInfo', $.proxy(this.toggleStationInfo, this));
 
         this.stationMapContainer = $('#js-station-map-container');
         this.stationInfoContainer = $('#js-station-info-container');
@@ -19246,20 +19263,20 @@ define(
 
       toggleStationInfo: function() {
         var direction,
-            margin;
+            EXPANDED_KLASS = 'is-expanded';
 
         this.isInfoExpanded = !this.isInfoExpanded;
 
         direction = this.isInfoExpanded ? 'down' : 'up';
-        margin = !this.isInfoExpanded ? 0 : '-520px';
 
-        this.stationMapContainer.css({'-webkit-transform': 'translateY(-80%)'});
-        this.stationInfoContainer.css({'-webkit-transform': 'translateY(-135%)'});
-
-        // this.stationMapContainer.css({marginTop: margin});
-
-        this.toggleIcon.klass = direction;
-        this.toggleIcon.label = this.toggleIcon.labels[direction];
+        // #yolo
+        if(this.isInfoExpanded) {
+          this.stationMapContainer.addClass(EXPANDED_KLASS);
+          this.stationInfoContainer.addClass(EXPANDED_KLASS);
+        } else {
+          this.stationMapContainer.removeClass(EXPANDED_KLASS);
+          this.stationInfoContainer.removeClass(EXPANDED_KLASS);
+        }
       },
 
       setMarker: function() {

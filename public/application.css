@@ -78,8 +78,7 @@ a, .link {
   -webkit-transition: all 0.2s ease;
   transition: all 0.2s ease;
   width: 100%;
-  height: 100%;
-  overflow-y: scroll; }
+  height: 100%; }
 
 .section.v-enter {
   opacity: 0;
@@ -270,11 +269,17 @@ div.gmnoprint[title="is-active"] {
     bottom: 1.5em; }
 
 .section.station .station-map-container {
-  -webkit-transition: all 1s ease 0.05s;
-  transition: all 1s ease 0.05s;
+  -webkit-transition: all 1s ease;
+  transition: all 1s ease;
   width: 100%;
   height: 100%;
   position: relative; }
+  .section.station .station-map-container.is-expanded {
+    -webkit-transition-delay: 0.025s;
+    transition-delay: 0.025s;
+    -webkit-transform: translateY(-80%);
+    -ms-transform: translateY(-80%);
+    transform: translateY(-80%); }
 .section.station .station-map-container:after {
   content: "";
   display: block;
@@ -293,8 +298,14 @@ div.gmnoprint[title="is-active"] {
   right: 1.5em;
   bottom: 1.5em; }
 .section.station .station-info-container {
-  -webkit-transition: all 1s ease;
-  transition: all 1s ease; }
+  -webkit-transition: all 1s ease 0.025s;
+  transition: all 1s ease 0.025s; }
+  .section.station .station-info-container.is-expanded {
+    -webkit-transition-delay: 0;
+    transition-delay: 0;
+    -webkit-transform: translateY(-135%);
+    -ms-transform: translateY(-135%);
+    transform: translateY(-135%); }
 
 .section.directions {
   padding-top: 50px; }
