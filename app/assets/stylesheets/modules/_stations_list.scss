@@ -58,13 +58,24 @@ $LINE_MARGIN: 8px !default;
   border: $STATION_MARKER_BORDER;
 }
 
-.stations-list.l1 {
-  $color: green;
+// List of line colors
+$line_colors:
+  (l1 $L1_COLOR)
+  (l2 $L2_COLOR)
+  (l3 $L3_COLOR)
+  (l4 $L4_COLOR)
+  (l5 $L5_COLOR);
 
-  &:before,
-  &:after,
-  li:after { background: $color; }
+// Set line colors modifiers
+@each $line in $line_colors {
+    $id: nth($line, 1);
+    $color: nth($line, 2);
 
-  li:before { border-color: $color; }
+    .stations-list.#{$id} {
+      &:before,
+      &:after,
+      li:after { background: #{$color}; }
 
+      li:before { border-color: #{$color}; }
+    }
 }

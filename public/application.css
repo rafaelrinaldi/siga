@@ -221,9 +221,29 @@ div.gmnoprint[title="is-active"] {
   border: 4px solid; }
 
 .stations-list.l1:before, .stations-list.l1:after, .stations-list.l1 li:after {
-  background: green; }
+  background: #285083; }
 .stations-list.l1 li:before {
-  border-color: green; }
+  border-color: #285083; }
+
+.stations-list.l2:before, .stations-list.l2:after, .stations-list.l2 li:after {
+  background: #006d58; }
+.stations-list.l2 li:before {
+  border-color: #006d58; }
+
+.stations-list.l3:before, .stations-list.l3:after, .stations-list.l3 li:after {
+  background: #df3f31; }
+.stations-list.l3 li:before {
+  border-color: #df3f31; }
+
+.stations-list.l4:before, .stations-list.l4:after, .stations-list.l4 li:after {
+  background: #ffd400; }
+.stations-list.l4 li:before {
+  border-color: #ffd400; }
+
+.stations-list.l5:before, .stations-list.l5:after, .stations-list.l5 li:after {
+  background: #8c3583; }
+.stations-list.l5 li:before {
+  border-color: #8c3583; }
 
 #overview-map {
   width: 100%;
