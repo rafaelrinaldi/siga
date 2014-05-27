@@ -1,3 +1,8 @@
 .no-header-container {
   margin-top: 50px;
 }
+
+.has-transform-animation {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}

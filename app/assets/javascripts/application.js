@@ -52,6 +52,7 @@ requirejs(
     'modules/router',
     'modules/header',
     'modules/navigation',
+    'modules/footer',
     'modules/directions',
     'modules/directionsDetail',
     // 'modules/map',
@@ -68,6 +69,7 @@ requirejs(
     Router,
     Header,
     Navigation,
+    Footer,
     Directions,
     DirectionsDetail,
     // Map,
@@ -101,7 +103,8 @@ requirejs(
           'directions': Sections.directions,
           'directions-detail': Sections.directionsDetail,
           'header': Header,
-          'navigation': Navigation
+          'navigation': Navigation,
+          'footer': Footer
         },
 
         ready: function() {

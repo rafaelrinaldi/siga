@@ -240,6 +240,7 @@ define(
   p.setAreaRange = function(options) {
     var areaRange = new gmaps.Circle(
       mixIn(
+        {},
         config.areaRange,
         {map: this.map, center: this.location},
         options

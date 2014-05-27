@@ -43,6 +43,6 @@ define({
     strokeWeight: 2,
     fillColor: '#3498db',
     fillOpacity: .15,
-    radius: 175 // in meters
+    radius: 275 // in meters
   }
 });

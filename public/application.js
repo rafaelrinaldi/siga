@@ -9235,7 +9235,7 @@ define('config',{
     strokeWeight: 2,
     fillColor: '#3498db',
     fillOpacity: .15,
-    radius: 175 // in meters
+    radius: 275 // in meters
   }
 });
 
@@ -15748,14 +15748,19 @@ define(
 
       ready: function() {
         this.$on('header:setTitle', this.setTitle);
+        this.$on('header:setControls', this.setControls);
       },
 
       methods: {
         setTitle: function(newTitle) {
+          console.log('header :: setTitle() ::', newTitle);
           this.title = newTitle;
         },
 
         setControls: function(newControls) {
+          console.log('header :: setControls()');
+          console.dir(newControls);
+
           this.controls = newControls;
         },
 
@@ -15827,6 +15832,54 @@ define(
   });
 
 });
+
+
+define('text!partials/footer.html',[],function () { return '<div class="tabs tabs-icon-top" v-show="controls">\n  <a\n    class="tab-item"\n    v-repeat="control: controls"\n    v-on="click: onClick(control.channel)"\n  >\n    <i\n      class="{{control.klass}}"\n    ></i>\n    {{control.title}}\n  </a>\n</div>\n';});
+
+define(
+  'modules/footer',[
+    'jquery',
+    'vue',
+    'text!partials/footer.html'
+  ],
+  function(
+    $,
+    Vue,
+    template
+  ) {
+
+    return Vue.extend({
+      template: template,
+
+      data: {
+      },
+
+      ready: function() {
+        this.$on('footer:setControls', this.setControls);
+      },
+
+      methods: {
+        setTitle: function(newTitle) {
+        },
+
+        setControls: function(newControls) {
+          console.log('footer :: setControls()');
+          console.dir(newControls);
+
+          this.controls = newControls;
+        },
+
+        // will broadcast the clicked item channel to the app instance
+        onClick: function(channel) {
+          console.log('onClick', channel);
+          // this.$dispatch(channel);
+        }
+      }
+
+    });
+
+  }
+);
 
 
 define('text!partials/directions.html',[],function () { return '<h1>Directions</h1>\n\n<form>\n  <button v-on="click: setOriginPoint($event);">From</button>\n  <button v-on="click: setDestinationPoint($event);">To</button>\n  <input type="text" placeholder="Address" style="width: 380px; height: 60px;" v-model="route" value="tamanduatei" />\n  <button v-on="click: submit($event);">Get Route</button>\n</form>\n';});
@@ -18125,7 +18178,7 @@ define(
       this.$dispatch('app:sectionReady', this);
       var self = this;
       setTimeout(function() {
-        self.$dispatch('app:setView', 'overview');
+        self.$dispatch('app:setView', 'station');
       }, 250);
     },
 
@@ -18781,6 +18834,7 @@ define(
   p.setAreaRange = function(options) {
     var areaRange = new gmaps.Circle(
       mixIn(
+        {},
         config.areaRange,
         {map: this.map, center: this.location},
         options
@@ -19109,7 +19163,7 @@ define(
 });
 
 
-define('text!partials/sections/station.html',[],function () { return '<div id="station-map"></div>\n\n<div class="station-info">\n  <h3>Status</h3>\n  <p>Ok</p>\n</div>\n\n<div class="station-info">\n  <h3>Localização</h3>\n  <p>{{station.location.address}}</p>\n</div>\n\n<div class="station-info">\n  <h3>Horário de funcionamento</h3>\n  <ul>\n    <li v-repeat="schedule: station.schedule">\n      <p>{{schedule.title}}</p>\n      <p>{{schedule.period}}</p>\n    </li>\n  </ul>\n</div>\n\n<div class="station-info">\n  <h3>Linhas</h3>\n  <ul>\n    <li v-repeat="line: station.lines">\n      <p style="color: {{line.color}}; font-weight: bold;">{{line.title}}</p>\n    </li>\n  </ul>\n</div>\n';});
+define('text!partials/sections/station.html',[],function () { return '<div\n  class="station-map-container has-transform-animation"\n  id="js-station-map-container"\n>\n  <div id="station-map"></div>\n</div>\n\n<div\n  class="station-info-container content ionic-pseudo has-transform-animation"\n  id="js-station-info-container"\n  >\n  <div class="list">\n    <div class="item item-divider">\n      Localização\n    </div>\n\n    <a class="item item-icon-right" href="#">\n      {{station.location.address}}\n      <!--\n      <span class="item-note">\n        Blue, yellow, pink\n      </span>\n      -->\n    </a>\n\n    <div class="item item-divider">\n      Horários\n    </div>\n\n    <a\n      class="item item-icon-right"\n      href="#"\n      style="padding-right: 10px;"\n      v-repeat="schedule: station.schedule">\n        {{schedule.title}}\n        <span class="item-note">{{schedule.period}}</span>\n    </a>\n\n    <div class="item item-divider">\n      Linhas\n    </div>\n\n    <a\n      class="item item-icon-left"\n      href="#"\n      v-repeat="line: station.lines"\n    >\n      <i class="icon ion-record" style="color: {{line.color}}"></i>\n      <h2>{{line.title}}</h2>\n      <p>Status ok</p>\n    </a>\n  </div>\n</div>\n';});
 
 define(
 'sections/station',[
@@ -19134,7 +19188,16 @@ define(
     template: template,
 
     data: {
-      id: 'estacao-barra-funda'
+      id: 'estacao-barra-funda',
+      toggleIcon: {
+        klass: '',
+        label: '',
+        labels: {
+          up: 'Mostrar informações',
+          down: 'Esconder informações'
+        }
+      },
+      isInfoExpanded: false
     },
 
     attached: function() {
@@ -19147,6 +19210,14 @@ define(
         this.$dispatch('app:sectionReady', this);
 
         this.setupMap();
+
+        this.$root.$broadcast('header:setTitle', this.station.title);
+
+        this.stationMapContainer = $('#js-station-map-container');
+        this.stationInfoContainer = $('#js-station-info-container');
+
+        this.toggleIcon.klass = 'up';
+        this.toggleIcon.label = this.toggleIcon.labels['up'];
       },
 
       dispose: function() {
@@ -19173,6 +19244,24 @@ define(
         console.log('station :: setupMap() :: Creating map for "%s" station', id);
       },
 
+      toggleStationInfo: function() {
+        var direction,
+            margin;
+
+        this.isInfoExpanded = !this.isInfoExpanded;
+
+        direction = this.isInfoExpanded ? 'down' : 'up';
+        margin = !this.isInfoExpanded ? 0 : '-520px';
+
+        this.stationMapContainer.css({'-webkit-transform': 'translateY(-80%)'});
+        this.stationInfoContainer.css({'-webkit-transform': 'translateY(-135%)'});
+
+        // this.stationMapContainer.css({marginTop: margin});
+
+        this.toggleIcon.klass = direction;
+        this.toggleIcon.label = this.toggleIcon.labels[direction];
+      },
+
       setMarker: function() {
         console.log('station :: setMarkers()');
 
@@ -19181,7 +19270,8 @@ define(
 
         marker = this.stationMap.setMarker({
           position: this.location,
-          animation: gmaps.Animation.BOUNCE
+          optimize: false,
+          animation: gmaps.Animation.DROP
         });
 
         area = this.stationMap.setAreaRange({
@@ -20057,6 +20147,7 @@ requirejs(
     'modules/router',
     'modules/header',
     'modules/navigation',
+    'modules/footer',
     'modules/directions',
     'modules/directionsDetail',
     // 'modules/map',
@@ -20073,6 +20164,7 @@ requirejs(
     Router,
     Header,
     Navigation,
+    Footer,
     Directions,
     DirectionsDetail,
     // Map,
@@ -20106,7 +20198,8 @@ requirejs(
           'directions': Sections.directions,
           'directions-detail': Sections.directionsDetail,
           'header': Header,
-          'navigation': Navigation
+          'navigation': Navigation,
+          'footer': Footer
         },
 
         ready: function() {

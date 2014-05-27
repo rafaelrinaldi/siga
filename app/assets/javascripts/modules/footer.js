@@ -2,7 +2,7 @@ define(
   [
     'jquery',
     'vue',
-    'text!partials/header.html'
+    'text!partials/footer.html'
   ],
   function(
     $,
@@ -14,32 +14,18 @@ define(
       template: template,
 
       data: {
-        title: 'Status',
-        controls: [
-          {
-            channel: 'navigation:toggleNavigation',
-            klass: 'button button-icon icon ion-ios7-arrow-back'
-          },
-          {
-            channel: 'navigation:goToSearch',
-            klass: 'button button-icon icon ion-ios7-search-strong'
-          }
-        ]
       },
 
       ready: function() {
-        this.$on('header:setTitle', this.setTitle);
-        this.$on('header:setControls', this.setControls);
+        this.$on('footer:setControls', this.setControls);
       },
 
       methods: {
         setTitle: function(newTitle) {
-          console.log('header :: setTitle() ::', newTitle);
-          this.title = newTitle;
         },
 
         setControls: function(newControls) {
-          console.log('header :: setControls()');
+          console.log('footer :: setControls()');
           console.dir(newControls);
 
           this.controls = newControls;

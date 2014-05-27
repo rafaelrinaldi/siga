@@ -2,6 +2,12 @@
 .no-header-container {
   margin-top: 50px; }
 
+.has-transform-animation {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden; }
+
 html, body {
   width: 100%;
   height: 100%; }
@@ -9,7 +15,9 @@ html, body {
 body {
   background: #fff;
   overflow: scroll;
-  -webkit-overflow-scrolling: touch; }
+  -webkit-overflow-scrolling: touch;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0); }
 
 .button {
   border-radius: 2px;
@@ -55,6 +63,9 @@ input[type="text"], textarea {
   margin-top: 20px; }
   .navigation-menu__item:first-child {
     margin-top: 0; }
+
+.footer {
+  z-index: 999; }
 
 a, .link {
   color: gray;
@@ -258,9 +269,32 @@ div.gmnoprint[title="is-active"] {
     right: 1.5em;
     bottom: 1.5em; }
 
+.section.station .station-map-container {
+  -webkit-transition: all 1s ease 0.05s;
+  transition: all 1s ease 0.05s;
+  width: 100%;
+  height: 100%;
+  position: relative; }
+.section.station .station-map-container:after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  left: 0;
+  bottom: -10px;
+  background: rgba(0, 0, 0, 0.15); }
 .section.station #station-map {
   width: 100%;
-  height: 50%; }
+  height: 100%; }
+.section.station .toggle-station-info {
+  font-size: 20px;
+  position: absolute;
+  z-index: 9;
+  right: 1.5em;
+  bottom: 1.5em; }
+.section.station .station-info-container {
+  -webkit-transition: all 1s ease;
+  transition: all 1s ease; }
 
 .section.directions {
   padding-top: 50px; }
