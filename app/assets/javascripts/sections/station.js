@@ -39,7 +39,7 @@ define(
         this.$root.$broadcast('header:setTitle', this.station.title);
         this.$root.$broadcast('header:setControls', [
           {
-            channel: 'navigation:historyBack',
+            channel: 'navigation:goToOverview',
             klass: 'ion-ios7-arrow-back'
           },
           {
@@ -48,7 +48,7 @@ define(
           }
         ]);
 
-        this.$root.$once('navigation:historyBack', $.proxy(this.historyBack, this));
+        this.$root.$once('navigation:goToOverview', $.proxy(this.goToOverview, this));
         this.$root.$on('navigation:toggleStationInfo', $.proxy(this.toggleStationInfo, this));
 
         this.stationMapContainer = $('#js-station-map-container');
@@ -79,7 +79,7 @@ define(
         console.log('station :: setupMap() :: Creating map for "%s" station', id);
       },
 
-      historyBack: function() {
+      goToOverview: function() {
         this.$dispatch('app:setView', 'overview');
       },
 
@@ -99,6 +99,10 @@ define(
           this.stationMapContainer.removeClass(EXPANDED_KLASS);
           this.stationInfoContainer.removeClass(EXPANDED_KLASS);
         }
+      },
+
+      selectLine: function(line) {
+        this.$dispatch('app:setView', 'line', {station: this.station, line: line});
       },
 
       setMarker: function() {

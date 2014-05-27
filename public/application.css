@@ -8,6 +8,10 @@
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden; }
 
+.scrollable-content {
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch; }
+
 html, body {
   width: 100%;
   height: 100%; }
@@ -94,7 +98,8 @@ a, .link {
   transition: all 0.35s ease;
   width: 100%;
   height: 100%;
-  z-index: 3; }
+  z-index: 3;
+  overflow-y: scroll; }
 
 .section.is-hidden {
   -webkit-transform: translateX(100%);
@@ -117,15 +122,24 @@ a, .link {
 
 .header {
   position: relative; }
-  .header .bar-header {
-    -webkit-transition: all 0.35s ease;
-    transition: all 0.35s ease;
-    background: rgba(255, 255, 255, 0.65); }
   .header.is-hidden .bar-header {
     -webkit-transform: translateX(100%);
     -ms-transform: translateX(100%);
     transform: translateX(100%);
     opacity: 0; }
+  .header .bar-header {
+    -webkit-transition: all 0.35s ease;
+    transition: all 0.35s ease;
+    background: rgba(255, 255, 255, 0.65); }
+  .header .bar-header:after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 2px;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.25);
+    left: 0;
+    bottom: 0; }
 
 .js-info-window-container {
   -webkit-transition: all 0.15s ease;
@@ -248,29 +262,29 @@ div.gmnoprint[title="is-active"] {
   border-radius: 24px;
   border: 4px solid; }
 
-.stations-list.l1:before, .stations-list.l1:after, .stations-list.l1 li:after {
+.stations-list.linha-1-azul:before, .stations-list.linha-1-azul:after, .stations-list.linha-1-azul li:after {
   background: #285083; }
-.stations-list.l1 li:before {
+.stations-list.linha-1-azul li:before {
   border-color: #285083; }
 
-.stations-list.l2:before, .stations-list.l2:after, .stations-list.l2 li:after {
+.stations-list.linha-2-verde:before, .stations-list.linha-2-verde:after, .stations-list.linha-2-verde li:after {
   background: #006d58; }
-.stations-list.l2 li:before {
+.stations-list.linha-2-verde li:before {
   border-color: #006d58; }
 
-.stations-list.l3:before, .stations-list.l3:after, .stations-list.l3 li:after {
+.stations-list.linha-3-vermelha:before, .stations-list.linha-3-vermelha:after, .stations-list.linha-3-vermelha li:after {
   background: #df3f31; }
-.stations-list.l3 li:before {
+.stations-list.linha-3-vermelha li:before {
   border-color: #df3f31; }
 
-.stations-list.l4:before, .stations-list.l4:after, .stations-list.l4 li:after {
+.stations-list.linha-4-amarela:before, .stations-list.linha-4-amarela:after, .stations-list.linha-4-amarela li:after {
   background: #ffd400; }
-.stations-list.l4 li:before {
+.stations-list.linha-4-amarela li:before {
   border-color: #ffd400; }
 
-.stations-list.l5:before, .stations-list.l5:after, .stations-list.l5 li:after {
+.stations-list.linha-5-lilas:before, .stations-list.linha-5-lilas:after, .stations-list.linha-5-lilas li:after {
   background: #8c3583; }
-.stations-list.l5 li:before {
+.stations-list.linha-5-lilas li:before {
   border-color: #8c3583; }
 
 .siga-logo {
@@ -316,12 +330,6 @@ div.gmnoprint[title="is-active"] {
 .section.station #station-map {
   width: 100%;
   height: 100%; }
-.section.station .toggle-station-info {
-  font-size: 20px;
-  position: absolute;
-  z-index: 9;
-  right: 1.5em;
-  bottom: 1.5em; }
 .section.station .station-info-container {
   -webkit-transition: all 0.55s ease 0.025s;
   transition: all 0.55s ease 0.025s; }
@@ -414,7 +422,11 @@ div.gmnoprint[title="is-active"] {
   margin-top: 50px; }
 
 .section.line .stations-list {
-  margin-left: 50px; }
+  margin-left: 20px; }
   .section.line .stations-list h4 {
     padding: 0;
-    margin: 0; }
+    margin: 0;
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }

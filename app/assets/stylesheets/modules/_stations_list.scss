@@ -60,11 +60,11 @@ $LINE_MARGIN: 8px !default;
 
 // List of line colors
 $line_colors:
-  (l1 $L1_COLOR)
-  (l2 $L2_COLOR)
-  (l3 $L3_COLOR)
-  (l4 $L4_COLOR)
-  (l5 $L5_COLOR);
+  (linha-1-azul $L1_COLOR)
+  (linha-2-verde $L2_COLOR)
+  (linha-3-vermelha $L3_COLOR)
+  (linha-4-amarela $L4_COLOR)
+  (linha-5-lilas $L5_COLOR);
 
 // Set line colors modifiers
 @each $line in $line_colors {

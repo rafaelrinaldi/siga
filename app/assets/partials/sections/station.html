@@ -44,6 +44,7 @@
       class="item item-icon-left"
       href="#"
       v-repeat="line: station.lines"
+      v-touch="tap: selectLine(line)"
     >
       <i class="icon ion-record" style="color: {{line.color}}"></i>
       <h2>{{line.title}}</h2>

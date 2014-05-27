@@ -1,16 +1,7 @@
 <div class="content">
-  <ul class="stations-list l1">
-    <li><h4>Capão Redondo</h4></li>
-    <li><h4>Campo Limpo</h4></li>
-    <li><h4>Vila das Belezas</h4></li>
-    <li><h4>Giovani Gronchi</h4></li>
-    <li><h4>Santo Amaro</h4></li>
-    <li><h4>Largo Treze</h4></li>
-    <li><h4>Capão Redondo</h4></li>
-    <li><h4>Campo Limpo</h4></li>
-    <li><h4>Vila das Belezas</h4></li>
-    <li><h4>Giovani Gronchi</h4></li>
-    <li><h4>Santo Amaro</h4></li>
-    <li><h4>Largo Treze</h4></li>
+  <ul class="stations-list {{lineId}}">
+    <li
+        v-repeat="station: stations"
+    ><h4>{{station.title}}</h4></li>
   </ul>
 </div>

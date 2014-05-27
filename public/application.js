@@ -19177,7 +19177,7 @@ define(
 });
 
 
-define('text!partials/sections/station.html',[],function () { return '<div\n  class="station-map-container has-transform-animation"\n  id="js-station-map-container"\n>\n  <div id="station-map"></div>\n</div>\n\n<div\n  class="station-info-container content ionic-pseudo has-transform-animation"\n  id="js-station-info-container"\n  >\n  <div class="list">\n    <div class="item item-divider">\n      Localização\n    </div>\n\n    <a class="item item-icon-right" href="#">\n      {{station.location.address}}\n      <!--\n      <span class="item-note">\n        Blue, yellow, pink\n      </span>\n      -->\n    </a>\n\n    <div class="item item-divider">\n      Horários\n    </div>\n\n    <a\n      class="item item-icon-right"\n      href="#"\n      style="padding-right: 10px;"\n      v-repeat="schedule: station.schedule">\n        {{schedule.title}}\n        <span class="item-note">{{schedule.period}}</span>\n    </a>\n\n    <div class="item item-divider">\n      Linhas\n    </div>\n\n    <a\n      class="item item-icon-left"\n      href="#"\n      v-repeat="line: station.lines"\n    >\n      <i class="icon ion-record" style="color: {{line.color}}"></i>\n      <h2>{{line.title}}</h2>\n      <p>Status ok</p>\n    </a>\n  </div>\n</div>\n';});
+define('text!partials/sections/station.html',[],function () { return '<div\n  class="station-map-container has-transform-animation"\n  id="js-station-map-container"\n>\n  <div id="station-map"></div>\n</div>\n\n<div\n  class="station-info-container content ionic-pseudo has-transform-animation"\n  id="js-station-info-container"\n  >\n  <div class="list">\n    <div class="item item-divider">\n      Localização\n    </div>\n\n    <a class="item item-icon-right" href="#">\n      {{station.location.address}}\n      <!--\n      <span class="item-note">\n        Blue, yellow, pink\n      </span>\n      -->\n    </a>\n\n    <div class="item item-divider">\n      Horários\n    </div>\n\n    <a\n      class="item item-icon-right"\n      href="#"\n      style="padding-right: 10px;"\n      v-repeat="schedule: station.schedule">\n        {{schedule.title}}\n        <span class="item-note">{{schedule.period}}</span>\n    </a>\n\n    <div class="item item-divider">\n      Linhas\n    </div>\n\n    <a\n      class="item item-icon-left"\n      href="#"\n      v-repeat="line: station.lines"\n      v-touch="tap: selectLine(line)"\n    >\n      <i class="icon ion-record" style="color: {{line.color}}"></i>\n      <h2>{{line.title}}</h2>\n      <p>Status ok</p>\n    </a>\n  </div>\n</div>\n';});
 
 define(
 'sections/station',[
@@ -19220,7 +19220,7 @@ define(
         this.$root.$broadcast('header:setTitle', this.station.title);
         this.$root.$broadcast('header:setControls', [
           {
-            channel: 'navigation:historyBack',
+            channel: 'navigation:goToOverview',
             klass: 'ion-ios7-arrow-back'
           },
           {
@@ -19229,7 +19229,7 @@ define(
           }
         ]);
 
-        this.$root.$once('navigation:historyBack', $.proxy(this.historyBack, this));
+        this.$root.$once('navigation:goToOverview', $.proxy(this.goToOverview, this));
         this.$root.$on('navigation:toggleStationInfo', $.proxy(this.toggleStationInfo, this));
 
         this.stationMapContainer = $('#js-station-map-container');
@@ -19260,7 +19260,7 @@ define(
         console.log('station :: setupMap() :: Creating map for "%s" station', id);
       },
 
-      historyBack: function() {
+      goToOverview: function() {
         this.$dispatch('app:setView', 'overview');
       },
 
@@ -19280,6 +19280,10 @@ define(
           this.stationMapContainer.removeClass(EXPANDED_KLASS);
           this.stationInfoContainer.removeClass(EXPANDED_KLASS);
         }
+      },
+
+      selectLine: function(line) {
+        this.$dispatch('app:setView', 'line', {station: this.station, line: line});
       },
 
       setMarker: function() {
@@ -19304,21 +19308,66 @@ define(
 });
 
 
-define('text!partials/sections/line.html',[],function () { return '<div class="content">\n  <ul class="stations-list l1">\n    <li><h4>Capão Redondo</h4></li>\n    <li><h4>Campo Limpo</h4></li>\n    <li><h4>Vila das Belezas</h4></li>\n    <li><h4>Giovani Gronchi</h4></li>\n    <li><h4>Santo Amaro</h4></li>\n    <li><h4>Largo Treze</h4></li>\n    <li><h4>Capão Redondo</h4></li>\n    <li><h4>Campo Limpo</h4></li>\n    <li><h4>Vila das Belezas</h4></li>\n    <li><h4>Giovani Gronchi</h4></li>\n    <li><h4>Santo Amaro</h4></li>\n    <li><h4>Largo Treze</h4></li>\n  </ul>\n</div>\n';});
+define('text!partials/sections/line.html',[],function () { return '<div class="content">\n  <ul class="stations-list {{lineId}}">\n    <li\n        v-repeat="station: stations"\n    ><h4>{{station.title}}</h4></li>\n  </ul>\n</div>\n';});
 
 define(
 'sections/line',[
   'jquery',
   'vue',
+  'services/getLineStations',
   'text!partials/sections/line.html'
 ], function(
   $,
   Vue,
+  getLineStations,
   template
 ) {
 
   return Vue.extend({
-    template: template
+    template: template,
+
+    data: {},
+
+    attached: function() {
+      this.initialize();
+    },
+
+    methods: {
+      initialize: function() {
+        // Notifying section ready.
+        this.$dispatch('app:sectionReady', this);
+
+        // this.$root.$broadcast('header:setTitle', this.station.title);
+        this.$root.$broadcast('header:setControls', [
+          {
+            channel: 'navigation:goToStation',
+            klass: 'ion-ios7-arrow-back'
+          },
+
+          {
+            klass: ''
+          }
+        ]);
+
+        this.$root.$once('navigation:goToStation', $.proxy(this.goToStation, this));
+        this.setupStations();
+      },
+
+      setupStations: function() {
+        console.log(JSON.stringify(this.$options.line));
+        this.lineId = this.$options.line.id;
+        this.stations = getLineStations(this.$options.line.id);
+        this.$root.$broadcast('header:setTitle', this.$options.line.title);
+      },
+
+      dispose: function() {
+        console.log('line :: dispose()');
+      },
+
+      goToStation: function() {
+        this.$dispatch('app:setView', 'station', {id: this.$options.station.id});
+      }
+    }
   });
 
 });
