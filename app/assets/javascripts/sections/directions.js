@@ -22,8 +22,8 @@ define(
 
     data: {
       suggestions: [],
-      // origin: 'Brigadeiro',
-      // destination: 'Anhangabaú',
+      origin: 'Brigadeiro',
+      destination: 'Anhangabaú',
       lastInput: ''
     },
 

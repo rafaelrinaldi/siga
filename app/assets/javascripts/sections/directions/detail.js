@@ -6,6 +6,7 @@ define(
   'modules/map',
   'services/getStationByName',
   'services/getDestination',
+  'services/getLine',
   'helpers/toLatLng',
   'text!partials/sections/directions/detail.html'
 ], function(
@@ -15,6 +16,7 @@ define(
   Map,
   getStationByName,
   getDestination,
+  getLine,
   toLatLng,
   template
 ) {
@@ -27,6 +29,15 @@ define(
     attached: function() {
       this.$dispatch('app:sectionReady', this);
       this.initialize();
+    },
+
+    filters: {
+      shortDuration: function(value) {
+        return value
+                .replace(/minutos/gim, 'min')
+                .replace(/segundos/gim, 'seg')
+                .replace(/horas/gim, 'hr');
+      }
     },
 
     methods: {
@@ -59,7 +70,7 @@ define(
 
         getDestination(origin, destination)
           .then($.proxy(this.filterValidRoutes, this))
-          // .then($.proxy(this.parseSteps, this));
+          .then($.proxy(this.placeValidRoutes, this));
       },
 
       filterValidRoutes: function(model) {
@@ -67,7 +78,7 @@ define(
             routes = [];
 
         $.each(model.routes, function(routeIndex, route) {
-          console.log('\n\n');
+          // console.log('\n\n');
           $.each(route.legs, function(legIndex, leg) {
             $.each(leg.steps, function(stepIndex, step) {
               isValidRoute = false;
@@ -80,7 +91,7 @@ define(
                 isValidRoute = true;
               }
 
-              console.log(step.instructions, isValidRoute);
+              // console.log(step.instructions, isValidRoute);
 
               return isValidRoute;
             });
@@ -89,13 +100,67 @@ define(
           if(isValidRoute) {
             routes.push(route);
           }
-          console.log('is valid route?', isValidRoute);
+          // console.log('is valid route?', isValidRoute);
         });
 
         return routes;
       },
 
-      parseSteps: function(routes) {
+      placeValidRoutes: function(routes) {
+        var self = this,
+            filtered = {},
+            subwayStations = [],
+            subwayStationName,
+            subwayStation,
+            hasLineColor,
+            isSubwayStation;
+
+        $.each(routes, function(routeIndex, route) {
+
+          subwayStations = [];
+
+          $.each(route.legs, function(legIndex, leg) {
+
+            filtered[routeIndex] = {
+              duration: leg.duration.text,
+              distance: leg.distance.text
+            };
+
+            $.each(leg.steps, function(stepIndex, step) {
+
+              hasLineColor = false;
+              isSubwayStation = /^metrô/i.test(step.instructions);
+
+              if(isSubwayStation) {
+                subwayStationName = step.transit.headsign;
+                subwayStation = getStationByName(subwayStationName);
+
+                if(!hasLineColor) {
+                  hasLineColor = true;
+                  subwayStation.lineColor = getLine(subwayStation.lines[0].id).color;
+                }
+
+                subwayStations.push(subwayStation);
+              }
+
+              // console.log(step.instructions, 'isSubwayStation?',isSubwayStation);
+              // console.log(getStationByName(step.instructions));
+            });
+          });
+
+          filtered[routeIndex].steps = subwayStations;
+        });
+
+        this.routes = filtered;
+      },
+
+      addLineDetails: function(station) {
+        $.map(station.lines, function(line) {
+          return $.extend(line, getLine(line.id));
+        });
+      },
+
+      parse: function(routes) {
         var steps = [],
             legModel = {},
             stepModel = {};

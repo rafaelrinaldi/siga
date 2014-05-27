@@ -19591,8 +19591,8 @@ define(
 
     data: {
       suggestions: [],
-      // origin: 'Brigadeiro',
-      // destination: 'Anhangabaú',
+      origin: 'Brigadeiro',
+      destination: 'Anhangabaú',
       lastInput: ''
     },
 
@@ -19709,7 +19709,7 @@ define(
 });
 
 
-define('text!partials/sections/directions/detail.html',[],function () { return '<div id="directions-detail-map"></div>\n\n<!-- Metrô em direção a Vila Prudente true detail.js:76\nAnde para Paraíso true detail.js:76\nMetrô em direção a Tucuruvi true detail.js:76\nAnde para Sé true detail.js:76\nMetrô em direção a Palmeiras - Barra Funda true detail.js:76\nis valid route? true  -->\n\n<ul class="fake list">\n    <li class="item">\n    <i class="icon ion-record" style="color: #006d58;"></i>\n    VPR\n    <i class="icon ion-record" style="color: #285083;"></i>\n    TUC\n    <i class="icon ion-record" style="color: #df3f31;"></i>\n    BFN\n    </li>\n    <li class="item">\n    <i class="icon ion-record" style="color: #006d58;"></i>\n    VMD\n    <i class="icon ion-record" style="color: #285083;"></i>\n    LUZ\n    <i class="icon ion-record" style="color: #df3f31;"></i>\n    AGB\n    </li>\n</ul>\n\n<div class="direction-detail-steps" hidden>\n  <ul>\n    <li v-repeat="route: routes"></li>\n  </ul>\n</div>\n';});
+define('text!partials/sections/directions/detail.html',[],function () { return '<div class="directions-detail-map-container">\n    <div id="directions-detail-map"></div>\n</div>\n\n<div class="directions-detail-routes">\n  <div class="list">\n\n    <div class="item item-divider">\n      Possíveis rotas de metrô\n    </div>\n\n    <a\n      class="item item-icon-right"\n      v-repeat="route: routes"\n    >\n      Butterfinger\n      <span\n        class="item-note"\n        v-text="route.duration | shortDuration"\n      ></span>\n    </a>\n\n  </div>\n</div>\n\n\n<!-- Metrô em direção a Vila Prudente true detail.js:76\nAnde para Paraíso true detail.js:76\nMetrô em direção a Tucuruvi true detail.js:76\nAnde para Sé true detail.js:76\nMetrô em direção a Palmeiras - Barra Funda true detail.js:76\nis valid route? true  -->\n\n<!--\n<ul class="list">\n    <li class="item">\n    <i class="icon ion-record" style="color: #006d58;"></i>\n    VPR\n    <i class="icon ion-record" style="color: #285083;"></i>\n    TUC\n    <i class="icon ion-record" style="color: #df3f31;"></i>\n    BFN\n    </li>\n    <li class="item">\n    <i class="icon ion-record" style="color: #006d58;"></i>\n    VMD\n    <i class="icon ion-record" style="color: #285083;"></i>\n    LUZ\n    <i class="icon ion-record" style="color: #df3f31;"></i>\n    AGB\n    </li>\n</ul>\n-->\n<!--\n<div class="direction-detail-steps" hidden>\n  <ul>\n    <li v-repeat="route: routes"></li>\n  </ul>\n</div>\n -->\n';});
 
 define(
 'sections/directions/detail',[
@@ -19719,6 +19719,7 @@ define(
   'modules/map',
   'services/getStationByName',
   'services/getDestination',
+  'services/getLine',
   'helpers/toLatLng',
   'text!partials/sections/directions/detail.html'
 ], function(
@@ -19728,6 +19729,7 @@ define(
   Map,
   getStationByName,
   getDestination,
+  getLine,
   toLatLng,
   template
 ) {
@@ -19740,6 +19742,15 @@ define(
     attached: function() {
       this.$dispatch('app:sectionReady', this);
       this.initialize();
+    },
+
+    filters: {
+      shortDuration: function(value) {
+        return value
+                .replace(/minutos/gim, 'min')
+                .replace(/segundos/gim, 'seg')
+                .replace(/horas/gim, 'hr');
+      }
     },
 
     methods: {
@@ -19772,7 +19783,7 @@ define(
 
         getDestination(origin, destination)
           .then($.proxy(this.filterValidRoutes, this))
-          // .then($.proxy(this.parseSteps, this));
+          .then($.proxy(this.placeValidRoutes, this));
       },
 
       filterValidRoutes: function(model) {
@@ -19780,7 +19791,7 @@ define(
             routes = [];
 
         $.each(model.routes, function(routeIndex, route) {
-          console.log('\n\n');
+          // console.log('\n\n');
           $.each(route.legs, function(legIndex, leg) {
             $.each(leg.steps, function(stepIndex, step) {
               isValidRoute = false;
@@ -19793,7 +19804,7 @@ define(
                 isValidRoute = true;
               }
 
-              console.log(step.instructions, isValidRoute);
+              // console.log(step.instructions, isValidRoute);
 
               return isValidRoute;
             });
@@ -19802,13 +19813,67 @@ define(
           if(isValidRoute) {
             routes.push(route);
           }
-          console.log('is valid route?', isValidRoute);
+          // console.log('is valid route?', isValidRoute);
         });
 
         return routes;
       },
 
-      parseSteps: function(routes) {
+      placeValidRoutes: function(routes) {
+        var self = this,
+            filtered = {},
+            subwayStations = [],
+            subwayStationName,
+            subwayStation,
+            hasLineColor,
+            isSubwayStation;
+
+        $.each(routes, function(routeIndex, route) {
+
+          subwayStations = [];
+
+          $.each(route.legs, function(legIndex, leg) {
+
+            filtered[routeIndex] = {
+              duration: leg.duration.text,
+              distance: leg.distance.text
+            };
+
+            $.each(leg.steps, function(stepIndex, step) {
+
+              hasLineColor = false;
+              isSubwayStation = /^metrô/i.test(step.instructions);
+
+              if(isSubwayStation) {
+                subwayStationName = step.transit.headsign;
+                subwayStation = getStationByName(subwayStationName);
+
+                if(!hasLineColor) {
+                  hasLineColor = true;
+                  subwayStation.lineColor = getLine(subwayStation.lines[0].id).color;
+                }
+
+                subwayStations.push(subwayStation);
+              }
+
+              // console.log(step.instructions, 'isSubwayStation?',isSubwayStation);
+              // console.log(getStationByName(step.instructions));
+            });
+          });
+
+          filtered[routeIndex].steps = subwayStations;
+        });
+
+        this.routes = filtered;
+      },
+
+      addLineDetails: function(station) {
+        $.map(station.lines, function(line) {
+          return $.extend(line, getLine(line.id));
+        });
+      },
+
+      parse: function(routes) {
         var steps = [],
             legModel = {},
             stepModel = {};

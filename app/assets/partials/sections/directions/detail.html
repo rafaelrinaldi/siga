@@ -1,4 +1,28 @@
-<div id="directions-detail-map"></div>
+<div class="directions-detail-map-container">
+    <div id="directions-detail-map"></div>
+</div>
+
+<div class="directions-detail-routes">
+  <div class="list">
+
+    <div class="item item-divider">
+      Possíveis rotas de metrô
+    </div>
+
+    <a
+      class="item item-icon-right"
+      v-repeat="route: routes"
+    >
+      Butterfinger
+      <span
+        class="item-note"
+        v-text="route.duration | shortDuration"
+      ></span>
+    </a>
+
+  </div>
+</div>
+
 
 <!-- Metrô em direção a Vila Prudente true detail.js:76
 Ande para Paraíso true detail.js:76
@@ -7,7 +31,8 @@ Ande para Sé true detail.js:76
 Metrô em direção a Palmeiras - Barra Funda true detail.js:76
 is valid route? true  -->
 
-<ul class="fake list">
+<!--
+<ul class="list">
     <li class="item">
     <i class="icon ion-record" style="color: #006d58;"></i>
     VPR
@@ -25,9 +50,11 @@ is valid route? true  -->
     AGB
     </li>
 </ul>
-
+-->
+<!--
 <div class="direction-detail-steps" hidden>
   <ul>
     <li v-repeat="route: routes"></li>
   </ul>
 </div>
+ -->
