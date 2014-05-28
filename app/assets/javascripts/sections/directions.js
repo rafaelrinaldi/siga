@@ -29,17 +29,21 @@ define(
 
     attached: function() {
       this.$dispatch('app:sectionReady', this);
-      this.$root.$broadcast('header:hide');
       this.$root.$broadcast('footer:setControls', [
         {
+          klass: 'ion-map',
+          title: 'Mapa',
+          channel: 'directions:goToMap'
+        },
+        {
           klass: 'ion-navigate',
-          title: 'Mais próxima',
+          title: 'Detectar',
           channel: 'directions:getNearbyStation'
         },
 
         {
           klass: 'ion-shuffle',
-          title: 'Inverter ordem',
+          title: 'Inverter',
           channel: 'directions:swapUserInput'
         },
 
@@ -49,8 +53,10 @@ define(
           channel: 'directions:submit'
         }
       ]);
+      this.$root.$broadcast('header:hide');
       this.$root.$broadcast('footer:show');
 
+      this.$root.$on('directions:goToMap', $.proxy(this.goToMap, this));
       this.$root.$on('directions:getNearbyStation', $.proxy(this.getNearbyStation, this));
       this.$root.$on('directions:swapUserInput', $.proxy(this.swapUserInput, this));
       this.$root.$once('directions:submit', $.proxy(this.submit, this));
@@ -70,6 +76,10 @@ define(
           .focusout($.proxy(this.userInputFocusOut, this));
 
         this.$dispatch('app:sectionLoaded');
+      },
+
+      goToMap: function() {
+        this.$dispatch('app:setView', 'overview');
       },
 
       submit: function(event) {
