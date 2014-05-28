@@ -3,21 +3,34 @@
 </div>
 
 <div class="directions-detail-routes">
+
+
   <div class="list">
 
     <div class="item item-divider">
       Possíveis rotas de metrô
     </div>
 
+    <div class="card" id="js-no-routes" style="display: none;">
+      <div class="item item-text-wrap">
+        <h2>Nenhuma rota</h2>
+        <p>Esse trecho não possui conexões diretas entre trens do metrô.</p>
+      </div>
+    </div>
+
     <a
-      class="item item-icon-right"
-      v-repeat="route: routes"
+      class="item item-arrow-right"
+      v-repeat="route: subwayRoutes"
+      v-touch="tap: onClick(route)"
     >
-      Butterfinger
-      <span
-        class="item-note"
-        v-text="route.duration | shortDuration"
-      ></span>
+    <span v-repeat="step: route.steps">
+      <i class="icon ion-record" style="color: {{step.lineColor}};"></i>
+      {{step.headsign}}
+    </span>
+
+    <span
+      class="item-note"
+    >{{route.duration | shortDuration}}</span>
     </a>
 
   </div>

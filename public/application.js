@@ -15979,7 +15979,7 @@ define(
 });
 
 
-define('text!partials/footer.html',[],function () { return '<div class="tabs tabs-icon-top" v-show="controls">\n  <a\n    class="tab-item"\n    style="color: #4a87ee;"\n    v-repeat="control: controls"\n    v-on="click: onClick(control.channel)"\n  >\n    <i\n      class="icon {{control.klass}}"\n    ></i>\n    {{control.title}}\n  </a>\n</div>\n';});
+define('text!partials/footer.html',[],function () { return '<div class="tabs tabs-icon-top" v-show="controls">\n  <a\n    class="tab-item"\n    style="color: #4a87ee;"\n    v-repeat="control: controls"\n    v-touch="tap: onClick(control.channel)"\n  >\n    <i\n      class="icon {{control.klass}}"\n    ></i>\n    {{control.title}}\n  </a>\n</div>\n';});
 
 define(
   'modules/footer',[
@@ -19565,7 +19565,7 @@ define(
 });
 
 
-define('text!partials/sections/directions.html',[],function () { return '<div class="directions-input">\n\n  <div class="list user-input js-user-input-group">\n\n    <!--\n    <label class="item item-input">\n      <i class="icon ion-android-arrow-up-right placeholder-icon"></i>\n      <input\n        type="text"\n\n        placeholder="Origem"\n      >\n    </label>\n\n    <label class="item item-input">\n      <i class="icon ion-android-arrow-down-left placeholder-icon"></i>\n      <input\n        type="text"\n        id="destination"\n        name="destination"\n        class="js-user-input"\n        v-model="destination"\n        v-on="keyup: suggestStations(\'destination\')"\n        placeholder="Destino"\n      >\n    </label>\n    -->\n\n\n  <label class="item item-input item-icon-right">\n    <i class="icon ion-ios7-arrow-thin-right"></i>\n    <input\n      type="text"\n      id="origin"\n      name="origin"\n      class="js-user-input"\n      placeholder="Origem"\n      v-model="origin"\n      v-on="keyup: suggestStations(\'origin\')"\n    >\n  </label>\n\n  <label class="item item-input item-icon-right">\n    <i class="icon ion-ios7-arrow-thin-left"></i>\n    <input\n      type="text"\n      id="destination"\n      name="destination"\n      class="js-user-input"\n      v-model="destination"\n      v-on="keyup: suggestStations(\'destination\')"\n      placeholder="Destino"\n    >\n  </label>\n\n  </div>\n\n</div>\n\n<div class="list directions-suggestions">\n  <div class="item item-divider" v-show="suggestions.length">\n    Estações\n  </div>\n  <div\n    class="item"\n    v-repeat="suggestion: suggestions"\n    v-on="click: selectSuggestion(suggestion.title), click: cleanupSuggestions"\n  >\n    <a href="#">\n      {{suggestion.title}}\n      <span\n        style="background: {{line.color}}; border-color: {{line.color}};"\n        v-repeat="line: suggestion.lines"\n      />\n    </a>\n  </div>\n</div>\n\n<!-- <div class="tabs tabs-icon-top">\n  <a class="tab-item" v-on="click: getNearbyStation(this.origin)">\n    <i class="icon ion-navigate"></i>\n    Mais próxima\n  </a>\n  <a class="tab-item" v-on="click: swapUserInput">\n    <i class="icon ion-shuffle"></i>\n    Inverter\n  </a>\n  <a class="tab-item" v-on="click: submit($event)">\n    <i class="icon ion-android-locate"></i>\n    Direção\n  </a>\n</div>\n -->\n';});
+define('text!partials/sections/directions.html',[],function () { return '<div class="directions-input">\n\n  <div class="list user-input js-user-input-group">\n\n  <label class="item item-input item-icon-right">\n    <i class="icon ion-ios7-arrow-thin-right"></i>\n    <input\n      type="text"\n      id="origin"\n      name="origin"\n      class="js-user-input"\n      placeholder="Origem"\n      v-model="origin"\n      v-on="keyup: suggestStations(\'origin\')"\n    >\n  </label>\n\n  <label class="item item-input item-icon-right">\n    <i class="icon ion-ios7-arrow-thin-left"></i>\n    <input\n      type="text"\n      id="destination"\n      name="destination"\n      class="js-user-input"\n      v-model="destination"\n      v-on="keyup: suggestStations(\'destination\')"\n      placeholder="Destino"\n    >\n  </label>\n\n  </div>\n\n</div>\n\n<div class="list directions-suggestions">\n  <div class="item item-divider" v-show="suggestions.length">\n    Estações\n  </div>\n  <div\n    class="item"\n    v-repeat="suggestion: suggestions"\n    v-touch="tap: selectSuggestion(suggestion.title), tap: cleanupSuggestions"\n  >\n    <a href="#">\n      {{suggestion.title}}\n      <span\n        style="background: {{line.color}}; border-color: {{line.color}};"\n        v-repeat="line: suggestion.lines"\n      />\n    </a>\n  </div>\n</div>\n';});
 
 define(
 'sections/directions',[
@@ -19708,15 +19708,43 @@ define(
 
 });
 
+define('mout/lang/isEmpty',['../object/forOwn', './isArray'], function (forOwn, isArray) {
 
-define('text!partials/sections/directions/detail.html',[],function () { return '<div class="directions-detail-map-container">\n    <div id="directions-detail-map"></div>\n</div>\n\n<div class="directions-detail-routes">\n  <div class="list">\n\n    <div class="item item-divider">\n      Possíveis rotas de metrô\n    </div>\n\n    <a\n      class="item item-icon-right"\n      v-repeat="route: routes"\n    >\n      Butterfinger\n      <span\n        class="item-note"\n        v-text="route.duration | shortDuration"\n      ></span>\n    </a>\n\n  </div>\n</div>\n\n\n<!-- Metrô em direção a Vila Prudente true detail.js:76\nAnde para Paraíso true detail.js:76\nMetrô em direção a Tucuruvi true detail.js:76\nAnde para Sé true detail.js:76\nMetrô em direção a Palmeiras - Barra Funda true detail.js:76\nis valid route? true  -->\n\n<!--\n<ul class="list">\n    <li class="item">\n    <i class="icon ion-record" style="color: #006d58;"></i>\n    VPR\n    <i class="icon ion-record" style="color: #285083;"></i>\n    TUC\n    <i class="icon ion-record" style="color: #df3f31;"></i>\n    BFN\n    </li>\n    <li class="item">\n    <i class="icon ion-record" style="color: #006d58;"></i>\n    VMD\n    <i class="icon ion-record" style="color: #285083;"></i>\n    LUZ\n    <i class="icon ion-record" style="color: #df3f31;"></i>\n    AGB\n    </li>\n</ul>\n-->\n<!--\n<div class="direction-detail-steps" hidden>\n  <ul>\n    <li v-repeat="route: routes"></li>\n  </ul>\n</div>\n -->\n';});
+    function isEmpty(val){
+        if (val == null) {
+            // typeof null == 'object' so we check it first
+            return false;
+        } else if ( typeof val === 'string' || isArray(val) ) {
+            return !val.length;
+        } else if ( typeof val === 'object' || typeof val === 'function' ) {
+            var result = true;
+            forOwn(val, function(){
+                result = false;
+                return false; // break loop
+            });
+            return result;
+        } else {
+            return false;
+        }
+    }
+
+    return isEmpty;
+
+});
+
+
+define('text!partials/sections/directions/detail.html',[],function () { return '<div class="directions-detail-map-container">\n    <div id="directions-detail-map"></div>\n</div>\n\n<div class="directions-detail-routes">\n\n\n  <div class="list">\n\n    <div class="item item-divider">\n      Possíveis rotas de metrô\n    </div>\n\n    <div class="card" id="js-no-routes" style="display: none;">\n      <div class="item item-text-wrap">\n        <h2>Nenhuma rota</h2>\n        <p>Esse trecho não possui conexões diretas entre trens do metrô.</p>\n      </div>\n    </div>\n\n    <a\n      class="item item-arrow-right"\n      v-repeat="route: subwayRoutes"\n      v-touch="tap: onClick(route)"\n    >\n    <span v-repeat="step: route.steps">\n      <i class="icon ion-record" style="color: {{step.lineColor}};"></i>\n      {{step.headsign}}\n    </span>\n\n    <span\n      class="item-note"\n    >{{route.duration | shortDuration}}</span>\n    </a>\n\n  </div>\n</div>\n\n\n<!-- Metrô em direção a Vila Prudente true detail.js:76\nAnde para Paraíso true detail.js:76\nMetrô em direção a Tucuruvi true detail.js:76\nAnde para Sé true detail.js:76\nMetrô em direção a Palmeiras - Barra Funda true detail.js:76\nis valid route? true  -->\n\n<!--\n<ul class="list">\n    <li class="item">\n    <i class="icon ion-record" style="color: #006d58;"></i>\n    VPR\n    <i class="icon ion-record" style="color: #285083;"></i>\n    TUC\n    <i class="icon ion-record" style="color: #df3f31;"></i>\n    BFN\n    </li>\n    <li class="item">\n    <i class="icon ion-record" style="color: #006d58;"></i>\n    VMD\n    <i class="icon ion-record" style="color: #285083;"></i>\n    LUZ\n    <i class="icon ion-record" style="color: #df3f31;"></i>\n    AGB\n    </li>\n</ul>\n-->\n<!--\n<div class="direction-detail-steps" hidden>\n  <ul>\n    <li v-repeat="route: routes"></li>\n  </ul>\n</div>\n -->\n';});
 
 define(
 'sections/directions/detail',[
   'jquery',
   'vue',
+  'config',
+  'mout/object/mixIn',
   'mout/array/contains',
+  'mout/lang/isEmpty',
   'modules/map',
+  'lib/gmaps',
   'services/getStationByName',
   'services/getDestination',
   'services/getLine',
@@ -19725,8 +19753,12 @@ define(
 ], function(
   $,
   Vue,
+  config,
+  mixIn,
   contains,
+  isEmpty,
   Map,
+  gmaps,
   getStationByName,
   getDestination,
   getLine,
@@ -19737,10 +19769,13 @@ define(
   return Vue.extend({
     template: template,
 
-    data: {},
+    replace: true,
+
+    data: {
+      subwayRoutes: []
+    },
 
     attached: function() {
-      this.$dispatch('app:sectionReady', this);
       this.initialize();
     },
 
@@ -19750,15 +19785,34 @@ define(
                 .replace(/minutos/gim, 'min')
                 .replace(/segundos/gim, 'seg')
                 .replace(/horas/gim, 'hr');
+      },
+
+      addZero: function(value) {
+        value = parseInt(value, 10);
+        if(value < 10) { value = '0' + value; }
+        return value;
+      },
+
+      addParenthesis: function(value) {
+        return '(' + value + ')';
+      }
+    },
+
+    computed: {
+      zeroRoutes: function() {
+        return isEmpty(this.subwayRoutes);
       }
     },
 
     methods: {
       initialize: function() {
+        var self = this;
+
+        this.$dispatch('app:sectionReady', this);
+
         this.origin = getStationByName(this.$options.origin);
         this.destination = getStationByName(this.$options.destination);
-        this.setupMap();
-        this.requestDestination();
+
         this.$root.$broadcast('header:setTitle', 'Direção');
         this.$root.$broadcast('header:setControls', [
           {klass: 'ion-ios7-arrow-back'},
@@ -19766,15 +19820,71 @@ define(
         ]);
         this.$root.$broadcast('header:show');
         this.$root.$broadcast('footer:hide');
+        this.$watch('subwayRoutes', function(routes) {
+          if(!isEmpty(routes)) {
+            $('#js-no-routes').hide();
+          } else {
+            $('#js-no-routes').show();
+          }
+        });
+
+        this.setupMap();
+        this.requestDestination();
       },
 
       setupMap: function() {
         var location = toLatLng(this.origin.location);
 
         this.detailMap = new Map('#directions-detail-map', {
-          center: location
+          center: location,
+          zoom: 13
         });
         this.detailMap.initialize();
+        this.detailMap.on.loaded.addOnce(this.setMarkers, this);
+      },
+
+      onClick: function(model) {
+        console.log('onClick');
+        console.log(model.guide);
+      },
+
+      setMarkers: function() {
+        var self = this,
+            map = this.detailMap.getMap(),
+            origin = toLatLng(this.origin.location),
+            destination = toLatLng(this.destination.location),
+            marker,
+            bounds = new gmaps.LatLngBounds(),
+            points = [],
+            listener;
+
+        $.map([origin, destination], function(point) {
+          marker = self.detailMap.setMarker({
+                    position: point,
+                    optimized: false,
+                    animation: gmaps.Animation.DROP
+                  });
+
+          points.push(point);
+          bounds.extend(marker.position);
+        });
+
+        map.fitBounds(bounds);
+
+        listener = gmaps.event.addListener(map, 'idle', function () {
+            map.setZoom(13);
+            gmaps.event.removeListener(listener);
+        });
+
+        this.placeLine(map, points);
+      },
+
+      placeLine: function(map, points) {
+        new gmaps.Polyline(mixIn({}, config.polyLine, {
+          path: points,
+          strokeColor: '#4a87ee',
+          map: map
+        }));
       },
 
       requestDestination: function() {
@@ -19823,6 +19933,7 @@ define(
         var self = this,
             filtered = {},
             subwayStations = [],
+            guide = [],
             subwayStationName,
             subwayStation,
             hasLineColor,
@@ -19831,10 +19942,12 @@ define(
         $.each(routes, function(routeIndex, route) {
 
           subwayStations = [];
+          guide = [];
 
           $.each(route.legs, function(legIndex, leg) {
-
             filtered[routeIndex] = {
+              origin: self.origin.title,
+              destination: self.destination.title,
               duration: leg.duration.text,
               distance: leg.distance.text
             };
@@ -19856,66 +19969,16 @@ define(
                 subwayStations.push(subwayStation);
               }
 
-              // console.log(step.instructions, 'isSubwayStation?',isSubwayStation);
-              // console.log(getStationByName(step.instructions));
+              guide.push(step.instructions);
+
             });
           });
 
           filtered[routeIndex].steps = subwayStations;
+          filtered[routeIndex].guide = guide;
         });
 
-        this.routes = filtered;
-      },
-
-      addLineDetails: function(station) {
-        $.map(station.lines, function(line) {
-          return $.extend(line, getLine(line.id));
-        });
-      },
-
-      parse: function(routes) {
-        var steps = [],
-            legModel = {},
-            stepModel = {};
-            console.log(routes);
-            return
-
-        $.each(routes, function(routeIndex, route) {
-          console.log('\n');
-          $.each(route.legs, function(legIndex, leg) {
-            legModel = {
-              departure: leg.departure_time.text,
-              arrival: leg.arrival_time.text,
-              duration: leg.duration.text,
-              distance: leg.distance.text,
-              totalStops: 0,
-              steps: []
-            };
-
-            $.each(leg.steps, function(stepIndex, step) {
-              console.log(step);
-              stepModel = {
-                type: 'walking',
-                instructions: step.instructions
-              };
-
-              // if(step.transit && step.transit.line) {
-              //   stepModel.type = 'subway';
-              //   stepModel.direction = step.transit.headsign;
-              //   stepModel.departure = step.transit.departure_stop.name;
-              //   stepModel.arrival = step.transit.arrival_stop.name;
-              //   stepModel.totalStops = parseInt(step.transit.num_stops, 10);
-
-              //   legModel.totalStops += stepModel.totalStops;
-              // }
-
-              // legModel.steps.push(stepModel);
-
-            });
-          // console.log(legModel);
-          // steps.push(legModel);
-          });
-        });
+        this.subwayRoutes = filtered;
       }
     }
   });

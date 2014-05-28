@@ -2,8 +2,12 @@ define(
 [
   'jquery',
   'vue',
+  'config',
+  'mout/object/mixIn',
   'mout/array/contains',
+  'mout/lang/isEmpty',
   'modules/map',
+  'lib/gmaps',
   'services/getStationByName',
   'services/getDestination',
   'services/getLine',
@@ -12,8 +16,12 @@ define(
 ], function(
   $,
   Vue,
+  config,
+  mixIn,
   contains,
+  isEmpty,
   Map,
+  gmaps,
   getStationByName,
   getDestination,
   getLine,
@@ -24,10 +32,13 @@ define(
   return Vue.extend({
     template: template,
 
-    data: {},
+    replace: true,
+
+    data: {
+      subwayRoutes: []
+    },
 
     attached: function() {
-      this.$dispatch('app:sectionReady', this);
       this.initialize();
     },
 
@@ -37,15 +48,34 @@ define(
                 .replace(/minutos/gim, 'min')
                 .replace(/segundos/gim, 'seg')
                 .replace(/horas/gim, 'hr');
+      },
+
+      addZero: function(value) {
+        value = parseInt(value, 10);
+        if(value < 10) { value = '0' + value; }
+        return value;
+      },
+
+      addParenthesis: function(value) {
+        return '(' + value + ')';
+      }
+    },
+
+    computed: {
+      zeroRoutes: function() {
+        return isEmpty(this.subwayRoutes);
       }
     },
 
     methods: {
       initialize: function() {
+        var self = this;
+
+        this.$dispatch('app:sectionReady', this);
+
         this.origin = getStationByName(this.$options.origin);
         this.destination = getStationByName(this.$options.destination);
-        this.setupMap();
-        this.requestDestination();
+
         this.$root.$broadcast('header:setTitle', 'Direção');
         this.$root.$broadcast('header:setControls', [
           {klass: 'ion-ios7-arrow-back'},
@@ -53,15 +83,71 @@ define(
         ]);
         this.$root.$broadcast('header:show');
         this.$root.$broadcast('footer:hide');
+        this.$watch('subwayRoutes', function(routes) {
+          if(!isEmpty(routes)) {
+            $('#js-no-routes').hide();
+          } else {
+            $('#js-no-routes').show();
+          }
+        });
+
+        this.setupMap();
+        this.requestDestination();
       },
 
       setupMap: function() {
         var location = toLatLng(this.origin.location);
 
         this.detailMap = new Map('#directions-detail-map', {
-          center: location
+          center: location,
+          zoom: 13
         });
         this.detailMap.initialize();
+        this.detailMap.on.loaded.addOnce(this.setMarkers, this);
+      },
+
+      onClick: function(model) {
+        console.log('onClick');
+        console.log(model.guide);
+      },
+
+      setMarkers: function() {
+        var self = this,
+            map = this.detailMap.getMap(),
+            origin = toLatLng(this.origin.location),
+            destination = toLatLng(this.destination.location),
+            marker,
+            bounds = new gmaps.LatLngBounds(),
+            points = [],
+            listener;
+
+        $.map([origin, destination], function(point) {
+          marker = self.detailMap.setMarker({
+                    position: point,
+                    optimized: false,
+                    animation: gmaps.Animation.DROP
+                  });
+
+          points.push(point);
+          bounds.extend(marker.position);
+        });
+
+        map.fitBounds(bounds);
+
+        listener = gmaps.event.addListener(map, 'idle', function () {
+            map.setZoom(13);
+            gmaps.event.removeListener(listener);
+        });
+
+        this.placeLine(map, points);
+      },
+
+      placeLine: function(map, points) {
+        new gmaps.Polyline(mixIn({}, config.polyLine, {
+          path: points,
+          strokeColor: '#4a87ee',
+          map: map
+        }));
       },
 
       requestDestination: function() {
@@ -110,6 +196,7 @@ define(
         var self = this,
             filtered = {},
             subwayStations = [],
+            guide = [],
             subwayStationName,
             subwayStation,
             hasLineColor,
@@ -118,10 +205,12 @@ define(
         $.each(routes, function(routeIndex, route) {
 
           subwayStations = [];
+          guide = [];
 
           $.each(route.legs, function(legIndex, leg) {
-
             filtered[routeIndex] = {
+              origin: self.origin.title,
+              destination: self.destination.title,
               duration: leg.duration.text,
               distance: leg.distance.text
             };
@@ -143,66 +232,16 @@ define(
                 subwayStations.push(subwayStation);
               }
 
-              // console.log(step.instructions, 'isSubwayStation?',isSubwayStation);
-              // console.log(getStationByName(step.instructions));
+              guide.push(step.instructions);
+
             });
           });
 
           filtered[routeIndex].steps = subwayStations;
+          filtered[routeIndex].guide = guide;
         });
 
-        this.routes = filtered;
-      },
-
-      addLineDetails: function(station) {
-        $.map(station.lines, function(line) {
-          return $.extend(line, getLine(line.id));
-        });
-      },
-
-      parse: function(routes) {
-        var steps = [],
-            legModel = {},
-            stepModel = {};
-            console.log(routes);
-            return
-
-        $.each(routes, function(routeIndex, route) {
-          console.log('\n');
-          $.each(route.legs, function(legIndex, leg) {
-            legModel = {
-              departure: leg.departure_time.text,
-              arrival: leg.arrival_time.text,
-              duration: leg.duration.text,
-              distance: leg.distance.text,
-              totalStops: 0,
-              steps: []
-            };
-
-            $.each(leg.steps, function(stepIndex, step) {
-              console.log(step);
-              stepModel = {
-                type: 'walking',
-                instructions: step.instructions
-              };
-
-              // if(step.transit && step.transit.line) {
-              //   stepModel.type = 'subway';
-              //   stepModel.direction = step.transit.headsign;
-              //   stepModel.departure = step.transit.departure_stop.name;
-              //   stepModel.arrival = step.transit.arrival_stop.name;
-              //   stepModel.totalStops = parseInt(step.transit.num_stops, 10);
-
-              //   legModel.totalStops += stepModel.totalStops;
-              // }
-
-              // legModel.steps.push(stepModel);
-
-            });
-          // console.log(legModel);
-          // steps.push(legModel);
-          });
-        });
+        this.subwayRoutes = filtered;
       }
     }
   });

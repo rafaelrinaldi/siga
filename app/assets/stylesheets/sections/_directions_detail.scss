@@ -3,17 +3,20 @@
   .directions-detail-map-container {
     width: 100%;
     height: 60%;
+    display: block;
   }
 
   #directions-detail-map {
     width: 100%;
     height: 100%;
+    display: block;
   }
-
 }
 
 .directions-detail-routes {
-  .item-note {
-    margin-right: -30px;
+  .item:not(.item-divider) {
+    .item-note {
+      // margin-right: -30px;
+    }
   }
 }

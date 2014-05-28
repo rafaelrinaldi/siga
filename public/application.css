@@ -51,6 +51,9 @@ body {
 input[type="text"], textarea {
   font-size: 1em; }
 
+[v-cloak] {
+  display: none; }
+
 .wrapper {
   position: relative;
   width: 100%;
@@ -433,13 +436,13 @@ div.gmnoprint[title="is-active"] {
 
 .section.directions-detail .directions-detail-map-container {
   width: 100%;
-  height: 60%; }
+  height: 60%;
+  display: block; }
 .section.directions-detail #directions-detail-map {
   width: 100%;
-  height: 100%; }
+  height: 100%;
+  display: block; }
 
-.directions-detail-routes .item-note {
-  margin-right: -30px; }
 
 .no-header-container {
   margin-top: 50px; }

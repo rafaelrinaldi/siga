@@ -26,3 +26,5 @@ input[type="text"],
 textarea {
   font-size: 1em;
 }
+
+[v-cloak] { display: none; }
