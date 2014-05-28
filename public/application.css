@@ -184,16 +184,16 @@ a, .link {
 .section.v-enter {
   -webkit-transition-delay: 0.2s;
   transition-delay: 0.2s;
-  -webkit-transform: translateX(160px);
-  -ms-transform: translateX(160px);
-  transform: translateX(160px); }
+  -webkit-transform: translateX(100%);
+  -ms-transform: translateX(100%);
+  transform: translateX(100%); }
 
 .section.v-leave {
   -webkit-transition-duration: 0.65s;
   transition-duration: 0.65s;
-  -webkit-transform: translateX(-160px);
-  -ms-transform: translateX(-160px);
-  transform: translateX(-160px); }
+  -webkit-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
+  transform: translateX(-100%); }
 
 .section.retreat {
   -webkit-transform: translateX(220px);
@@ -374,6 +374,61 @@ div.gmnoprint[title="is-active"] {
   height: 98px;
   background: url("./images/siga_logo.png") no-repeat; }
 
+.splash {
+  -webkit-transition: all 0.75s ease;
+  transition: all 0.75s ease;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #4a87ee;
+  z-index: 99999;
+  display: block;
+  top: 0;
+  left: 0; }
+  .splash .siga-logo {
+    -webkit-transition: all 0.65s ease 0.1s;
+    transition: all 0.65s ease 0.1s;
+    -webkit-transform: scale(0.75) translateX(40%) translateY(160%);
+    -ms-transform: scale(0.75) translateX(40%) translateY(160%);
+    transform: scale(0.75) translateX(40%) translateY(160%); }
+  .splash .loading {
+    -webkit-transition: all 0.65s ease 0.2s;
+    transition: all 0.65s ease 0.2s;
+    position: absolute;
+    margin-left: -50px;
+    background: #4a87ee;
+    font-size: 50px; }
+  .splash .beta {
+    -webkit-transition: opacity 1s linear 0.5s;
+    transition: opacity 1s linear 0.5s;
+    color: #fff;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center; }
+    .splash .beta i {
+      font-size: 20px;
+      display: block; }
+
+.splash.is-hidden {
+  left: -100%; }
+  .splash.is-hidden .siga-logo {
+    -webkit-transition-delay: 0;
+    transition-delay: 0;
+    opacity: 0;
+    -webkit-transform: scale(0.75) translateX(-40%) translateY(160%);
+    -ms-transform: scale(0.75) translateX(-40%) translateY(160%);
+    transform: scale(0.75) translateX(-40%) translateY(160%); }
+  .splash.is-hidden .loading {
+    -webkit-transition-delay: 0;
+    transition-delay: 0;
+    opacity: 0;
+    margin-left: -250px; }
+  .splash.is-hidden .beta {
+    -webkit-transition-delay: 0;
+    transition-delay: 0;
+    opacity: 0; }
+
 #overview-map {
   width: 100%;
   height: 100%; }
@@ -473,9 +528,9 @@ div.gmnoprint[title="is-active"] {
   .directions-guide.is-expanded {
     -webkit-transition-duration: 0.5s;
     transition-duration: 0.5s;
-    -webkit-transform: translateY(-380px);
-    -ms-transform: translateY(-380px);
-    transform: translateY(-380px); }
+    -webkit-transform: translateY(-340px);
+    -ms-transform: translateY(-340px);
+    transform: translateY(-340px); }
 
 .section.search .directions-suggestions {
   border: 0; }

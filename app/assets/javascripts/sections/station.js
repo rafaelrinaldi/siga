@@ -113,13 +113,14 @@ define(
 
         marker = this.stationMap.setMarker({
           position: this.location,
-          optimize: false,
-          animation: gmaps.Animation.DROP
+          optimize: false
         });
 
         area = this.stationMap.setAreaRange({
           marker: marker
         });
+
+        this.$dispatch('app:sectionLoaded');
       }
     }
   });

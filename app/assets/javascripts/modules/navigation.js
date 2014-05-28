@@ -64,6 +64,10 @@ define(
       toggle: function() {
         this.isOpen ? this.close() : this.open();
         this.isOpen = !this.isOpen;
+      },
+
+      setSection: function(section) {
+        this.$dispatch('app:setView', section);
       }
     }
   });

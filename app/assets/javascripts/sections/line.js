@@ -42,10 +42,10 @@ define(
       },
 
       setupStations: function() {
-        console.log(JSON.stringify(this.$options.line));
         this.lineId = this.$options.line.id;
         this.stations = getLineStations(this.$options.line.id);
         this.$root.$broadcast('header:setTitle', this.$options.line.title);
+        this.$dispatch('app:sectionLoaded');
       },
 
       dispose: function() {

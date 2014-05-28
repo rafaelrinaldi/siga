@@ -43,6 +43,8 @@ define(
         this.$dispatch('app:sectionReady', this);
 
         this.$root.$broadcast('header:setTitle', 'Mapa');
+        this.$root.$broadcast('header:show');
+        this.$root.$broadcast('footer:hide');
         this.$root.$broadcast('header:setControls', [
           {
             channel: 'navigation:toggleNavigation',
@@ -94,6 +96,7 @@ define(
             self.placeStationMarkers();
             self.saveUserNearestStation(position);
             self.nearestStation();
+            self.$dispatch('app:sectionLoaded');
           });
       },
 

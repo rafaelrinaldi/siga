@@ -26,6 +26,8 @@ define(
       initialize: function() {
         this.$dispatch('app:sectionReady', this);
 
+        this.$root.$broadcast('header:show');
+        this.$root.$broadcast('footer:hide');
         this.$root.$broadcast('header:setTitle', 'Status');
         this.$root.$broadcast('header:setControls', [
           {
@@ -61,6 +63,8 @@ define(
         });
 
         this.operationalStatus = operationalStatus;
+
+        this.$dispatch('app:sectionLoaded');
       },
 
       parseMessage: function(id) {
@@ -104,7 +108,6 @@ define(
       },
 
       dispose: function() {
-
       }
     }
   });

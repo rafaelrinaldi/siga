@@ -50,7 +50,6 @@ requirejs(
     'vue',
     'lib/gmaps',
     'mout/object/mixIn',
-    'modules/router',
     'modules/header',
     'modules/navigation',
     'modules/footer',
@@ -67,7 +66,6 @@ requirejs(
     Vue,
     gmaps,
     mixIn,
-    Router,
     Header,
     Navigation,
     Footer,
@@ -78,15 +76,6 @@ requirejs(
   ) {
 
     var app;
-
-    function _setupRouter() {
-      console.log('application :: _setupRouter() :: Setting up router');
-
-      Router.initialize();
-      Router.on.matchRoute.add(function(route) {
-        app.setView(route);
-      });
-    }
 
     function _checkForIOS() {
       var isIOS = /(ipod|iphone|ipad)/i.test(navigator.userAgent);
@@ -106,7 +95,6 @@ requirejs(
         el: '#app',
 
         components: {
-          'splash': Sections.splash,
           'overview': Sections.overview,
           'station': Sections.station,
           'line': Sections.line,
@@ -120,13 +108,16 @@ requirejs(
         },
 
         ready: function() {
+          this.splash = $('#js-splash');
           this.$on('app:sectionReady', this.sectionReady);
+          this.$on('app:sectionLoaded', this.sectionLoaded);
           this.$on('app:setView', this.setView);
           this.$watch('currentView', this.currentViewChanged);
+
+          this.setView('overview');
         },
 
         data: {
-          currentView: 'splash'
         },
 
         methods: {
@@ -136,13 +127,26 @@ requirejs(
             section.$options = this.currentViewOptions;
           },
 
+          sectionLoaded: function() {
+            setTimeout($.proxy(this.hideSplash, this), 750);
+          },
+
+          showSplash: function() {
+            this.splash.removeClass('is-hidden');
+          },
+
+          hideSplash: function() {
+            this.splash.addClass('is-hidden');
+          },
+
           /**
            * Setup a new view.
            * @param {String} view View id.
            * @param {Object} options Options (optional).
            */
           setView: function(view, options) {
-            var log = 'application :: setView() :: Should broadcast new view "%s"';
+            var self = this,
+                log = 'application :: setView() :: Should broadcast new view "%s"';
 
             if(options) {
               log += ' with options "%s"';
@@ -152,12 +156,18 @@ requirejs(
               console.log(log, view);
             }
 
-            this.currentView = view;
-            this.currentViewOptions = options;
+            this.showSplash();
+
+            setTimeout(function() {
+              self.currentView = view;
+              self.currentViewOptions = options;
+            }, 750);
           },
 
           currentViewChanged: function() {
-            Vue.nextTick(this.$.currentView.dispose);
+            if(this.$.currentView) {
+              Vue.nextTick(this.$.currentView.dispose);
+            }
           }
         }
       });

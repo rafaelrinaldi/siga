@@ -1,6 +1,5 @@
 define(
 [
-  'sections/splash',
   'sections/overview',
   'sections/station',
   'sections/line',
@@ -9,7 +8,6 @@ define(
   'sections/search',
   'sections/status'
 ], function(
-  Splash,
   Overview,
   Station,
   Line,
@@ -20,7 +18,6 @@ define(
 ) {
 
   return {
-    'splash': Splash,
     'overview': Overview,
     'station': Station,
     'line': Line,

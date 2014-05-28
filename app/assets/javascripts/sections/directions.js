@@ -22,13 +22,12 @@ define(
 
     data: {
       suggestions: [],
-      origin: 'Brigadeiro',
-      destination: 'Anhangabaú',
+      // origin: 'Brigadeiro',
+      // destination: 'Anhangabaú',
       lastInput: ''
     },
 
     attached: function() {
-      console.log('HERE');
       this.$dispatch('app:sectionReady', this);
       this.$root.$broadcast('header:hide');
       this.$root.$broadcast('footer:setControls', [
@@ -69,6 +68,8 @@ define(
         this.userInput
           .focusin($.proxy(this.userInputFocus, this))
           .focusout($.proxy(this.userInputFocusOut, this));
+
+        this.$dispatch('app:sectionLoaded');
       },
 
       submit: function(event) {

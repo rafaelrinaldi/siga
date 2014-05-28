@@ -68,7 +68,7 @@ define(
         } else if(isDestination) {
           guide = 'Desembarque na estação ' + value.replace('$destination', '');
         } else {
-          guide = value.replace(/ande para/im, 'Baldeação na estação ');
+          guide = value.replace(/ande para/im, 'Desembarque na ');
         }
 
         return guide;
@@ -186,8 +186,7 @@ define(
         $.map([origin, destination], function(point) {
           marker = self.detailMap.setMarker({
                     position: point,
-                    optimized: false,
-                    animation: gmaps.Animation.DROP
+                    optimized: false
                   });
 
           points.push(point);
@@ -203,6 +202,8 @@ define(
         });
 
         this.placeLine(map, points);
+
+        this.$dispatch('app:sectionLoaded');
       },
 
       dispose: function() {

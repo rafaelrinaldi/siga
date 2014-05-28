@@ -30,6 +30,8 @@ define(
       initialize: function() {
         this.$dispatch('app:sectionReady', this);
 
+        this.$root.$broadcast('header:show');
+        this.$root.$broadcast('footer:hide');
         this.$root.$broadcast('header:setTitle', 'Busca');
         this.$root.$broadcast('header:setControls', [
           {
@@ -43,6 +45,8 @@ define(
         ]);
 
         this.$root.$once('navigation:search:submitKeyword', $.proxy(this.submitKeyword, this));
+
+        this.$dispatch('app:sectionLoaded');
       },
 
       suggestStations: function(input) {

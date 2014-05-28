@@ -21,6 +21,15 @@
   <!-- @endif -->
 </head>
 <body>
+  <div id="js-splash" class="splash">
+    <h1 class="ir siga-logo">Siga</h1>
+    <i class="icon ion-ios7-reloading loading"></i>
+    <div class="beta">
+      <i class="icon ion-nuclear"></i>
+      Versão beta
+    </div>
+  </div>
+
   <main id="app">
     <nav
       id="js-navigation"
@@ -30,7 +39,7 @@
 
     <header
       id="js-header"
-      class="has-transform-animation header"
+      class="has-transform-animation header is-hidden"
       v-component="header"
     ></header>
 
@@ -44,7 +53,7 @@
 
     <footer
       id="js-footer"
-      class="footer"
+      class="footer is-hidden"
       v-component="footer"
     ></footer>
   </main>

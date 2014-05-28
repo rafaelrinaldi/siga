@@ -1,0 +1,59 @@
+.splash {
+  transition: all .75s ease;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #4a87ee;
+  z-index: 99999;
+  display: block;
+  top: 0;
+  left: 0;
+
+  .siga-logo {
+    transition: all .65s ease .1s;
+    transform: scale(.75) translateX(40%) translateY(160%);
+  }
+
+  .loading {
+    transition: all .65s ease .2s;
+    position: absolute;
+    margin-left: -50px;
+    background: #4a87ee;
+    font-size: 50px;
+  }
+
+  .beta {
+    transition: opacity 1s linear .5s;
+    color: #fff;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+
+    i {
+      font-size: 20px;
+      display: block;
+    }
+  }
+}
+
+.splash.is-hidden {
+  left: -100%;
+
+  .siga-logo {
+    transition-delay: 0;
+    opacity: 0;
+    transform: scale(.75) translateX(-40%) translateY(160%);
+  }
+
+  .loading {
+    transition-delay: 0;
+    opacity: 0;
+    margin-left: -250px;
+  }
+
+  .beta {
+    transition-delay: 0;
+    opacity: 0;
+  }
+}
