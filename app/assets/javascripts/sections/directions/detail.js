@@ -58,6 +58,35 @@ define(
 
       addParenthesis: function(value) {
         return '(' + value + ')';
+      },
+
+      parseGuide: function(value) {
+        var isOrigin = /^\$origin/.test(value),
+            isDestination = /^\$destination/.test(value),
+            guide;
+
+        if(isOrigin) {
+          guide = 'Embarque na estação ' + value.replace('$origin', '');
+        } else if(isDestination) {
+          guide = 'Desembarque na estação ' + value.replace('$destination', '');
+        } else {
+          guide = value.replace(/ande para/im, 'Baldeação na estação ');
+        }
+
+        return guide;
+      },
+
+      parseIcon: function(value) {
+        var icons = {
+              '$origin': 'ion-ios7-arrow-thin-right',
+              '$destination': 'ion-ios7-arrow-thin-left',
+              'Ande': 'ion-fork-repo',
+              'Metrô': 'ion-man'
+            },
+            keyword = value.split(' ').shift();
+            icon = icons[keyword];
+
+        return icon;
       }
     },
 
@@ -73,13 +102,17 @@ define(
 
         this.$dispatch('app:sectionReady', this);
 
+        this.mapContainer = $('#js-directions-map');
+        this.routesContainer = $('#js-directions-routes');
+        this.guideContainer = $('#js-directions-guide');
+
         this.origin = getStationByName(this.$options.origin);
         this.destination = getStationByName(this.$options.destination);
 
         this.$root.$broadcast('header:setTitle', 'Direção');
         this.$root.$broadcast('header:setControls', [
           {klass: 'ion-ios7-arrow-back'},
-          {klass: 'ion-navicon'}
+          {klass: 'ion-navicon', channel: 'header:detail:hideGuide'}
         ]);
         this.$root.$broadcast('header:show');
         this.$root.$broadcast('footer:hide');
@@ -91,6 +124,9 @@ define(
           }
         });
 
+        this.$root.$on('header:detail:showGuide', $.proxy(this.showGuide, this));
+        this.$root.$on('header:detail:hideGuide', $.proxy(this.hideGuide, this));
+
         this.setupMap();
         this.requestDestination();
       },
@@ -100,15 +136,28 @@ define(
 
         this.detailMap = new Map('#directions-detail-map', {
           center: location,
-          zoom: 13
+          zoom: 12
         });
         this.detailMap.initialize();
         this.detailMap.on.loaded.addOnce(this.setMarkers, this);
       },
 
+      showGuide: function() {
+        this.routesContainer.addClass('is-hidden');
+        this.mapContainer.addClass('is-hidden');
+        this.guideContainer.addClass('is-expanded');
+      },
+
+      hideGuide: function() {
+        this.routesContainer.removeClass('is-hidden');
+        this.mapContainer.removeClass('is-hidden');
+        this.guideContainer.removeClass('is-expanded');
+      },
+
       onClick: function(model) {
-        console.log('onClick');
-        console.log(model.guide);
+        var self = this;
+        this.details = model;
+        setTimeout($.proxy(self.showGuide, self), 100);
       },
 
       setMarkers: function() {
@@ -135,7 +184,7 @@ define(
         map.fitBounds(bounds);
 
         listener = gmaps.event.addListener(map, 'idle', function () {
-            map.setZoom(13);
+            map.setZoom(12);
             gmaps.event.removeListener(listener);
         });
 
@@ -215,6 +264,8 @@ define(
               distance: leg.distance.text
             };
 
+            guide.push('$origin ' + self.origin.title);
+
             $.each(leg.steps, function(stepIndex, step) {
 
               hasLineColor = false;
@@ -235,6 +286,8 @@ define(
               guide.push(step.instructions);
 
             });
+
+            guide.push('$destination ' + self.destination.title);
           });
 
           filtered[routeIndex].steps = subwayStations;

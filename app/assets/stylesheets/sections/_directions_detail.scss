@@ -1,9 +1,13 @@
 .section.directions-detail {
-
   .directions-detail-map-container {
+    transition: all .65s ease;
     width: 100%;
     height: 60%;
     display: block;
+
+    &.is-hidden {
+      transform: translateY(-250px);
+    }
   }
 
   #directions-detail-map {
@@ -14,9 +18,20 @@
 }
 
 .directions-detail-routes {
-  .item:not(.item-divider) {
-    .item-note {
-      // margin-right: -30px;
-    }
+  transition: all .7s ease;
+
+  &.is-hidden {
+    transition-duration: .6s;
+    transform: translateY(-250px);
+  }
+}
+
+.directions-guide {
+  transition: transform .65s ease;
+  transform: translateY(120px);
+
+  &.is-expanded {
+    transition-duration: .5s;
+    transform: translateY(-400px);
   }
 }

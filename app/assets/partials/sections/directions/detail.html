@@ -1,9 +1,8 @@
-<div class="directions-detail-map-container">
+<div id="js-directions-map" class="directions-detail-map-container">
     <div id="directions-detail-map"></div>
 </div>
 
-<div class="directions-detail-routes">
-
+<div id="js-directions-routes" class="directions-detail-routes">
 
   <div class="list">
 
@@ -36,38 +35,16 @@
   </div>
 </div>
 
+<div id="js-directions-guide" class="has-transform-animation directions-guide">
+  <div class="list">
+    <div class="item item-divider">
+      Trajeto
+      <span class="item-note">{{details.duration}} / {{details.distance}}</span>
+    </div>
 
-<!-- Metrô em direção a Vila Prudente true detail.js:76
-Ande para Paraíso true detail.js:76
-Metrô em direção a Tucuruvi true detail.js:76
-Ande para Sé true detail.js:76
-Metrô em direção a Palmeiras - Barra Funda true detail.js:76
-is valid route? true  -->
-
-<!--
-<ul class="list">
-    <li class="item">
-    <i class="icon ion-record" style="color: #006d58;"></i>
-    VPR
-    <i class="icon ion-record" style="color: #285083;"></i>
-    TUC
-    <i class="icon ion-record" style="color: #df3f31;"></i>
-    BFN
-    </li>
-    <li class="item">
-    <i class="icon ion-record" style="color: #006d58;"></i>
-    VMD
-    <i class="icon ion-record" style="color: #285083;"></i>
-    LUZ
-    <i class="icon ion-record" style="color: #df3f31;"></i>
-    AGB
-    </li>
-</ul>
--->
-<!--
-<div class="direction-detail-steps" hidden>
-  <ul>
-    <li v-repeat="route: routes"></li>
-  </ul>
+    <a class="item item-icon-right" href="#" v-repeat="details.guide">
+      <i class="icon placeholder-icon {{$value | parseIcon}}" style="right: 0;"></i>
+      <p v-text="$value | parseGuide"></p>
+    </a>
+  </div>
 </div>
- -->

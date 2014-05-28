@@ -19326,7 +19326,7 @@ define(
 });
 
 
-define('text!partials/sections/station.html',[],function () { return '<div\n  class="station-map-container has-transform-animation"\n  id="js-station-map-container"\n>\n  <div id="station-map"></div>\n</div>\n\n<div\n  class="station-info-container content ionic-pseudo has-transform-animation"\n  id="js-station-info-container"\n  >\n  <div class="list">\n    <div class="item item-divider">\n      Localização\n    </div>\n\n    <a class="item item-icon-right" href="#">\n      {{station.location.address}}\n      <!--\n      <span class="item-note">\n        Blue, yellow, pink\n      </span>\n      -->\n    </a>\n\n    <div class="item item-divider">\n      Horários\n    </div>\n\n    <a\n      class="item item-icon-right"\n      href="#"\n      style="padding-right: 10px;"\n      v-repeat="schedule: station.schedule">\n        {{schedule.title}}\n        <span class="item-note">{{schedule.period}}</span>\n    </a>\n\n    <div class="item item-divider">\n      Linhas\n    </div>\n\n    <a\n      class="item item-icon-left"\n      href="#"\n      v-repeat="line: station.lines"\n      v-touch="tap: selectLine(line)"\n    >\n      <i class="icon ion-record" style="color: {{line.color}}"></i>\n      <h2>{{line.title}}</h2>\n      <p>Status ok</p>\n    </a>\n  </div>\n</div>\n';});
+define('text!partials/sections/station.html',[],function () { return '<div\n  class="station-map-container has-transform-animation"\n  id="js-station-map-container"\n>\n  <div id="station-map"></div>\n</div>\n\n<div\n  class="station-info-container content ionic-pseudo has-transform-animation"\n  id="js-station-info-container"\n  >\n  <div class="list">\n    <div class="item item-divider">\n      Localização\n    </div>\n\n    <a class="item item-icon-right" href="#">\n      {{station.location.address}}\n    </a>\n\n    <div class="item item-divider">\n      Horários\n    </div>\n\n    <a\n      class="item item-icon-right"\n      href="#"\n      style="padding-right: 10px;"\n      v-repeat="schedule: station.schedule">\n        {{schedule.title}}\n        <span class="item-note">{{schedule.period}}</span>\n    </a>\n\n    <div class="item item-divider">\n      Linhas\n    </div>\n\n    <a\n      class="item item-icon-left"\n      href="#"\n      v-repeat="line: station.lines"\n      v-touch="tap: selectLine(line)"\n    >\n      <i class="icon ion-record" style="color: {{line.color}}"></i>\n      <h2>{{line.title}}</h2>\n      <p>Funcionamento normal</p>\n    </a>\n  </div>\n</div>\n';});
 
 define(
 'sections/station',[
@@ -19733,7 +19733,7 @@ define('mout/lang/isEmpty',['../object/forOwn', './isArray'], function (forOwn, 
 });
 
 
-define('text!partials/sections/directions/detail.html',[],function () { return '<div class="directions-detail-map-container">\n    <div id="directions-detail-map"></div>\n</div>\n\n<div class="directions-detail-routes">\n\n\n  <div class="list">\n\n    <div class="item item-divider">\n      Possíveis rotas de metrô\n    </div>\n\n    <div class="card" id="js-no-routes" style="display: none;">\n      <div class="item item-text-wrap">\n        <h2>Nenhuma rota</h2>\n        <p>Esse trecho não possui conexões diretas entre trens do metrô.</p>\n      </div>\n    </div>\n\n    <a\n      class="item item-arrow-right"\n      v-repeat="route: subwayRoutes"\n      v-touch="tap: onClick(route)"\n    >\n    <span v-repeat="step: route.steps">\n      <i class="icon ion-record" style="color: {{step.lineColor}};"></i>\n      {{step.headsign}}\n    </span>\n\n    <span\n      class="item-note"\n    >{{route.duration | shortDuration}}</span>\n    </a>\n\n  </div>\n</div>\n\n\n<!-- Metrô em direção a Vila Prudente true detail.js:76\nAnde para Paraíso true detail.js:76\nMetrô em direção a Tucuruvi true detail.js:76\nAnde para Sé true detail.js:76\nMetrô em direção a Palmeiras - Barra Funda true detail.js:76\nis valid route? true  -->\n\n<!--\n<ul class="list">\n    <li class="item">\n    <i class="icon ion-record" style="color: #006d58;"></i>\n    VPR\n    <i class="icon ion-record" style="color: #285083;"></i>\n    TUC\n    <i class="icon ion-record" style="color: #df3f31;"></i>\n    BFN\n    </li>\n    <li class="item">\n    <i class="icon ion-record" style="color: #006d58;"></i>\n    VMD\n    <i class="icon ion-record" style="color: #285083;"></i>\n    LUZ\n    <i class="icon ion-record" style="color: #df3f31;"></i>\n    AGB\n    </li>\n</ul>\n-->\n<!--\n<div class="direction-detail-steps" hidden>\n  <ul>\n    <li v-repeat="route: routes"></li>\n  </ul>\n</div>\n -->\n';});
+define('text!partials/sections/directions/detail.html',[],function () { return '<div id="js-directions-map" class="directions-detail-map-container">\n    <div id="directions-detail-map"></div>\n</div>\n\n<div id="js-directions-routes" class="directions-detail-routes">\n\n  <div class="list">\n\n    <div class="item item-divider">\n      Possíveis rotas de metrô\n    </div>\n\n    <div class="card" id="js-no-routes" style="display: none;">\n      <div class="item item-text-wrap">\n        <h2>Nenhuma rota</h2>\n        <p>Esse trecho não possui conexões diretas entre trens do metrô.</p>\n      </div>\n    </div>\n\n    <a\n      class="item item-arrow-right"\n      v-repeat="route: subwayRoutes"\n      v-touch="tap: onClick(route)"\n    >\n    <span v-repeat="step: route.steps">\n      <i class="icon ion-record" style="color: {{step.lineColor}};"></i>\n      {{step.headsign}}\n    </span>\n\n    <span\n      class="item-note"\n    >{{route.duration | shortDuration}}</span>\n    </a>\n\n  </div>\n</div>\n\n<div id="js-directions-guide" class="has-transform-animation directions-guide">\n  <div class="list">\n    <div class="item item-divider">\n      Trajeto\n      <span class="item-note">{{details.duration}} / {{details.distance}}</span>\n    </div>\n\n    <a class="item item-icon-right" href="#" v-repeat="details.guide">\n      <i class="icon placeholder-icon {{$value | parseIcon}}" style="right: 0;"></i>\n      <p v-text="$value | parseGuide"></p>\n    </a>\n  </div>\n</div>\n';});
 
 define(
 'sections/directions/detail',[
@@ -19795,6 +19795,35 @@ define(
 
       addParenthesis: function(value) {
         return '(' + value + ')';
+      },
+
+      parseGuide: function(value) {
+        var isOrigin = /^\$origin/.test(value),
+            isDestination = /^\$destination/.test(value),
+            guide;
+
+        if(isOrigin) {
+          guide = 'Embarque na estação ' + value.replace('$origin', '');
+        } else if(isDestination) {
+          guide = 'Desembarque na estação ' + value.replace('$destination', '');
+        } else {
+          guide = value.replace(/ande para/im, 'Baldeação na estação ');
+        }
+
+        return guide;
+      },
+
+      parseIcon: function(value) {
+        var icons = {
+              '$origin': 'ion-ios7-arrow-thin-right',
+              '$destination': 'ion-ios7-arrow-thin-left',
+              'Ande': 'ion-fork-repo',
+              'Metrô': 'ion-man'
+            },
+            keyword = value.split(' ').shift();
+            icon = icons[keyword];
+
+        return icon;
       }
     },
 
@@ -19810,13 +19839,17 @@ define(
 
         this.$dispatch('app:sectionReady', this);
 
+        this.mapContainer = $('#js-directions-map');
+        this.routesContainer = $('#js-directions-routes');
+        this.guideContainer = $('#js-directions-guide');
+
         this.origin = getStationByName(this.$options.origin);
         this.destination = getStationByName(this.$options.destination);
 
         this.$root.$broadcast('header:setTitle', 'Direção');
         this.$root.$broadcast('header:setControls', [
           {klass: 'ion-ios7-arrow-back'},
-          {klass: 'ion-navicon'}
+          {klass: 'ion-navicon', channel: 'header:detail:hideGuide'}
         ]);
         this.$root.$broadcast('header:show');
         this.$root.$broadcast('footer:hide');
@@ -19828,6 +19861,9 @@ define(
           }
         });
 
+        this.$root.$on('header:detail:showGuide', $.proxy(this.showGuide, this));
+        this.$root.$on('header:detail:hideGuide', $.proxy(this.hideGuide, this));
+
         this.setupMap();
         this.requestDestination();
       },
@@ -19837,15 +19873,28 @@ define(
 
         this.detailMap = new Map('#directions-detail-map', {
           center: location,
-          zoom: 13
+          zoom: 12
         });
         this.detailMap.initialize();
         this.detailMap.on.loaded.addOnce(this.setMarkers, this);
       },
 
+      showGuide: function() {
+        this.routesContainer.addClass('is-hidden');
+        this.mapContainer.addClass('is-hidden');
+        this.guideContainer.addClass('is-expanded');
+      },
+
+      hideGuide: function() {
+        this.routesContainer.removeClass('is-hidden');
+        this.mapContainer.removeClass('is-hidden');
+        this.guideContainer.removeClass('is-expanded');
+      },
+
       onClick: function(model) {
-        console.log('onClick');
-        console.log(model.guide);
+        var self = this;
+        this.details = model;
+        setTimeout($.proxy(self.showGuide, self), 100);
       },
 
       setMarkers: function() {
@@ -19872,7 +19921,7 @@ define(
         map.fitBounds(bounds);
 
         listener = gmaps.event.addListener(map, 'idle', function () {
-            map.setZoom(13);
+            map.setZoom(12);
             gmaps.event.removeListener(listener);
         });
 
@@ -19952,6 +20001,8 @@ define(
               distance: leg.distance.text
             };
 
+            guide.push('$origin ' + self.origin.title);
+
             $.each(leg.steps, function(stepIndex, step) {
 
               hasLineColor = false;
@@ -19972,6 +20023,8 @@ define(
               guide.push(step.instructions);
 
             });
+
+            guide.push('$destination ' + self.destination.title);
           });
 
           filtered[routeIndex].steps = subwayStations;
