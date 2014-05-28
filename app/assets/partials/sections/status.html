@@ -1,33 +1,18 @@
 <div class="no-header-container">
+  <div class="card">
+    <div class="item item-divider">
+      Última atualização
+    </div>
+    <div class="item item-text-wrap">
+      27/05/2014 14:14
+    </div>
+  </div>
+
   <ul class="list">
-    <li class="item item-icon-left">
-      <i class="icon ion-checkmark-circled" style="color: green;"></i>
-      Linha 1 - Azul<br />
-      <small>Funcionamento normal</small>
-    </li>
-
-    <li class="item item-icon-left">
-      <i class="icon ion-checkmark-circled" style="color: green;"></i>
-      Linha 2 - Verde<br />
-      <small>Funcionamento normal</small>
-    </li>
-
-    <li class="item item-icon-left">
-      <i class="icon ion-information-circled" style="color: orange;"></i>
-      Linha 3 - Vermelha<br />
-      <small>Velocidade reduzida</small>
-    </li>
-
-    <li class="item item-icon-left">
-      <i class="icon ion-checkmark-circled" style="color: green;"></i>
-      Linha 4 - Amarela<br />
-      <small>Funcionamento normal</small>
-    </li>
-
-    <li class="item item-icon-left">
-      <i class="icon ion-close-circled" style="color: red;"></i>
-      Linha 5 - Lilás<br />
-      <small>Inoperante devido a protestos</small>
+    <li class="item item-icon-left" v-repeat="status: operationalStatus">
+      <i class="icon {{status.icon}}" style="color: {{status.color}};"></i>
+      {{status.title}}<br />
+      <small>{{status.message}}</small>
     </li>
   </ul>
 </div>

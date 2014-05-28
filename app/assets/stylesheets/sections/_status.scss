@@ -1,0 +1,9 @@
+.section.status {
+  .list .item:first-child {
+    border: 0;
+  }
+
+  .list .item:last-child {
+    border-bottom: 0;
+  }
+}

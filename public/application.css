@@ -204,9 +204,9 @@ a, .link {
   position: relative;
   z-index: 95; }
   .header.is-hidden .bar-header {
-    -webkit-transform: translateY(-100px);
-    -ms-transform: translateY(-100px);
-    transform: translateY(-100px);
+    -webkit-transform: translateX(100%);
+    -ms-transform: translateX(100%);
+    transform: translateX(100%);
     opacity: 0; }
   .header .bar-header {
     -webkit-transition: all 0.5s ease;
@@ -489,3 +489,8 @@ div.gmnoprint[title="is-active"] {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis; }
+
+.section.status .list .item:first-child {
+  border: 0; }
+.section.status .list .item:last-child {
+  border-bottom: 0; }

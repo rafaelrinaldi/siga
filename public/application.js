@@ -18328,7 +18328,7 @@ define(
       this.$dispatch('app:sectionReady', this);
       var self = this;
       setTimeout(function() {
-        self.$dispatch('app:setView', 'directions');
+        self.$dispatch('app:setView', 'search');
       }, 250);
     },
 
@@ -20077,22 +20077,115 @@ define(
 
 });
 
+define( 'data/status',{ "last-updated": "27/05/2014 14:14", "status": { "linha-4-amarela": { "operational-status": "normal-operation", "message": "" }, "linha-1-azul": { "operational-status": "normal-operation", "message": "" }, "linha-2-verde": { "operational-status": "normal-operation", "message": "" }, "linha-3-vermelha": { "operational-status": "reduced-speed", "message": "" }, "linha-5-lilas": { "operational-status": "normal-operation", "message": "" } } } );
 
-define('text!partials/sections/status.html',[],function () { return '<div class="no-header-container">\n  <ul class="list">\n    <li class="item item-icon-left">\n      <i class="icon ion-checkmark-circled" style="color: green;"></i>\n      Linha 1 - Azul<br />\n      <small>Funcionamento normal</small>\n    </li>\n\n    <li class="item item-icon-left">\n      <i class="icon ion-checkmark-circled" style="color: green;"></i>\n      Linha 2 - Verde<br />\n      <small>Funcionamento normal</small>\n    </li>\n\n    <li class="item item-icon-left">\n      <i class="icon ion-information-circled" style="color: orange;"></i>\n      Linha 3 - Vermelha<br />\n      <small>Velocidade reduzida</small>\n    </li>\n\n    <li class="item item-icon-left">\n      <i class="icon ion-checkmark-circled" style="color: green;"></i>\n      Linha 4 - Amarela<br />\n      <small>Funcionamento normal</small>\n    </li>\n\n    <li class="item item-icon-left">\n      <i class="icon ion-close-circled" style="color: red;"></i>\n      Linha 5 - Lilás<br />\n      <small>Inoperante devido a protestos</small>\n    </li>\n  </ul>\n</div>\n';});
+define('text!partials/sections/status.html',[],function () { return '<div class="no-header-container">\n  <div class="card">\n    <div class="item item-divider">\n      Última atualização\n    </div>\n    <div class="item item-text-wrap">\n      27/05/2014 14:14\n    </div>\n  </div>\n\n  <ul class="list">\n    <li class="item item-icon-left" v-repeat="status: operationalStatus">\n      <i class="icon {{status.icon}}" style="color: {{status.color}};"></i>\n      {{status.title}}<br />\n      <small>{{status.message}}</small>\n    </li>\n  </ul>\n</div>\n';});
 
 define(
 'sections/status',[
   'jquery',
   'vue',
+  'data/status',
+  'services/getLine',
   'text!partials/sections/status.html'
 ], function(
   $,
   Vue,
+  status,
+  getLine,
   template
 ) {
 
   return Vue.extend({
-    template: template
+    template: template,
+
+    data: {},
+
+    attached: function() {
+      this.initialize();
+    },
+
+    methods: {
+      initialize: function() {
+        this.$dispatch('app:sectionReady', this);
+
+        this.$root.$broadcast('header:setTitle', 'Status');
+        this.$root.$broadcast('header:setControls', [
+          {
+            channel: 'navigation:toggleNavigation',
+            klass: 'ion-navicon'
+          },
+          {
+          }
+        ]);
+
+        this.parseStatus();
+      },
+
+      parseStatus: function() {
+        var self = this,
+            operationalStatus = [],
+            title,
+            message,
+            icon,
+            color;
+
+        $.each(status.status, function(key, value) {
+          message = self.parseMessage(value['operational-status']);
+          title = getLine(key).title;
+          icon = self.parseIcon(value['operational-status']);
+          color = self.parseColor(value['operational-status']);
+          operationalStatus.push({
+            title: title,
+            message: message,
+            icon: icon,
+            color: color
+          })
+        });
+
+        this.operationalStatus = operationalStatus;
+      },
+
+      parseMessage: function(id) {
+        var messages = {
+              'normal-operation': 'Operação normal',
+              'partial-operation': 'Operação parcial',
+              'reduced-speed': 'Rodando com velocidade reduzida',
+              'stagnant': 'Linha paralisada',
+              'data-unavailable': 'Dados indisponíveis no momento',
+              'operation-closed': 'Operação encerrada por hora'
+            },
+            message = messages[id];
+        return message;
+      },
+
+      parseIcon: function(id) {
+        var icons = {
+          'normal-operation': 'ion-checkmark-circled',
+          'partial-operation': 'ion-information-circled',
+          'reduced-speed': 'ion-information-circled',
+          'stagnant': 'ion-close-circled',
+          'data-unavailable': 'ion-close-circled',
+          'operation-closed': 'ion-close-circled'
+        },
+        icon = icons[id];
+        return icon;
+      },
+
+      parseColor: function(id) {
+        var colors = {
+          'normal-operation': '#27ae60',
+          'partial-operation': '#f1c40f',
+          'reduced-speed': '#f1c40f',
+          'stagnant': '#ef4e3a',
+          'data-unavailable': '#ef4e3a',
+          'operation-closed': '#ef4e3a'
+        },
+        color = colors[id];
+
+        return color;
+      }
+    }
   });
 
 });
