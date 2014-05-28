@@ -477,8 +477,8 @@ div.gmnoprint[title="is-active"] {
     -ms-transform: translateY(-380px);
     transform: translateY(-380px); }
 
-.no-header-container {
-  margin-top: 50px; }
+.section.search .directions-suggestions {
+  border: 0; }
 
 .section.line .stations-list {
   margin-left: 20px; }

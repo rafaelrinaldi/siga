@@ -1,3 +1,36 @@
-<div class="no-header-container">
-  <h1>search bitch</h1>
+<div class="content has-header">
+  <div class="list list-inset">
+  <label class="item item-input">
+    <i class="icon ion-search placeholder-icon"></i>
+    <input
+      type="text"
+      id="keyword"
+      name="keyword"
+      class="js-user-input"
+      placeholder="Procure por uma estação"
+      v-model="keyword"
+      v-on="keyup: suggestStations"
+    >
+  </label>
+  </div>
+
+  <div class="list directions-suggestions" v-show="suggestions.length">
+    <div class="item item-divider">
+      Estações
+    </div>
+    <div
+      class="item"
+      v-repeat="suggestion: suggestions"
+      v-touch="tap: selectSuggestion(suggestion.title), tap: cleanupSuggestions"
+    >
+      <a href="#">
+        {{suggestion.title}}
+        <span
+          style="background: {{line.color}}; border-color: {{line.color}};"
+          v-repeat="line: suggestion.lines"
+        />
+      </a>
+    </div>
+  </div>
+
 </div>

@@ -101,6 +101,10 @@ define(
         color = colors[id];
 
         return color;
+      },
+
+      dispose: function() {
+
       }
     }
   });

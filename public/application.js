@@ -20058,21 +20058,83 @@ define(
 });
 
 
-define('text!partials/sections/search.html',[],function () { return '<div class="no-header-container">\n  <h1>search bitch</h1>\n</div>\n';});
+define('text!partials/sections/search.html',[],function () { return '<div class="content has-header">\n  <div class="list list-inset">\n  <label class="item item-input">\n    <i class="icon ion-search placeholder-icon"></i>\n    <input\n      type="text"\n      id="keyword"\n      name="keyword"\n      class="js-user-input"\n      placeholder="Procure por uma estação"\n      v-model="keyword"\n      v-on="keyup: suggestStations"\n    >\n  </label>\n  </div>\n\n  <div class="list directions-suggestions" v-show="suggestions.length">\n    <div class="item item-divider">\n      Estações\n    </div>\n    <div\n      class="item"\n      v-repeat="suggestion: suggestions"\n      v-touch="tap: selectSuggestion(suggestion.title), tap: cleanupSuggestions"\n    >\n      <a href="#">\n        {{suggestion.title}}\n        <span\n          style="background: {{line.color}}; border-color: {{line.color}};"\n          v-repeat="line: suggestion.lines"\n        />\n      </a>\n    </div>\n  </div>\n\n</div>\n';});
 
 define(
 'sections/search',[
   'jquery',
   'vue',
+  'services/getStationByName',
+  'services/getStationsByName',
+  'services/getLine',
   'text!partials/sections/search.html'
 ], function(
   $,
   Vue,
+  getStationByName,
+  getStationsByName,
+  getLine,
   template
 ) {
 
   return Vue.extend({
-    template: template
+    template: template,
+
+    data: {
+      suggestions: []
+    },
+
+    attached: function() {
+      this.initialize();
+    },
+
+    methods: {
+      initialize: function() {
+        this.$dispatch('app:sectionReady', this);
+
+        this.$root.$broadcast('header:setTitle', 'Busca');
+        this.$root.$broadcast('header:setControls', [
+          {
+            channel: 'navigation:toggleNavigation',
+            klass: 'ion-navicon'
+          },
+          {
+            channel: 'navigation:search:submitKeyword',
+            klass: 'ion-ios7-search'
+          }
+        ]);
+
+        this.$root.$once('navigation:search:submitKeyword', $.proxy(this.submitKeyword, this));
+      },
+
+      suggestStations: function(input) {
+        var suggestions = getStationsByName(this.keyword);
+
+        // Combine line details to stations models to display colors and stuff
+        this.suggestions =  $.each(suggestions, function(index, suggestion) {
+                              $.map(suggestion.lines, function(line) {
+                                return $.extend(line, getLine(line.id));
+                              });
+                            });
+      },
+
+      selectSuggestion: function(suggestion) {
+        this.keyword = suggestion;
+      },
+
+      dispose: function() {
+
+      },
+
+      cleanupSuggestions: function() {
+        this.suggestions = [];
+      },
+
+      submitKeyword: function() {
+        var model = getStationByName(this.keyword);
+        this.$dispatch('app:setView', 'station', {id: model.id});
+      }
+    }
   });
 
 });
@@ -20184,6 +20246,10 @@ define(
         color = colors[id];
 
         return color;
+      },
+
+      dispose: function() {
+
       }
     }
   });
