@@ -38,6 +38,8 @@ define(
           }
         ]);
 
+        this.lastUpdate = status['last-updated'];
+
         this.parseStatus();
       },
 
