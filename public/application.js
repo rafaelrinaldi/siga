@@ -21828,7 +21828,7 @@ requirejs(
           this.$on('app:setView', this.setView);
           this.$watch('currentView', this.currentViewChanged);
 
-          this.setView('directions');
+          this.setView('overview');
         },
 
         data: {

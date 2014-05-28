@@ -1,6 +1,6 @@
 .header {
   position: relative;
-  z-index: 95;
+  z-index: 4;
 
   &.is-hidden {
     .bar-header {
@@ -12,6 +12,7 @@
   .bar-header {
     transition: all .5s ease;
     background: rgba(#fff, .65);
+    border: 0;
   }
 
   .bar-header:after {
@@ -20,6 +21,7 @@
     width: 100%;
     height: 2px;
     position: absolute;
+    z-index: 4;
     background: rgba(#000, .15);
     left: 0;
     bottom: 0;
