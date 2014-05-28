@@ -27,7 +27,8 @@ define(
       lastInput: ''
     },
 
-    ready: function() {
+    attached: function() {
+      console.log('HERE');
       this.$dispatch('app:sectionReady', this);
       this.$root.$broadcast('header:hide');
       this.$root.$broadcast('footer:setControls', [
@@ -49,10 +50,11 @@ define(
           channel: 'directions:submit'
         }
       ]);
+      this.$root.$broadcast('footer:show');
 
       this.$root.$on('directions:getNearbyStation', $.proxy(this.getNearbyStation, this));
       this.$root.$on('directions:swapUserInput', $.proxy(this.swapUserInput, this));
-      this.$root.$on('directions:submit', $.proxy(this.submit, this));
+      this.$root.$once('directions:submit', $.proxy(this.submit, this));
 
       this.initialize();
     },

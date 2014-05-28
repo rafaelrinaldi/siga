@@ -4,7 +4,7 @@
 
   &.is-hidden {
     .bar-header {
-      transform: translateX(100%);
+      transform: translateY(-100px);
       opacity: 0;
     }
   }

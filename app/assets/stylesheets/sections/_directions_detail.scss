@@ -28,10 +28,10 @@
 
 .directions-guide {
   transition: transform .65s ease;
-  transform: translateY(120px);
+  transform: translateY(180px);
 
   &.is-expanded {
     transition-duration: .5s;
-    transform: translateY(-400px);
+    transform: translateY(-380px);
   }
 }

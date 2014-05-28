@@ -19596,7 +19596,8 @@ define(
       lastInput: ''
     },
 
-    ready: function() {
+    attached: function() {
+      console.log('HERE');
       this.$dispatch('app:sectionReady', this);
       this.$root.$broadcast('header:hide');
       this.$root.$broadcast('footer:setControls', [
@@ -19618,10 +19619,11 @@ define(
           channel: 'directions:submit'
         }
       ]);
+      this.$root.$broadcast('footer:show');
 
       this.$root.$on('directions:getNearbyStation', $.proxy(this.getNearbyStation, this));
       this.$root.$on('directions:swapUserInput', $.proxy(this.swapUserInput, this));
-      this.$root.$on('directions:submit', $.proxy(this.submit, this));
+      this.$root.$once('directions:submit', $.proxy(this.submit, this));
 
       this.initialize();
     },
@@ -19733,7 +19735,7 @@ define('mout/lang/isEmpty',['../object/forOwn', './isArray'], function (forOwn, 
 });
 
 
-define('text!partials/sections/directions/detail.html',[],function () { return '<div id="js-directions-map" class="directions-detail-map-container">\n    <div id="directions-detail-map"></div>\n</div>\n\n<div id="js-directions-routes" class="directions-detail-routes">\n\n  <div class="list">\n\n    <div class="item item-divider">\n      Possíveis rotas de metrô\n    </div>\n\n    <div class="card" id="js-no-routes" style="display: none;">\n      <div class="item item-text-wrap">\n        <h2>Nenhuma rota</h2>\n        <p>Esse trecho não possui conexões diretas entre trens do metrô.</p>\n      </div>\n    </div>\n\n    <a\n      class="item item-arrow-right"\n      v-repeat="route: subwayRoutes"\n      v-touch="tap: onClick(route)"\n    >\n    <span v-repeat="step: route.steps">\n      <i class="icon ion-record" style="color: {{step.lineColor}};"></i>\n      {{step.headsign}}\n    </span>\n\n    <span\n      class="item-note"\n    >{{route.duration | shortDuration}}</span>\n    </a>\n\n  </div>\n</div>\n\n<div id="js-directions-guide" class="has-transform-animation directions-guide">\n  <div class="list">\n    <div class="item item-divider">\n      Trajeto\n      <span class="item-note">{{details.duration}} / {{details.distance}}</span>\n    </div>\n\n    <a class="item item-icon-right" href="#" v-repeat="details.guide">\n      <i class="icon placeholder-icon {{$value | parseIcon}}" style="right: 0;"></i>\n      <p v-text="$value | parseGuide"></p>\n    </a>\n  </div>\n</div>\n';});
+define('text!partials/sections/directions/detail.html',[],function () { return '<div id="js-directions-map" class="directions-detail-map-container">\n    <div id="directions-detail-map"></div>\n</div>\n\n<div id="js-directions-routes" class="directions-detail-routes">\n\n  <div class="list">\n\n    <div class="item item-divider">\n      Possíveis rotas de metrô\n    </div>\n\n    <div class="card" id="js-no-routes" style="display: none;">\n      <div class="item item-text-wrap">\n        <h2>Nenhuma rota</h2>\n        <p>Esse trecho não possui conexões diretas entre trens do metrô.</p>\n      </div>\n    </div>\n\n    <a\n      class="item item-arrow-right"\n      v-repeat="route: subwayRoutes"\n      v-touch="tap: onClick(route)"\n    >\n    <span v-repeat="step: route.steps">\n      <i class="icon ion-record" style="color: {{step.lineColor}};"></i>\n      {{step.headsign}}\n    </span>\n\n    <span\n      class="item-note"\n    >{{route.duration | shortDuration}}</span>\n    </a>\n\n  </div>\n</div>\n\n<div id="js-directions-guide" class="has-transform-animation directions-guide" style="display: none;">\n  <div class="list">\n    <div class="item item-divider">\n      Trajeto\n      <span class="item-note">{{details.duration}} / {{details.distance}}</span>\n    </div>\n\n    <a class="item item-icon-right" href="#" v-repeat="details.guide">\n      <i class="icon placeholder-icon {{$value | parseIcon}}" style="right: 0;"></i>\n      <p v-text="$value | parseGuide"></p>\n    </a>\n  </div>\n</div>\n';});
 
 define(
 'sections/directions/detail',[
@@ -19768,8 +19770,6 @@ define(
 
   return Vue.extend({
     template: template,
-
-    replace: true,
 
     data: {
       subwayRoutes: []
@@ -19848,8 +19848,8 @@ define(
 
         this.$root.$broadcast('header:setTitle', 'Direção');
         this.$root.$broadcast('header:setControls', [
-          {klass: 'ion-ios7-arrow-back'},
-          {klass: 'ion-navicon', channel: 'header:detail:hideGuide'}
+          {klass: 'ion-ios7-arrow-back', channel: 'header:detail:historyBack'},
+          {}
         ]);
         this.$root.$broadcast('header:show');
         this.$root.$broadcast('footer:hide');
@@ -19861,6 +19861,7 @@ define(
           }
         });
 
+        this.$root.$on('header:detail:historyBack', $.proxy(this.historyBack, this));
         this.$root.$on('header:detail:showGuide', $.proxy(this.showGuide, this));
         this.$root.$on('header:detail:hideGuide', $.proxy(this.hideGuide, this));
 
@@ -19880,15 +19881,29 @@ define(
       },
 
       showGuide: function() {
+        this.$root.$broadcast('header:setControls', [
+          {klass: 'ion-ios7-arrow-back', channel: 'header:detail:historyBack'},
+          {klass: 'ion-ios7-arrow-down', channel: 'header:detail:hideGuide'}
+        ]);
+
         this.routesContainer.addClass('is-hidden');
         this.mapContainer.addClass('is-hidden');
         this.guideContainer.addClass('is-expanded');
       },
 
       hideGuide: function() {
+        this.$root.$broadcast('header:setControls', [
+          {klass: 'ion-ios7-arrow-back', channel: 'header:detail:historyBack'},
+          {}
+        ]);
+
         this.routesContainer.removeClass('is-hidden');
         this.mapContainer.removeClass('is-hidden');
         this.guideContainer.removeClass('is-expanded');
+      },
+
+      historyBack: function() {
+        this.$dispatch('app:setView', 'directions');
       },
 
       onClick: function(model) {
@@ -19921,11 +19936,15 @@ define(
         map.fitBounds(bounds);
 
         listener = gmaps.event.addListener(map, 'idle', function () {
+            self.guideContainer.css({display: 'block'});
             map.setZoom(12);
             gmaps.event.removeListener(listener);
         });
 
         this.placeLine(map, points);
+      },
+
+      dispose: function() {
       },
 
       placeLine: function(map, points) {

@@ -32,8 +32,6 @@ define(
   return Vue.extend({
     template: template,
 
-    replace: true,
-
     data: {
       subwayRoutes: []
     },
@@ -111,8 +109,8 @@ define(
 
         this.$root.$broadcast('header:setTitle', 'Direção');
         this.$root.$broadcast('header:setControls', [
-          {klass: 'ion-ios7-arrow-back'},
-          {klass: 'ion-navicon', channel: 'header:detail:hideGuide'}
+          {klass: 'ion-ios7-arrow-back', channel: 'header:detail:historyBack'},
+          {}
         ]);
         this.$root.$broadcast('header:show');
         this.$root.$broadcast('footer:hide');
@@ -124,6 +122,7 @@ define(
           }
         });
 
+        this.$root.$on('header:detail:historyBack', $.proxy(this.historyBack, this));
         this.$root.$on('header:detail:showGuide', $.proxy(this.showGuide, this));
         this.$root.$on('header:detail:hideGuide', $.proxy(this.hideGuide, this));
 
@@ -143,15 +142,29 @@ define(
       },
 
       showGuide: function() {
+        this.$root.$broadcast('header:setControls', [
+          {klass: 'ion-ios7-arrow-back', channel: 'header:detail:historyBack'},
+          {klass: 'ion-ios7-arrow-down', channel: 'header:detail:hideGuide'}
+        ]);
+
         this.routesContainer.addClass('is-hidden');
         this.mapContainer.addClass('is-hidden');
         this.guideContainer.addClass('is-expanded');
       },
 
       hideGuide: function() {
+        this.$root.$broadcast('header:setControls', [
+          {klass: 'ion-ios7-arrow-back', channel: 'header:detail:historyBack'},
+          {}
+        ]);
+
         this.routesContainer.removeClass('is-hidden');
         this.mapContainer.removeClass('is-hidden');
         this.guideContainer.removeClass('is-expanded');
+      },
+
+      historyBack: function() {
+        this.$dispatch('app:setView', 'directions');
       },
 
       onClick: function(model) {
@@ -184,11 +197,15 @@ define(
         map.fitBounds(bounds);
 
         listener = gmaps.event.addListener(map, 'idle', function () {
+            self.guideContainer.css({display: 'block'});
             map.setZoom(12);
             gmaps.event.removeListener(listener);
         });
 
         this.placeLine(map, points);
+      },
+
+      dispose: function() {
       },
 
       placeLine: function(map, points) {
