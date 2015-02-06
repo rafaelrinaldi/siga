@@ -32,8 +32,6 @@ define(
       }
     });
 
-
-
     return matches;
   }
 
