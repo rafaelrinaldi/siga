@@ -1,3 +1,5 @@
+'use strict';
+
 var gulp = require('gulp'),
     connect = require('gulp-connect'),
     rjs = require('requirejs').optimize,
@@ -8,16 +10,19 @@ var gulp = require('gulp'),
     paths = {
       output: './public',
 
+      // Partials
       partials: {
         index: './app/assets/partials/index.html',
         all: './app/assets/partials/**/*.html'
       },
 
+      // Stylesheets
       stylesheets: {
         manifest: './app/assets/stylesheets/application.scss',
         all: './app/assets/stylesheets/**/*.scss'
       },
 
+      // JavaScript
       javascripts: {
         root: './app/assets/javascripts',
         manifest: './app/assets/javascripts/application.js',
