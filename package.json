@@ -1,9 +1,10 @@
 {
   "name": "siga-app",
-  "version": "0.0.1",
-  "description": "Siga is a mobile web app whose goal is to provide a single place to have access to Sao Paulo's subway system services.",
+  "version": "0.1.0",
+  "description": "Siga is a mobile web app whose main goal is to offer a single source of information for people who use Sao Paulo's subway system",
+  "private": true,
   "devDependencies": {
-    "gulp": "^3.6.2",
+    "gulp": "^3.8.10",
     "gulp-autoprefixer": "0.0.7",
     "gulp-connect": "^2.0.5",
     "gulp-preprocess": "^1.0.1",
@@ -15,6 +16,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Rafael Rinaldi <rafael.rinaldi@gmail.com>",
+  "author": "Rafael Rinaldi",
   "license": "MIT"
 }
