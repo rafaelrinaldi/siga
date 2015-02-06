@@ -22,8 +22,8 @@ define(
 
     data: {
       suggestions: [],
-      // origin: 'Brigadeiro',
-      // destination: 'Anhangabaú',
+      origin: '',
+      destination: '',
       lastInput: ''
     },
 
@@ -92,7 +92,7 @@ define(
       suggestStations: function(input) {
         var suggestions = getStationsByName(this[input]);
 
-        // Combine line details to stations models to display colors and stuff
+        // Combine line details to station models to display colors and stuff
         this.suggestions =  $.each(suggestions, function(index, suggestion) {
                               $.map(suggestion.lines, function(line) {
                                 return $.extend(line, getLine(line.id));

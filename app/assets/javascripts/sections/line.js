@@ -25,7 +25,7 @@ define(
         // Notifying section ready.
         this.$dispatch('app:sectionReady', this);
 
-        // this.$root.$broadcast('header:setTitle', this.station.title);
+        this.$root.$broadcast('header:setTitle', this.station.title);
         this.$root.$broadcast('header:setControls', [
           {
             channel: 'navigation:goToStation',

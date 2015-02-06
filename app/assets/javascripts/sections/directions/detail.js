@@ -285,7 +285,6 @@ define(
             guide.push('$origin ' + self.origin.title);
 
             $.each(leg.steps, function(stepIndex, step) {
-
               hasLineColor = false;
               isSubwayStation = /^metrô/i.test(step.instructions);
 
