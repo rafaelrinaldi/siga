@@ -2,6 +2,9 @@
 
 Siga is a - protototype of - a mobile web app I made for a college project whose main goal is to offer a single source of information for people who use Sao Paulo's subway system.
 
+[![Siga](./demo.png)](https://cloudup.com/cqn4fjWT1oF)
+<small>Click on the image to see a demo of Siga in action</small>
+
 # The idea
 
 I was born in Sao Paulo and been using the subway system for years now. The company behind it is called [SPTrans](http://www.sptrans.com.br). Even though there are some really good services that are offered by them, their communication with the average subway user is terrible, so people don't even know what's going on. That lack of better communication is what caught my attention.
@@ -24,8 +27,7 @@ For many times, I've underestimated the efforts to make this project happen. To 
 
 # Future
 
-Siga is much more than this prototype. I've picked the subway system because it's something present in my life on a daily basis.
-With Siga I realized I can go beyond that and also improve train and bus systems as well. The data is there, there are great stuff being offered by the companies who run the systems and the problem is there as well!
+Siga is much more than this prototype. I've picked the subway system because it's something present in my life on a daily basis. With Siga I realized that I can go beyond that and also improve the way users get information about train and bus systems as well. The data is there, there are great stuff being offered by the companies who run the systems and the problem is there as well!
 
 Siga's goal is to be the best tool for using public transportation - of any kind - in Sao Paulo.
 
@@ -33,26 +35,38 @@ I'm already working on a new prototype of a more robust version of the project. 
 
 # Technology
 
-  * Sass (w/ SCSS syntax) as CSS pre-processor;
-  * Bower as client side package manager;
-  * Gulp as the task runner of choice;
-  * Ionic as the mobile UI kit;
-  * The data is provided by [Malaco](http://github.com/rafaelrinaldi/malaco).
+  * [Sass (w/ SCSS syntax)](http://sass-lang.com) as CSS pre-processor;
+  * [Autoprefixer](https://github.com/postcss/autoprefixer) to handle CSS vendor prefixes;
+  * [Bower](http://bower.io) as client side package manager;
+  * [Gulp](http://gulpjs.com) as the task runner of choice;
+  * [Ionic](http://ionicframework.com) as the mobile UI kit;
+  * The data is provided by [Malaco](http://github.com/rafaelrinaldi/malaco);
+  * [Vue](http://vuejs.org) is a MVVM framework that I'm using;
+  * [AMD](http://en.wikipedia.org/wiki/Asynchronous_module_definition) module system;
+  * [RequireJS](http://requirejs.org) as module loader.
 
 ## Running the project
 
-If you want to run the project locally, you must have Node.js installed and a global install of Bower as well.
+If you want to run the project locally, you must have [Node.js](http://nodejs.org) installed (with [NPM](http://npmjs.com)) and a global install of [Bower](http://bower.io) as well. To install them both:
 
 ```sh
-$ npm install
-$ bower install
-$ gulp # compile the assets and create a server
+λ brew install node # Install Node.js via Homebrew
+λ curl https://www.npmjs.org/install.sh | sh # Install NPM
+λ npm install bower -g # Finally install Bower globally through NPM
+```
+
+Then, install all the dependencies:
+
+```sh
+λ npm install
+λ bower install
+λ gulp # The default task compiles all the assets and create a server
 ```
 
 To run the project in production mode (minified assets):
 
 ```sh
-$ NODE_ENV=production gulp
+λ NODE_ENV=production gulp
 ```
 
 # Contributing
