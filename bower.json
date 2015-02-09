@@ -1,8 +1,8 @@
 {
   "name": "siga-app",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "authors": [
-    "Rafael Rinaldi <rafael.rinaldi@gmail.com>"
+    "Rafael Rinaldi"
   ],
   "main": "public/index.html",
   "moduleType": [
