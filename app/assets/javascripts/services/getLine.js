@@ -5,6 +5,8 @@ define(
   lines
 ) {
 
+  'use strict';
+
   function getLine(id) {
     return lines[id] || {};
   }

@@ -11,6 +11,8 @@ define(
   getStations
 ) {
 
+  'use strict';
+
   var stations = getStations();
 
   function getStationById(id) {

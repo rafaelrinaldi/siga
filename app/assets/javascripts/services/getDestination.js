@@ -11,6 +11,9 @@ define(
     gmaps,
     mixIn
   ) {
+
+    'use strict';
+
     var directions = new gmaps.DirectionsService(),
         request = {
           travelMode: gmaps.DirectionsTravelMode.TRANSIT,

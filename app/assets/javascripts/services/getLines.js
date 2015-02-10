@@ -9,6 +9,8 @@ define(
   getStations
 ) {
 
+  'use strict';
+
   function getLines() {
     var stations = getStations(),
         lines = [];

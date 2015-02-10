@@ -13,6 +13,8 @@ define(
   template
 ) {
 
+  'use strict';
+
   return Vue.extend({
     template: template,
 

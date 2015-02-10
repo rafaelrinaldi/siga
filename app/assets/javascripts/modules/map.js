@@ -17,6 +17,8 @@ define(
   config
 ) {
 
+  'use strict';
+
   var p = Map.prototype;
 
   function Map(container, options) {

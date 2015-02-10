@@ -17,6 +17,8 @@ define(
   Status
 ) {
 
+  'use strict';
+
   return {
     'overview': Overview,
     'station': Station,

@@ -11,6 +11,8 @@ define(
     template
   ) {
 
+    'use strict';
+
     Vue.component('station-hub', {
       template: template,
 

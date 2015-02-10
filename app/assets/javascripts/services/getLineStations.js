@@ -7,6 +7,8 @@ define(
   getStations
 ) {
 
+  'use strict';
+
   var stations = getStations();
 
   function getLineStations(lineId) {

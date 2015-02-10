@@ -1,3 +1,11 @@
+/* ==========================================================================
+   Base » Base
+   ========================================================================== */
+
+/**
+ * Base style declarations.
+ */
+
 html,
 body {
   width: 100%;
@@ -13,18 +21,11 @@ body {
   transform: translate3d(0, 0, 0);
 }
 
-.button {
-  border-radius: 2px;
-  transition: all 1s linear;
-}
-
-#app {
-}
-
 // To avoid weird zoom/scale on iOS when focusing an input text or text area
 input[type="text"],
 textarea {
   font-size: 1em;
 }
 
+// Vue's v-cloak layer
 [v-cloak] { display: none; }

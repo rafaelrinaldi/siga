@@ -8,6 +8,9 @@ define(
   sanitizeStationName,
   getStations
 ) {
+
+  'use strict';
+
   var stations;
 
   // Shout out to mout

@@ -10,6 +10,14 @@ define(
     template
   ) {
 
+    'use strict';
+
+    /**
+     * Directions section.
+     * This section offers the user a way to get information on how to go from
+     * point A to point B.
+     */
+
     return Vue.extend({
       template: template,
 

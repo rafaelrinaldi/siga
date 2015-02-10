@@ -1,4 +1,3 @@
-// TODO: this can be an inner component of directions instead of a global one
 define(
   [
     'jquery',

@@ -75,6 +75,8 @@ requirejs(
     vueTouch
   ) {
 
+    'use strict';
+
     var app;
 
     function _checkForIOS() {

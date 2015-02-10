@@ -5,6 +5,8 @@ define(
   Q
 ) {
 
+  'use strict';
+
   function getUserLocation() {
     var deferred = Q.defer();
 

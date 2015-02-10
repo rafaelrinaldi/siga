@@ -11,6 +11,9 @@ define(
     crossroads,
     hasher
   ) {
+
+    'use strict';
+
     exports.on = {
       matchRoute: new Signal()
     };

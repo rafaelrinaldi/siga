@@ -7,6 +7,8 @@ define(
   stations
 ) {
 
+  'use strict';
+
   function getStations() { return stations; }
 
   return getStations;

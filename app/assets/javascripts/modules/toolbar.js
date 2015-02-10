@@ -1,5 +1,7 @@
 define(['jquery', 'vue', 'text!partials/toolbar.html'], function($, Vue, template) {
 
+  'use strict';
+
   var _container;
 
   Vue.component('toolbar', {
