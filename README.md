@@ -17,6 +17,8 @@ This project is a proof of concept that we can have simple, beautiful and effici
 As *cliché* as it sounds, I've tried to combine design and technology to provide a concrete solution for the problem.
 This prototype of mobile web app is the result of the effort I've put into interviews with real people, research, sketching and prototyping.
 
+[Here are the slides explaining the whole project (in Brazilian Portuguese only).](https://speakerdeck.com/rafaelrinaldi/projeto-de-conclusao-de-curso)
+
 # Challenges
 
 For many times, I've underestimated the efforts to make this project happen. To list some of them:
