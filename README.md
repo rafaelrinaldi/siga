@@ -2,7 +2,7 @@
 
 Siga is a - protototype of - a mobile web app I made for a college project whose main goal is to offer a single source of information for people who use Sao Paulo's subway system.
 
-[![Siga](./demo.jpg)](https://cloudup.com/cqn4fjWT1oF)
+[![Siga](./demo.jpg)](https://cloudup.com/cqn4fjWT1oF)  
 <sup>Click on the image to see a demo of Siga in action</sup>
 
 # The idea
