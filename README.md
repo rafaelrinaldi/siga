@@ -53,7 +53,6 @@ If you want to run the project locally, you must have [Node.js](http://nodejs.or
 
 ```sh
 λ brew install node # Install Node.js via Homebrew
-λ curl https://www.npmjs.org/install.sh | sh # Install NPM
 λ npm install bower -g # Finally install Bower globally through NPM
 ```
 
