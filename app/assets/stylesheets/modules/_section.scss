@@ -1,3 +1,7 @@
+/* ==========================================================================
+   Modules » Section
+   ========================================================================== */
+
 .section {
   background: #fff;
   position: absolute;
@@ -14,13 +18,11 @@
 }
 
 .section.v-enter {
-  // opacity: 0;
   transition-delay: .2s;
   transform: translateX(100%);
 }
 
 .section.v-leave {
-  // opacity: .99;
   transition-duration: .65s;
   transform: translateX(-100%);
 }

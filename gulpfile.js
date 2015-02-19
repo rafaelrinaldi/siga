@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Task runner configuration.
+ */
+
 var gulp = require('gulp'),
     connect = require('gulp-connect'),
     rjs = require('requirejs').optimize,

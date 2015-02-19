@@ -1,20 +1,38 @@
+/* ==========================================================================
+   Helpers » Classes
+   ========================================================================== */
+
+/**
+ * Useful classes.
+ */
+
+/* Classes » No header container
+   ========================================================================== */
+
 .no-header-container {
   margin-top: 50px;
 }
+
+/* Classes » Has transform animation
+   ========================================================================== */
 
 .has-transform-animation {
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
 }
 
+/* Classes » Scrollable content
+   ========================================================================== */
+
 .scrollable-content {
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
 }
 
+/* Classes » Image replacement
+   ========================================================================== */
+
 /*
- * Image replacement
- *
  * Borrowed from H5MBP
  * https://github.com/h5bp/mobile-boilerplate/blob/master/css/main.css#L113-L130
  */

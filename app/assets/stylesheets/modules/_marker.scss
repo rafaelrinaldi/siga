@@ -1,5 +1,15 @@
+/* ==========================================================================
+   Modules » Marker
+   ========================================================================== */
+
+/* Marker » Pulsate animation variables
+   ========================================================================== */
+
 $PULSATE_MARKER_SIZE: 51px !default;
 $PULSATE_MARKER_BORDER: 2.5pt solid #4aa3df !default;
+
+/* Marker » Pulsate animation
+   ========================================================================== */
 
 @keyframes pulsate {
   0% {
@@ -21,6 +31,9 @@ $PULSATE_MARKER_BORDER: 2.5pt solid #4aa3df !default;
   }
 }
 
+/* Marker » Google Maps markers
+   ========================================================================== */
+
 div.gmnoprint {
   z-index: 4;
 }
@@ -31,7 +44,7 @@ div.gmnoprint[title="is-active"] {
   border-radius: $PULSATE_MARKER_SIZE;
   z-index: 2;
 
-  /* set the ring's new dimension and re-center it */
+  /* Set the ring's new dimension and re-center it */
   margin: -18px 0 0 -18px;
   height: $PULSATE_MARKER_SIZE !important;
   width: $PULSATE_MARKER_SIZE !important;
@@ -39,7 +52,7 @@ div.gmnoprint[title="is-active"] {
   & img { display: none; }
 }
 
-/* compensate for iPhone and Android devices with high DPI, add iPad media query */
+/* Compensate for iPhone and Android devices with high DPI, add iPad media query */
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (device-width: 768px) {
   div.gmnoprint[title="is-active"] {
     margin:-10px 0 0 -10px;
