@@ -15,7 +15,7 @@ There are already some mobile options available but none of them combine all of 
 This project is a proof of concept that we can have simple, beautiful and efficient solutions even though the source of information is a mess. There are so many great examples out there; [CityMapper](https://citymapper.com) is one of them which I produly have used as a benchmark.
 
 As *cliché* as it sounds, I've tried to combine design and technology to provide a concrete solution for the problem.
-This prototype of mobile web app is the result of the effort I've put into interviews with real people, research, sketching and prototyping.
+This prototype of mobile web app is the result of the effort I've put into interviews with real people, benchmark research, UI sketching and prototyping.
 
 [Here are the slides explaining the whole project (in Brazilian Portuguese only).](https://speakerdeck.com/rafaelrinaldi/projeto-de-conclusao-de-curso)
 
@@ -43,7 +43,7 @@ I'm already working on a new prototype of a more robust version of the project. 
   * [Gulp](http://gulpjs.com) as the task runner of choice;
   * [Ionic](http://ionicframework.com) as the mobile UI kit;
   * The data is provided by [Malaco](http://github.com/rafaelrinaldi/malaco);
-  * [Vue](http://vuejs.org) is a MVVM framework that I'm using;
+  * [Vue](http://vuejs.org) is a MVVM framework, useful for dynamic DOM manipulation;
   * [AMD](http://en.wikipedia.org/wiki/Asynchronous_module_definition) module system;
   * [RequireJS](http://requirejs.org) as module loader.
 
@@ -62,7 +62,7 @@ Then, install all the dependencies:
 ```sh
 λ npm install
 λ bower install
-λ gulp # The default task compiles all the assets and create a server
+λ gulp # The default task compiles all the assets and will serve them to the localhost
 ```
 
 To run the project in production mode (minified assets):
