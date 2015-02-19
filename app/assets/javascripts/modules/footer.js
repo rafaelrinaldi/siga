@@ -12,6 +12,10 @@ define(
 
     'use strict';
 
+    /**
+     * Main footer element.
+     */
+
     return Vue.extend({
       template: template,
 

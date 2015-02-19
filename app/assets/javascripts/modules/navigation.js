@@ -14,6 +14,10 @@ define(
 
   'use strict';
 
+  /**
+   * Navigation menu.
+   */
+
   return Vue.extend({
     template: template,
 

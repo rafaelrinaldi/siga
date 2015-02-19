@@ -14,6 +14,10 @@ define(
 
     'use strict';
 
+    /**
+     * Simple client side router.
+     */
+
     exports.on = {
       matchRoute: new Signal()
     };

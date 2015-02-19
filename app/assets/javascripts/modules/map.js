@@ -19,6 +19,10 @@ define(
 
   'use strict';
 
+  /**
+   * Main map section.
+   */
+
   var p = Map.prototype;
 
   function Map(container, options) {

@@ -14,6 +14,10 @@ define(
 
     'use strict';
 
+    /**
+     * Main header element.
+     */
+
     return Vue.extend({
       template: template,
 

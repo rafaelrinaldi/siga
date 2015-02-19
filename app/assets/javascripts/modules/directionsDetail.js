@@ -20,6 +20,11 @@ define(
 
     'use strict';
 
+    /**
+     * Directions detail section.
+     * It provides a list of steps for going from station A to station B.
+     */
+
     return Vue.extend({
       template: template,
 
