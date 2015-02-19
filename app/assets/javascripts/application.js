@@ -1,3 +1,7 @@
+/**
+ * RequireJS configuration.
+ */
+
 require.config({
   paths: {
     // Templates
@@ -53,8 +57,6 @@ requirejs(
     'modules/header',
     'modules/navigation',
     'modules/footer',
-    'modules/directions',
-    'modules/directionsDetail',
     './sections',
     'lib/vueTouch',
     'lib/h5bpHelpers'
@@ -69,13 +71,15 @@ requirejs(
     Header,
     Navigation,
     Footer,
-    Directions,
-    DirectionsDetail,
     Sections,
     vueTouch
   ) {
 
     'use strict';
+
+    /**
+     * Single application entry point.
+     */
 
     var app;
 
@@ -102,8 +106,6 @@ requirejs(
           'line': Sections.line,
           'status': Sections.status,
           'search': Sections.search,
-          'directions': Sections.directions,
-          'directions-detail': Sections.directionsDetail,
           'header': Header,
           'navigation': Navigation,
           'footer': Footer

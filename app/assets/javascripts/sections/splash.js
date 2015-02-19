@@ -11,6 +11,10 @@ define(
 
   'use strict';
 
+  /**
+   * Splash screen.
+   */
+
   return Vue.extend({
     template: template,
 

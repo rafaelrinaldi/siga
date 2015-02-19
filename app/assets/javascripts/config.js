@@ -1,3 +1,7 @@
+/**
+ * App configuration file.
+ */
+
 define({
   //>>includeStart("offline", pragmas.offline);
   debug: false,

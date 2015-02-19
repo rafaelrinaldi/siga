@@ -17,6 +17,10 @@ define(
 
   'use strict';
 
+  /**
+   * Search section.
+   */
+
   return Vue.extend({
     template: template,
 

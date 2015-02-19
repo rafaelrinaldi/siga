@@ -19,6 +19,10 @@ define(
 
   'use strict';
 
+  /**
+   * Sections wrapper.
+   */
+
   return {
     'overview': Overview,
     'station': Station,
